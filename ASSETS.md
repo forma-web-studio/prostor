@@ -1,34 +1,22 @@
-# Материалы изображений — этап 1
+# Материалы изображений — редизайн
 
-Все фотографии в текущей сборке локальны: `src/assets/images/projects/`. Они выводятся встроенным `astro:assets` с адаптивными вариантами и не являются документальной съёмкой работ вымышленной студии.
+Публичный интерфейс использует только восемь локальных AI-визуализаций в `src/assets/images/projects/`. Это изображения для учебных концепций, не фотографии реализованных объектов. На страницах кейсов это сообщается одним отдельным источниковым блоком; в footer остаётся общее уведомление о вымышленной студии.
 
-## Фотографии
+## Используемые AI-визуализации
 
-### Этап 2: локальные иллюстрации, созданные для учебных концептов
+| Концепция | Файлы | Роль |
+| --- | --- | --- |
+| Свет и дуб | `svet-i-dub-cover.png`, `svet-i-dub-detail-1.png` | Общий вид и вертикальная деталь стола/хранения |
+| Дом у сада | `dom-u-sada-detail-1.png`, `dom-u-sada-detail-2.png` | Общий вид и деталь сада/столовой |
+| Тишина города | `tishina-goroda-detail-1.png`, `tishina-goroda-detail-2.png` | Общий вид и деталь места у окна |
+| Линия леса | `liniya-lesa-detail-1.png`, `liniya-lesa-detail-2.png` | Общий вид и деталь скамьи у леса |
 
-Шесть файлов ниже сгенерированы встроенным ImageGen 09.09.2026 для несуществующих учебных объектов, а не загружены со стока. Они не изображают выполненные работы и подписаны в интерфейсе как визуальное направление.
+Шесть файлов для «Дом у сада», «Тишина города» и «Линия леса» были созданы встроенным ImageGen 09.09.2026. Пара «Свет и дуб» создана встроенным ImageGen 10.09.2026: общий вид — светлая городская гостиная-столовая с прямым дубовым столом у окна, молочной штукатуркой, льном и закрытым дубовым хранением; деталь — тот же стол и фасады в вертикальном кадре. Во всех промптах исключены люди, текст, логотипы, телевизоры и LED-подсветка.
 
-| Локальный файл | Роль |
-| --- | --- |
-| `dom-u-sada-detail-1.png`, `dom-u-sada-detail-2.png` | Два изображения «Дом у сада» |
-| `tishina-goroda-detail-1.png`, `tishina-goroda-detail-2.png` | Два изображения «Тишина города» |
-| `liniya-lesa-detail-1.png`, `liniya-lesa-detail-2.png` | Два изображения «Линия леса» |
+## Архивные материалы, не участвующие в сайте
 
-Источник лицензии: [Pexels License](https://www.pexels.com/license/) — бесплатное использование материалов Pexels для личных и коммерческих целей; проверено также по [справке Pexels](https://help.pexels.com/hc/en-us/articles/360042295174-What-is-the-license-of-the-photos-and-videos-on-Pexels). Атрибуция не обязательна по лицензии, но указана здесь для прозрачности.
-
-| Локальный файл | Роль | Автор | Исходная страница | Лицензия |
-| --- | --- | --- | --- | --- |
-| `svet-i-dub-hero.jpg` | Hero главной и cover кейса «Свет и дуб» | Max Vakhtbovych | https://www.pexels.com/photo/large-lounge-with-soft-sofa-under-window-on-ceiling-6587847/ | Pexels License |
-| `svet-i-dub-detail-1.jpg` | Первое изображение визуального направления | Rachel Claire | https://www.pexels.com/photo/interior-of-living-room-with-wooden-furniture-4846114/ | Pexels License |
-| `svet-i-dub-detail-2.jpg` | Второе изображение визуального направления | Ksenia Chernaya | https://www.pexels.com/photo/modern-living-room-interior-8987431/ | Pexels License |
-| `dom-u-sada-cover.jpg` | Обложка «Дом у сада» и иллюстрация подхода | Max Vakhtbovych | https://www.pexels.com/photo/cozy-living-room-interior-with-wooden-furniture-and-comfy-couch-6636320/ | Pexels License |
-| `tishina-goroda-cover.jpg` | Обложка «Тишина города» | Max Vakhtbovych | https://www.pexels.com/photo/a-modern-living-room-7166931/ | Pexels License |
-| `liniya-lesa-cover.jpg` | Обложка «Линия леса» | Erik Mclean | https://www.pexels.com/photo/modern-living-room-interior-with-furniture-in-house-5120081/ | Pexels License |
-
-`svet-i-dub-cover.jpg` — ранний, неиспользуемый файл подбора; он не импортируется и не входит в сайт. Его можно удалить при следующей уборке материалов, но он не влияет на output.
+Файлы `.jpg` рядом с ними сохранены как ранний подбор и не импортируются приложением. Их источники Pexels отражены в истории предыдущего этапа; они не являются частью текущего визуального языка или output.
 
 ## Шрифты
 
-- Prata 400 и Manrope Variable подключаются из локальных npm-пакетов Fontsource версии 5.2.6: `@fontsource/prata` и `@fontsource-variable/manrope`.
-- В CSS использованы наборы с кириллицей: `400.css` для Prata и `wght.css` для Manrope Variable. Семейство Manrope в пакете называется `Manrope Variable`; это имя применено к body.
-- Исходные font-файлы и OFL-1.1 находятся в пакетах после `npm ci`: `node_modules/@fontsource/prata/{files,LICENSE}` и `node_modules/@fontsource-variable/manrope/{files,LICENSE}`. Финальная build-проверка подтверждает локальную передачу кириллических WOFF2 в output.
+Prata 400 и Manrope Variable подключаются локально из Fontsource (`@fontsource/prata` и `@fontsource-variable/manrope`) с поддержкой кириллицы.
