@@ -1,0 +1,25 @@
+:root {
+  --canvas: #f3f0e9;
+  --ink: #252824;
+  --muted: #5d6258;
+  --olive: #747a64;
+  --line: #d4d2c8;
+  --paper: #faf8f3;
+  --paper-deep: #ebe7dd;
+  --success: #52634b;
+  --error: #963b34;
+  --focus: #4f5c45;
+  --control-line: #aaa99f;
+  --shadow-control: 0 1px 0 rgba(255,255,255,.46) inset, 0 8px 18px rgba(37,40,36,.08);
+  --shadow-control-pressed: 0 1px 0 rgba(255,255,255,.2) inset, 0 2px 7px rgba(37,40,36,.1);
+  --ease-ui: cubic-bezier(.22,.61,.36,1);
+  --ease-reveal: cubic-bezier(.2,.68,.28,1);
+  --duration-fast: 180ms;
+  --duration-ui: 220ms;
+  --duration-flow: 280ms;
+  --duration-reveal: 560ms;
+  --space-1: 8px; --space-2: 12px; --space-3: 16px; --space-4: 24px;
+  --space-5: 32px; --space-6: 48px; --space-7: 64px; --space-8: 96px; --space-9: 128px;
+  --page-pad: clamp(20px, 4.7vw, 60px);
+  --container: min(1320px, calc(100vw - (var(--page-pad) * 2)));
+}

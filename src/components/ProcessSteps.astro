@@ -1,0 +1,7 @@
+---
+const steps = [ ['01', 'Знакомство', 'Слушаем ваш сценарий жизни, задачи и ограничения пространства.'], ['02', 'Планировка', 'Ищем логику движения, света и хранения прежде декора.'], ['03', 'Концепция', 'Собираем палитру, материалы и атмосферу будущего интерьера.'], ['04', 'Документация', 'Переводим решение в ясный набор материалов для реализации.'] ];
+---
+<ol class="process">{steps.map(([number, title, text]) => <li><span>{number}</span><h3>{title}</h3><p>{text}</p></li>)}</ol>
+<style>
+  .process { border-top:1px solid var(--line); display:grid; gap:24px; grid-template-columns:repeat(4, 1fr); list-style:none; margin:32px 0 0; padding:20px 0 0; } li { min-width:0; } span { color:var(--olive); font-size:13px; font-weight:700; } h3 { font-size:18px; font-weight:600; margin:18px 0 8px; } p { color:var(--muted); font-size:14px; margin:0; } @media(max-width:767px) { .process { display:block; } li { border-bottom:1px solid var(--line); padding:20px 0; } li:last-child { border-bottom:0; } h3 { margin:8px 0; } }
+</style>

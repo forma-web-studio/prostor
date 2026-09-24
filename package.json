@@ -1,0 +1,19 @@
+{
+  "name": "prostor-interiors",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "check": "astro check",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/check": "0.9.6",
+    "@fontsource-variable/manrope": "5.2.6",
+    "@fontsource/prata": "5.2.6",
+    "astro": "5.18.0",
+    "typescript": "5.9.3"
+  }
+}

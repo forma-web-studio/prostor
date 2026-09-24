@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import ProcessSteps from '../components/ProcessSteps.astro';
+import ArrowIcon from '../components/ArrowIcon.astro';
+import { Image } from 'astro:assets';
+import { featuredProjects, projects } from '../data/projects';
+import { withBase } from '../utils/urls';
+const heroProject = projects.find(({ slug }) => slug === 'dom-u-sada')!;
+const forestProject = projects.find(({ slug }) => slug === 'liniya-lesa')!;
+---
+<BaseLayout title="ПРОСТОР — студия интерьерной архитектуры" description="Интерьеры квартир и загородных домов. Планировка, материалы и свет под ваш ритм жизни.">
+  <section class="hero container">
+    <h1>Пространство для вашей жизни</h1>
+    <figure class="hero__image"><div class="hero__media"><Image src={heroProject.cover} alt={heroProject.coverAlt} width={1320} quality={70} widths={[640, 960, 1320, 1920]} sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) calc(100vw - 80px), min(1320px, 100vw - 120px)" loading="eager" fetchpriority="high" /></div><figcaption>{heroProject.coverCaption}</figcaption></figure>
+    <div class="hero__copy"><p>Интерьеры с естественным светом, продуманным хранением и местом для жизни.</p><div class="hero__actions"><Button href={withBase('/contact/')}>Обсудить проект</Button><a href={withBase('/projects/')}>Смотреть проекты</a></div></div>
+  </section>
+
+  <section class="projects container" id="projects" aria-labelledby="projects-title">
+    <div class="section-title"><div><p class="eyebrow">Избранные проекты</p><h2 id="projects-title">Избранные пространства</h2></div><a class="inline-link" href={withBase('/projects/')}>Все проекты <ArrowIcon /></a></div>
+    <div class="project-grid">
+      <div class="project-grid__item project-grid__item--one"><ProjectCard project={featuredProjects[0]} sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 44vw, (min-width: 1440px) 748px, 54vw" linked /></div>
+      <div class="project-grid__item project-grid__item--two"><ProjectCard project={featuredProjects[1]} sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 44vw, (min-width: 1440px) 420px, 30vw" size="small" linked /></div>
+      <div class="project-grid__item project-grid__item--three"><ProjectCard project={featuredProjects[2]} sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 90vw, (min-width: 1440px) 858px, 62vw" linked /></div>
+    </div>
+  </section>
+
+  <section class="approach container" id="approach"><div class="approach__heading"><p class="eyebrow">Наш подход</p><h2>Дом под ваш ритм</h2></div><div class="approach__body"><div><p>Сначала смотрим на привычки: где вы встречаете утро, что должно быть под рукой, в каких местах дома хочется задержаться.</p><p>Планировка, свет и материалы складываются в спокойную среду, которая не требует постоянного внимания.</p></div><figure><div class="approach__media"><Image src={forestProject.gallery.src} alt={forestProject.gallery.alt} width={960} quality={70} widths={[480, 720, 960]} sizes="(max-width: 767px) calc(100vw - 40px), (min-width: 1440px) 312px, 22vw" loading="lazy" /></div><figcaption>{forestProject.gallery.caption}</figcaption></figure></div></section>
+
+  <section class="process-section container"><p class="eyebrow">Как строится работа</p><h2>От разговора к проекту</h2><ProcessSteps /></section>
+  <section class="cta container" id="contact"><div><p class="eyebrow">Первый разговор</p><h2>Обсудим ваше пространство</h2></div><div><p>Расскажите, какой дом вы хотите почувствовать своим. Начнём с площади, планировки и ваших пожеланий.</p><Button href={withBase('/contact/')}>Обсудить интерьер</Button></div></section>
+</BaseLayout>
+
+<style>
+  h1,h2 { font-family:Prata,Georgia,serif; font-weight:400; letter-spacing:-.03em; text-wrap:balance; }
+  .hero { align-items:start; display:grid; gap:0 24px; grid-template-columns:repeat(12,1fr); padding-top:48px; }
+  h1 { font-size:clamp(72px,6.2vw,88px); grid-column:1 / span 8; grid-row:1; line-height:1.08; margin:0; max-width:14ch; }
+  .hero__copy { grid-column:9 / span 4; grid-row:1; } .hero__copy p { margin:0 0 24px; } .hero__actions { align-items:center; display:flex; flex-wrap:wrap; gap:20px; } .hero__actions a { font-size:14px; }
+  .hero__image { grid-column:1 / -1; grid-row:2; margin:32px 0 0; } .hero__media { aspect-ratio:16/9; overflow:hidden; } figcaption { color:var(--muted); font-size:14px; margin-top:10px; }
+  .projects,.approach,.process-section { padding-top:96px; } .section-title { align-items:end; display:flex; justify-content:space-between; margin-bottom:40px; } .section-title h2,.process-section h2 { font-size:clamp(36px,4vw,56px); line-height:1.12; margin:10px 0 0; max-width:16ch; }
+  .section-title > a { font-size:14px; padding-bottom:10px; white-space:nowrap; } .project-grid { display:grid; gap:64px 24px; grid-template-columns:repeat(12,1fr); } .project-grid__item--one { grid-column:1 / span 7; } .project-grid__item--two { grid-column:9 / span 4; margin-top:84px; } .project-grid__item--three { grid-column:3 / span 8; }
+  .approach { border-top:1px solid var(--line); margin-top:96px; } .approach__heading { display:grid; grid-template-columns:repeat(12,1fr); } .approach__heading .eyebrow { grid-column:1 / span 3; padding-top:12px; } .approach__heading h2 { font-size:clamp(36px,4.2vw,58px); grid-column:5 / span 7; line-height:1.12; margin:0; max-width:18ch; }
+  .approach__body { align-items:start; display:grid; gap:24px; grid-template-columns:repeat(12,1fr); margin-top:56px; } .approach__body > div { grid-column:5 / span 4; max-width:34ch; } .approach__body p:first-child { margin-top:0; } .approach__body figure { grid-column:10 / span 3; margin:0; } .approach__media { aspect-ratio:4/5; overflow:hidden; }
+  .process-section { padding-bottom:96px; } .cta { padding-bottom:96px; align-items:start; border-top:1px solid var(--line); display:grid; gap:24px; grid-template-columns:repeat(12,1fr); padding:64px 0 96px; } .cta > div:first-child { grid-column:1 / span 7; } .cta h2 { font-size:clamp(40px,5vw,64px); line-height:1.1; margin:10px 0 0; max-width:12ch; } .cta > div:last-child { grid-column:9 / span 4; } .cta > div:last-child p { margin-top:0; }
+  @media (min-width:768px) and (max-width:1099px) { .cta { display:block; } .cta > div:last-child { margin-top:28px; max-width:38ch; } .hero { display:block; } h1 { font-size:60px; } .hero__image { margin-top:24px; } .hero__copy { margin-top:24px; max-width:38ch; } .hero__media { aspect-ratio:16/9; } .project-grid__item--one,.project-grid__item--two { grid-column:span 6; margin-top:0; } .project-grid__item--three { grid-column:1 / span 12; } .approach__heading h2,.approach__body > div { grid-column:4 / span 6; } .approach__body figure { grid-column:10 / span 3; } }
+  @media (max-width:767px) { .hero { display:block; padding-top:24px; } .cta { display:block; } h1 { font-size:clamp(44px,13vw,60px); } .hero__image { margin-top:24px; } .hero__copy { margin-top:20px; } .hero__media { aspect-ratio:4/3; } .projects,.approach,.process-section { padding-top:64px; } .section-title { align-items:start; display:block; margin-bottom:32px; } .section-title > a { display:inline-block; margin-top:18px; padding:0; } .project-grid { display:block; } .project-grid__item { margin:0 0 40px; } .project-grid__item:last-child { margin-bottom:0; } .approach { margin-top:64px; } .approach__heading,.approach__body { display:block; } .approach__heading .eyebrow { padding:0; } .approach__heading h2 { font-size:40px; margin-top:10px; } .approach__body { margin-top:32px; } .approach__body figure { margin:32px 0 0; } .approach__media { aspect-ratio:4/5; } .process-section { padding-bottom:64px; } .cta { padding-top:48px; padding-bottom:64px; } .cta > div:last-child { margin-top:32px; } }
+</style>
+

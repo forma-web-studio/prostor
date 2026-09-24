@@ -1,0 +1,120 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { withBase } from '../utils/urls';
+interface Props { title: string; description: string; noindex?: boolean; }
+const { title, description, noindex = true } = Astro.props;
+const productionRoot = 'https://forma-web-studio.github.io';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const route = base && Astro.url.pathname.startsWith(base + '/') ? Astro.url.pathname.slice(base.length) : Astro.url.pathname;
+const canonical = `${productionRoot}/prostor${route}`;
+const socialImage = `${productionRoot}/prostor/og/prostor.jpg`;
+---
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="ПРОСТОР — интерьеры квартир и домов" />
+    <meta name="twitter:card" content="summary_large_image" />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Перейти к содержанию</a>
+    <Header />
+    <main id="main"><slot /></main>
+    <Footer />
+    <script>
+      const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const editorialGroups = [
+        '.hero > h1, .hero > .hero__copy',
+        '.section-title, .project-grid__item',
+        '.approach__heading, .approach__body',
+        '.process-section > .eyebrow, .process-section > h2',
+        '.cta > div',
+        '.studio > .eyebrow, .studio > h1',
+        '.focus > div, .focus > figure',
+        '.services > .eyebrow, .services > h1',
+        '.services__list',
+        '.case__header, .decisions, .plan-fragment, .direction, .case-facts, .case__next',
+        '.service > .eyebrow, .service > h1, .service > .lead, .facts'
+      ];
+      const seenTargets = new Set<HTMLElement>();
+      const revealGroups: HTMLElement[][] = [];
+      editorialGroups.forEach((selector) => {
+        const groupTargets = [...document.querySelectorAll<HTMLElement>(selector)].filter((element) => !seenTargets.has(element));
+        groupTargets.forEach((element) => seenTargets.add(element));
+        for (let index = 0; index < groupTargets.length; index += 2) revealGroups.push(groupTargets.slice(index, index + 2));
+      });
+      const imageTargets = [...document.querySelectorAll<HTMLElement>('.hero__media, .cover__media')];
+      imageTargets.forEach((element) => revealGroups.push([element]));
+      if (!reducedMotion && 'IntersectionObserver' in window) {
+        const groupByTarget = new Map<HTMLElement, HTMLElement[]>();
+        revealGroups.forEach((group, groupIndex) => group.forEach((element, elementIndex) => {
+          element.dataset.revealGroup = String(groupIndex);
+          if (imageTargets.includes(element)) element.dataset.imageReveal = '';
+          else {
+            element.dataset.reveal = '';
+            if (elementIndex === 1) element.style.setProperty('--reveal-delay', '70ms');
+          }
+          groupByTarget.set(element, group);
+        }));
+        const pendingGroups: HTMLElement[][] = [];
+        const revealedGroups = new Set<HTMLElement[]>();
+        let activeGroups = 0;
+        let observer: IntersectionObserver;
+        const revealGroup = (group: HTMLElement[], immediately = false) => {
+          if (revealedGroups.has(group)) return;
+          revealedGroups.add(group);
+          group.forEach((element) => {
+            if (immediately) element.style.setProperty('transition', 'none');
+            element.classList.add('is-revealed');
+            observer.unobserve(element);
+          });
+          if (immediately) {
+            requestAnimationFrame(() => requestAnimationFrame(() => group.forEach((element) => element.style.removeProperty('transition'))));
+          }
+        };
+        const flushQueue = () => {
+          while (activeGroups < 2 && pendingGroups.length) {
+            const group = pendingGroups.shift()!;
+            if (revealedGroups.has(group)) continue;
+            activeGroups += 1;
+            revealGroup(group);
+            window.setTimeout(() => {
+              activeGroups -= 1;
+              flushQueue();
+            }, 640);
+          }
+        };
+        observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const group = groupByTarget.get(entry.target as HTMLElement);
+          if (group && !revealedGroups.has(group) && !pendingGroups.includes(group)) pendingGroups.push(group);
+          flushQueue();
+        }), { rootMargin:'0px 0px -8% 0px', threshold:.08 });
+        groupByTarget.forEach((_, element) => observer.observe(element));
+        document.documentElement.classList.add('motion-ready');
+        document.addEventListener('focusin', (event) => {
+          const focusedGroup = [...groupByTarget.entries()].find(([element]) => element.contains(event.target as Node))?.[1];
+          if (!focusedGroup || revealedGroups.has(focusedGroup)) return;
+          const queuedIndex = pendingGroups.indexOf(focusedGroup);
+          if (queuedIndex >= 0) pendingGroups.splice(queuedIndex, 1);
+          revealGroup(focusedGroup, true);
+        });
+      }
+    </script>
+  </body>
+</html>

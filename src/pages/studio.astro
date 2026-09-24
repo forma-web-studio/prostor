@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProcessSteps from '../components/ProcessSteps.astro';
+import Button from '../components/Button.astro';
+import ArrowIcon from '../components/ArrowIcon.astro';
+import { Image } from 'astro:assets';
+import { projects } from '../data/projects';
+import { withBase } from '../utils/urls';
+const cityProject = projects.find(({ slug }) => slug === 'tishina-goroda')!;
+---
+<BaseLayout title="Подход — ПРОСТОР" description="Дизайн интерьера: от планировки и выбора материалов до рабочей документации.">
+  <article class="studio container"><p class="eyebrow">Подход</p><h1>Сначала — как вы живёте</h1><p class="lead">Сначала разбираемся, как устроен ваш день, а затем собираем пространство в ясную, спокойную систему.</p>
+    <section class="focus"><div><p class="eyebrow">Одно решение в деталях</p><h2>Тишина города</h2><p>{cityProject.summary}</p><ul>{cityProject.decisions.map((decision) => <li>{decision}</li>)}</ul><a class="inline-link" href={withBase('/projects/tishina-goroda/')}>Смотреть проект <ArrowIcon /></a></div><figure><div class="focus__media"><Image src={cityProject.cover} alt={cityProject.coverAlt} width={1200} quality={70} widths={[640,960,1200]} sizes="(max-width: 767px) calc(100vw - 40px), 48vw" loading="lazy" /></div><figcaption>{cityProject.coverCaption}</figcaption></figure></section>
+    <section><p class="eyebrow">Что вы получаете</p><div class="services"><div><h2>Планировка</h2><p>Логика движения, света и хранения до выбора декора.</p></div><div><h2>Концепция</h2><p>Материалы, палитра и атмосфера, которые поддерживают повседневную жизнь.</p></div><div><h2>Документация</h2><p>Понятный набор решений для дальнейшей реализации.</p></div></div><p class="service-note">Состав проекта уточняется под ваше пространство: от отдельных планировочных решений до полного комплекта чертежей.</p></section>
+    <section><p class="eyebrow">Процесс</p><h2 class="sequence-title">От разговора к проекту</h2><ProcessSteps /></section>
+    <section><p class="eyebrow">Вопросы</p><div class="faq"><details><summary>Что подготовить к первому разговору?</summary><p>План, площадь и несколько слов о привычках и пожеланиях.</p></details><details><summary>Как строятся этапы?</summary><p>От знакомства и планировки к концепции и документации.</p></details><details><summary>Что входит в концепт?</summary><p>Направление по материалам, свету и атмосфере пространства.</p></details></div></section><Button href={withBase('/contact/')}>Обсудить интерьер</Button>
+  </article>
+</BaseLayout>
+<style>
+  h1,h2 { font-family:Prata,Georgia,serif; font-weight:400; text-wrap:balance; } .studio { padding:72px 0 64px; } .studio>section { margin-top:72px; }
+  h1 { font-size:clamp(48px,6vw,82px); line-height:1.06; margin:12px 0; max-width:14ch; } .lead { font-size:18px; max-width:45ch; }
+  .focus { align-items:end; display:grid; gap:48px; grid-template-columns:5fr 6fr; } .focus h2 { font-size:42px; margin:12px 0; } .focus p:not(.eyebrow) { max-width:36ch; } .focus ul { margin:20px 0 24px; padding-left:20px; } .focus li + li { margin-top:8px; } figure { margin:0; } .focus__media { aspect-ratio:3/2; overflow:hidden; } figcaption { color:var(--muted); font-size:14px; margin-top:10px; }
+  .services { display:grid; gap:24px; grid-template-columns:repeat(3,1fr); margin-top:32px; } .services>div,details { border-top:1px solid var(--line); padding-top:16px; } .services h2 { font-size:30px; margin:0; } .service-note { color:var(--muted); font-size:14px; margin:24px 0 0; }
+  .sequence-title { font-size:clamp(34px,4vw,48px); margin:10px 0 0; } .faq { display:grid; gap:16px; margin-top:32px; max-width:760px; } summary { cursor:pointer; font-weight:600; padding-bottom:12px; }
+  .studio > :global(.button) { margin-top:64px; } @media(max-width:767px) { .studio { padding:48px 0; } .studio>section { margin-top:48px; } .focus { display:block; } .focus figure { margin-top:32px; } .services { grid-template-columns:1fr; } .studio > :global(.button) { margin-top:48px; width:100%; } }
+</style>

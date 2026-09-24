@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { projects } from '../../data/projects';
+---
+<BaseLayout title="Проекты — ПРОСТОР" description="Каталог интерьерных концепций для квартир и частных домов.">
+  <section class="catalog container"><p class="eyebrow">Выбранные интерьеры</p><h1>Пространства<br />для жизни</h1><div class="catalog__intro"><p>Квартиры и дома, где планировка, хранение и свет работают на ежедневный ритм.</p></div><div class="catalog__grid">{projects.map((project) => <div><ProjectCard project={project} linked /></div>)}</div><p class="catalog__note">Состав работ, срок и бюджет уточняются на вводной консультации.</p></section>
+</BaseLayout>
+<style>
+  h1 { font-family:Prata,Georgia,serif; font-size:clamp(44px,5.2vw,72px); font-weight:400; line-height:1.07; margin:12px 0; text-wrap:balance; }
+  .catalog { padding:72px 0 80px; } .catalog__intro { margin:22px 0 48px; max-width:52ch; } .catalog__intro > p { margin:0; } .catalog__grid { display:grid; gap:72px 32px; grid-template-columns:repeat(2,minmax(0,1fr)); } .catalog__note { color:var(--muted); font-size:12px; line-height:1.5; margin:34px 0 0; max-width:68ch; }
+  @media(max-width:767px) { h1 { font-size:clamp(34px,10vw,44px); } .catalog { padding:48px 0 64px; } .catalog__intro { margin:20px 0 36px; } .catalog__grid { gap:48px; grid-template-columns:1fr; } }
+</style>

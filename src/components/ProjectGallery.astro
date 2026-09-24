@@ -1,0 +1,17 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+interface Props { item: { src: ImageMetadata; alt: string; caption: string }; }
+const { item } = Astro.props;
+---
+<div class="gallery">
+  <figure><div class="gallery__image"><Image src={item.src} alt={item.alt} width={960} quality={70} widths={[480, 720, 960]} sizes="(max-width: 767px) calc(100vw - 40px), 42vw" loading="lazy" /></div></figure>
+  <div class="gallery__copy"><p class="eyebrow">В деталях</p><p>{item.caption}</p><p>Материалы работают в масштабе ежедневного прикосновения: без декора ради декора.</p></div>
+</div>
+<style>
+  .gallery { align-items:end; display:grid; gap:24px; grid-template-columns:5fr 6fr; margin-top:32px; }
+  figure { margin:0; } .gallery__image { aspect-ratio:4/5; overflow:hidden; }
+  .gallery__copy { max-width:34ch; padding-bottom:8px; } .gallery__copy > p:not(.eyebrow) { font-size:18px; line-height:1.6; }
+  .gallery__copy > p:last-child { color:var(--muted); font-size:15px; }
+  @media(max-width:767px) { .gallery { display:block; } .gallery__copy { margin-top:24px; } .gallery__copy > p:not(.eyebrow) { font-size:16px; } }
+</style>
