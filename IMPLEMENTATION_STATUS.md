@@ -100,3 +100,14 @@
 - **Keep:** Astro static architecture, семантику, responsive `Image`, доступную мобильную навигацию, reduced-motion/no-JS базу и локальную валидацию формы.
 - **Refactor:** page hierarchy и evidence ordering, общую schema кейсов, глубину service/project pages и environment-aware metadata.
 - **Replace в следующих согласованных этапах:** статичный hero на честную draggable panorama только после появления цельного asset; декоративный plan fragment на честный plan-to-space материал. Ничего из этого в Этапе 0 не менялось.
+
+## Master redesign Этап 1 — 25.09.2026
+
+- `tokens.css` расширен до семантического foundation: canvas/surface/ink/muted/accent/line/focus/error/success, локальные Prata/Manrope, type scale, spacing, reading/content/wide widths, 12-column grid, section rhythm, control sizes, shadows, z-index и motion.
+- Базовая палитра сохранена. Старый `--olive`, который использовался как текст 13 px при контрасте 3.92:1, переведён на `--accent-ink` с 5.59:1. Исходный `#747A64` остался декоративным accent.
+- `global.css` получил общие container variants, editorial grid, heading utilities, fluid body type, text wrapping, selection/focus базу и единое narrow-title правило для 320–359 px. Оно устранило overflow двух длинных H1 без разрыва слов.
+- `BaseLayout.astro` теперь даёт всем маршрутам единый flex page shell с устойчивым footer placement. Новые PageIntro/SectionHeading не создавались: на этом scope они не сокращали бы дублирование.
+- Дизайн секций, маршруты, контент, изображения и интерактивы не менялись.
+- Финальные `npm run check` и `npm run build` PASS: 45 файлов без diagnostics, 16 статических страниц.
+- Chromium production-preview: 64/64 проверки (16 маршрутов × 320/390/768/1440) без horizontal overflow, broken images, console errors, request failures и проблем загрузки шрифтов; везде ровно один H1. Skip-link, pointer menu, Escape, focus return, `inert` и reduced motion PASS.
+- Скриншоты: `output/playwright/stage-01/` — home 1440/768/390/320, «Свет и дуб» 1440/390, services 320. Перед съёмкой выполнялись scroll и `img.decode()`; пустых reveal/lazy-loading зон нет.

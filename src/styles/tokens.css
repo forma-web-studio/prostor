@@ -1,25 +1,77 @@
 :root {
+  /* Core surfaces and text */
   --canvas: #f3f0e9;
+  --surface: #faf8f3;
+  --surface-muted: #ebe7dd;
+  --surface-strong: #dedad1;
   --ink: #252824;
   --muted: #5d6258;
-  --olive: #747a64;
+  --accent: #747a64;
+  --accent-ink: #5b624e;
   --line: #d4d2c8;
-  --paper: #faf8f3;
-  --paper-deep: #ebe7dd;
   --success: #52634b;
   --error: #963b34;
   --focus: #4f5c45;
   --control-line: #aaa99f;
+
+  /* Compatibility aliases retained while section styles are migrated */
+  --olive: var(--accent-ink);
+  --paper: var(--surface);
+  --paper-deep: var(--surface-muted);
+
+  /* Typography */
+  --font-display: 'Prata', Georgia, serif;
+  --font-body: 'Manrope Variable', Arial, sans-serif;
+  --text-xs: .75rem;
+  --text-sm: .875rem;
+  --text-body: clamp(1rem, .25vw + .95rem, 1.125rem);
+  --text-lead: clamp(1.0625rem, .35vw + 1rem, 1.25rem);
+  --title-section: clamp(2rem, 4vw, 3.625rem);
+  --title-page: clamp(2.75rem, 5.2vw, 5.5rem);
+  --title-page-narrow: clamp(2.25rem, 11.5vw, 2.5rem);
+  --leading-tight: 1.08;
+  --leading-body: 1.6;
+  --tracking-label: .1em;
+
+  /* Spacing and page rhythm */
+  --space-1: 8px;
+  --space-2: 12px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 48px;
+  --space-7: 64px;
+  --space-8: 96px;
+  --space-9: 128px;
+  --section-space: clamp(64px, 7vw, 112px);
+  --section-space-compact: clamp(40px, 5vw, 72px);
+
+  /* Content widths and the shared 12-column layout */
+  --page-pad: clamp(20px, 4.7vw, 60px);
+  --width-reading: 42rem;
+  --width-content: 70rem;
+  --width-wide: 82.5rem;
+  --container: min(var(--width-wide), calc(100vw - (var(--page-pad) * 2)));
+  --grid-columns: repeat(12, minmax(0, 1fr));
+  --grid-gap: clamp(20px, 2.2vw, 32px);
+
+  /* Controls, elevation and stacking */
+  --control-height: 50px;
+  --control-height-compact: 44px;
+  --control-pad-inline: 16px;
   --shadow-control: 0 1px 0 rgba(255,255,255,.46) inset, 0 8px 18px rgba(37,40,36,.08);
   --shadow-control-pressed: 0 1px 0 rgba(255,255,255,.2) inset, 0 2px 7px rgba(37,40,36,.1);
+  --shadow-raised: 0 14px 30px rgba(37,40,36,.06);
+  --z-content: 1;
+  --z-header: 20;
+  --z-menu: 30;
+  --z-skip-link: 100;
+
+  /* Motion */
   --ease-ui: cubic-bezier(.22,.61,.36,1);
   --ease-reveal: cubic-bezier(.2,.68,.28,1);
   --duration-fast: 180ms;
   --duration-ui: 220ms;
   --duration-flow: 280ms;
   --duration-reveal: 560ms;
-  --space-1: 8px; --space-2: 12px; --space-3: 16px; --space-4: 24px;
-  --space-5: 32px; --space-6: 48px; --space-7: 64px; --space-8: 96px; --space-9: 128px;
-  --page-pad: clamp(20px, 4.7vw, 60px);
-  --container: min(1320px, calc(100vw - (var(--page-pad) * 2)));
 }

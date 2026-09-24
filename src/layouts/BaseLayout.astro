@@ -31,10 +31,10 @@ const socialImage = `${productionRoot}/prostor/og/prostor.jpg`;
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <title>{title}</title>
   </head>
-  <body>
+  <body class="site-shell">
     <a class="skip-link" href="#main">Перейти к содержанию</a>
     <Header />
-    <main id="main"><slot /></main>
+    <main id="main" class="site-main"><slot /></main>
     <Footer />
     <script>
       const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
