@@ -111,3 +111,13 @@
 - Финальные `npm run check` и `npm run build` PASS: 45 файлов без diagnostics, 16 статических страниц.
 - Chromium production-preview: 64/64 проверки (16 маршрутов × 320/390/768/1440) без horizontal overflow, broken images, console errors, request failures и проблем загрузки шрифтов; везде ровно один H1. Skip-link, pointer menu, Escape, focus return, `inert` и reduced motion PASS.
 - Скриншоты: `output/playwright/stage-01/` — home 1440/768/390/320, «Свет и дуб» 1440/390, services 320. Перед съёмкой выполнялись scroll и `img.decode()`; пустых reveal/lazy-loading зон нет.
+
+## Master redesign Этап 2 — 25.09.2026
+
+- Уточнена шапка без изменения состава навигации: сохранены текстовый логотип, «Проекты / Услуги / Подход / Контакты» и base-aware ссылки.
+- Desktop-ссылки и логотип получили hit area не менее 44 px, спокойные hover/focus/current состояния и семантику current route. На `/projects/` используется `aria-current="page"`, на детальных проектах — `aria-current="location"`; остальные пункты активны только на точных маршрутах.
+- Мобильное меню скрывается только после подключения всех обработчиков. Синхронизированы `aria-expanded`, доступная подпись и `inert`; проверены pointer, touch, Escape с возвратом фокуса, click outside, выбор ссылки и переход через breakpoint. Focus trap и блокировка body не добавлялись. Без JavaScript все четыре ссылки остаются видимыми.
+- Sticky-режим не добавлялся: подтверждённой необходимости нет, статичная шапка не перекрывает hero и anchor targets. Reduced motion сводит переходы к `0.01ms`.
+- `npm run check` PASS: 45 файлов, 0 errors / 0 warnings / 0 hints. Обычная и `BASE_PATH=/prostor-preview/` сборки PASS: 16 страниц; после base-path проверки восстановлена обычная сборка.
+- Chromium matrix: 64 layout-проверки (16 маршрутов × 320/390/768/1440) без horizontal overflow, broken images, перекрытия main, console errors и request failures. Скриншоты лежат в `output/playwright/stage-02/` и не коммитятся.
+- Публикации не было. Следующий шаг — только Этап 3 после явного подтверждения пользователя.

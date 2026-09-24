@@ -4,11 +4,11 @@ export const site = {
 };
 
 export const navigation = [
-  { label: 'Проекты', href: '/projects/' },
+  { label: 'Проекты', href: '/projects/', currentOnChildren: true },
   { label: 'Услуги', href: '/services/' },
   { label: 'Подход', href: '/studio/' },
   { label: 'Контакты', href: '/contact/' },
-];
+] as const;
 
 export const contacts = {
   phone: '+7 (812) 604-27-18', email: 'hello@prostor-interior.studio',
