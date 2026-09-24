@@ -121,3 +121,14 @@
 - `npm run check` PASS: 45 файлов, 0 errors / 0 warnings / 0 hints. Обычная и `BASE_PATH=/prostor-preview/` сборки PASS: 16 страниц; после base-path проверки восстановлена обычная сборка.
 - Chromium matrix: 64 layout-проверки (16 маршрутов × 320/390/768/1440) без horizontal overflow, broken images, перекрытия main, console errors и request failures. Скриншоты лежат в `output/playwright/stage-02/` и не коммитятся.
 - Публикации не было. Следующий шаг — только Этап 3 после явного подтверждения пользователя.
+
+## Master redesign Этап 3 — 25.09.2026
+
+- Asset gate подтвердил, что прежние 1536×1024 project renders не являются панорамой и не должны растягиваться. Встроенным ImageGen создан отдельный непрерывный master «Дом у сада» 2172×724 без швов, коллажа и повторов; origin, hash и prompt summary записаны в `assets-manifest.md`. Master хранится в `references/panorama/`, вне publishable asset tree.
+- Главная получила `PanoramaHero`: H1 остаётся первым смыслом, сохранены короткая позиционирующая строка, один primary CTA и text link. Responsive `<picture>` создаёт AVIF/WebP/JPEG 960/1440/2172; largest AVIF — 152 КБ, JPEG fallback — 342 КБ.
+- Панорама занимает 2.5× viewport на desktop, 2.6× tablet и 3.6× mobile. Реализованы pointer capture, clamped edges, короткая inertia, resize recalculation, grab/grabbing и progress indicator. Auto-pan не добавлялся.
+- Доступность: после инициализации область становится горизонтальным slider; ArrowLeft/Right, Home/End и скрытая инструкция работают. При no-JS остаётся видимый статичный нефокусируемый кадр.
+- Mobile использует `touch-action: pan-y`, 10 px directional threshold и горизонтальную блокировку. Реальный touch-прогон: вертикальный жест прокрутил страницу, сохранив panorama 12%; горизонтальный переместил 12→56% при `scrollY=0`.
+- Reduced motion стартует со статичной центральной композицией 50% и отключает inertia; после ручного перемещения позиция не продолжает меняться.
+- `npm run check` PASS: 47 файлов, 0 errors / 0 warnings / 0 hints. Обычная и `BASE_PATH=/prostor-preview/` сборки PASS: 16 страниц. Browser QA главной на 320/390/768/1440: без overflow, broken image, console errors и request failures.
+- Скриншоты: `output/playwright/stage-03/` — 1440 start/mid/end/reduced-motion, 768, 390 и реальный touch state. Публикации не было. Следующий шаг — только Этап 4 после явного подтверждения пользователя.
