@@ -143,3 +143,13 @@
 - `npm run check` PASS: 48 файлов, 0 errors / 0 warnings / 0 hints. Обычная сборка PASS: 16 страниц.
 - Chromium production-preview главной на 320/390/768/1440: один H1, 3 project features, 2 evidence rows, без overflow, broken images, console errors, request failures и ответов 4xx/5xx. На 320 px дополнительно подтверждено отсутствие запрещённого служебного текста.
 - Скриншоты: `output/playwright/stage-04/` — full page 1440/768/390 и evidence detail 1440/390. Публикации не было. Следующий шаг — только Этап 5 после явного подтверждения пользователя.
+
+## Master redesign Этап 5 — 25.09.2026
+
+- Каталог проектов получил доступный фильтр `Все / Квартиры / Дома` по реальному `kind`. Состояние отражается в `aria-pressed`, счётчик работает через `aria-live="polite"`; без JavaScript все четыре проекта остаются видимыми.
+- `?type=apartment|house` поддерживает прямые ссылки. Выбор использует `history.pushState`, сохраняет остальные query-параметры и hash; Back/Forward восстанавливает фильтр. Неизвестный `type` означает «Все» и удаляется через `replaceState` без потери остальных частей URL.
+- В project schema добавлены `order`, `featured` и `flagship`; главная и каталог сортируют/выбирают проекты по данным, без проверок slug. Curated grid использует роли `lead / portrait / wide / standard`, а выдача из двух проектов — `lead / support`.
+- Карточка остаётся одним anchor. Editorial meta отделена от commercial estimate линией и подписью «Ориентир дизайн-проекта»; ratio, alt и responsive `sizes` задаются по роли. На узком tablet цена переносится под метаданные — это устранило обнаруженный visual-lint overflow 2 px без уменьшения текста.
+- `npm run check` PASS: 49 файлов, 0 errors / 0 warnings / 0 hints. Обычная и `BASE_PATH=/prostor-preview/` сборки PASS: 16 страниц; восстановлена обычная финальная сборка.
+- Chromium production-preview: 4/2/2 карточки, direct house deep link, сохранение query/hash, Back/Forward, unknown type, no-JS и base path PASS. На 1440/768/390 нет page/text overflow, missing alt, broken images, console errors, request failures или 4xx/5xx. Filter controls имеют высоту 44 px.
+- Первый проект начинается на 441 px при 768×1024 и 518 px при 390×844. Скриншоты: `output/playwright/stage-05/` — all 1440/768/390, apartments 1440, houses 1440. Публикации не было. Следующий шаг — только Этап 6 после явного подтверждения пользователя.

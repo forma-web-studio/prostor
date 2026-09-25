@@ -11,6 +11,9 @@ import liniyaDetail from '../assets/images/projects/liniya-lesa-detail-2.png';
 export type Project = {
   slug: string;
   title: string;
+  order: number;
+  featured: boolean;
+  flagship: boolean;
   kind: 'apartment' | 'house';
   area: number;
   style: string;
@@ -34,7 +37,7 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    slug: 'svet-i-dub', title: 'Свет и дуб', kind: 'apartment', area: 86,
+    slug: 'svet-i-dub', title: 'Свет и дуб', order: 1, featured: true, flagship: true, kind: 'apartment', area: 86,
     style: 'Тёплый минимализм', pricePerSqm: 4200, estimatedDesignFee: 360000,
     cover: svetCover,
     coverAlt: 'Светлая гостиная-столовая с дубовым столом у высокого окна и встроенным хранением',
@@ -51,7 +54,7 @@ export const projects: Project[] = [
     palette: [{ hex: '#E8E0D2', label: 'молочный' }, { hex: '#B67D51', label: 'дуб' }, { hex: '#C6C0B4', label: 'лён' }, { hex: '#535547', label: 'графит' }],
   },
   {
-    slug: 'dom-u-sada', title: 'Дом у сада', kind: 'house', area: 164,
+    slug: 'dom-u-sada', title: 'Дом у сада', order: 2, featured: false, flagship: false, kind: 'house', area: 164,
     style: 'Современная классика', pricePerSqm: 4600, estimatedDesignFee: 760000,
     cover: domCover,
     coverAlt: 'Гостиная дома с низким льняным диваном, камином и видом на сад',
@@ -68,7 +71,7 @@ export const projects: Project[] = [
     palette: [{ hex: '#D9D0C0', label: 'известняк' }, { hex: '#9C6D42', label: 'дуб' }, { hex: '#EEE8DF', label: 'лён' }, { hex: '#67705A', label: 'садовый зелёный' }],
   },
   {
-    slug: 'tishina-goroda', title: 'Тишина города', kind: 'apartment', area: 62,
+    slug: 'tishina-goroda', title: 'Тишина города', order: 3, featured: true, flagship: false, kind: 'apartment', area: 62,
     style: 'Японский минимализм', pricePerSqm: 4400, estimatedDesignFee: 285000,
     cover: tishinaCover,
     coverAlt: 'Гостиная городской квартиры с мягким диваном, встроенным хранением и видом на город',
@@ -85,7 +88,7 @@ export const projects: Project[] = [
     palette: [{ hex: '#C9C4B9', label: 'тёплый серый' }, { hex: '#786F63', label: 'дымчатый' }, { hex: '#E6E1D7', label: 'шерсть' }, { hex: '#31322E', label: 'графит' }],
   },
   {
-    slug: 'liniya-lesa', title: 'Линия леса', kind: 'house', area: 128,
+    slug: 'liniya-lesa', title: 'Линия леса', order: 4, featured: true, flagship: false, kind: 'house', area: 128,
     style: 'Природный минимализм', pricePerSqm: 4300, estimatedDesignFee: 560000,
     cover: liniyaCover,
     coverAlt: 'Гостиная дома с оливковым диваном и панорамным видом на сосны',
@@ -103,4 +106,4 @@ export const projects: Project[] = [
   },
 ];
 
-export const featuredProjects = projects.filter(({ slug }) => slug !== 'dom-u-sada');
+export const featuredProjects = projects.filter(({ featured }) => featured).sort((a, b) => a.order - b.order);

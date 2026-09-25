@@ -2,12 +2,94 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import { projects } from '../../data/projects';
+
+const catalogProjects = [...projects].sort((a, b) => a.order - b.order);
+const layouts = ['lead', 'portrait', 'wide', 'standard'] as const;
+const sizesByLayout = {
+  lead: '(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 58vw, (min-width: 1440px) 748px, 54vw',
+  portrait: '(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 34vw, (min-width: 1440px) 420px, 30vw',
+  wide: '(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 44vw, (min-width: 1440px) 530px, 39vw',
+  standard: '(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 46vw, (min-width: 1440px) 640px, 46vw',
+};
 ---
+
 <BaseLayout title="Проекты — ПРОСТОР" description="Каталог интерьерных концепций для квартир и частных домов.">
-  <section class="catalog container"><p class="eyebrow">Выбранные интерьеры</p><h1>Пространства<br />для жизни</h1><div class="catalog__intro"><p>Квартиры и дома, где планировка, хранение и свет работают на ежедневный ритм.</p></div><div class="catalog__grid">{projects.map((project) => <div><ProjectCard project={project} linked /></div>)}</div><p class="catalog__note">Состав работ, срок и бюджет уточняются на вводной консультации.</p></section>
+  <section class="catalog container" data-project-catalog>
+    <header class="catalog__header">
+      <div>
+        <p class="eyebrow">Выбранные интерьеры</p>
+        <h1>Пространства<br />для жизни</h1>
+      </div>
+      <p class="catalog__intro">Квартиры и дома, где планировка, хранение и свет работают на ежедневный ритм.</p>
+    </header>
+
+    <div class="catalog__tools">
+      <div class="catalog__filters" role="group" aria-label="Фильтр проектов по типу">
+        <button type="button" data-project-filter="all" aria-pressed="true">Все</button>
+        <button type="button" data-project-filter="apartment" aria-pressed="false">Квартиры</button>
+        <button type="button" data-project-filter="house" aria-pressed="false">Дома</button>
+      </div>
+      <p class="catalog__count" data-project-count aria-live="polite" aria-atomic="true">Показано: 4 проекта</p>
+    </div>
+
+    <div class="catalog__grid">
+      {catalogProjects.map((project, index) => {
+        const layout = project.flagship ? 'lead' : layouts[index] ?? 'standard';
+        return <div class="catalog__item" data-project-item data-project-kind={project.kind} data-default-layout={layout} data-layout={layout}>
+          <ProjectCard project={project} linked size={layout === 'portrait' ? 'small' : 'large'} sizes={sizesByLayout[layout]} />
+        </div>;
+      })}
+    </div>
+
+    <p class="catalog__note">Стоимость указана как предварительный ориентир дизайн-проекта. Состав работ, срок и бюджет уточняются на вводной консультации.</p>
+  </section>
 </BaseLayout>
+
+<script src="../../scripts/project-filter.ts"></script>
+
 <style>
-  h1 { font-family:Prata,Georgia,serif; font-size:clamp(44px,5.2vw,72px); font-weight:400; line-height:1.07; margin:12px 0; text-wrap:balance; }
-  .catalog { padding:72px 0 80px; } .catalog__intro { margin:22px 0 48px; max-width:52ch; } .catalog__intro > p { margin:0; } .catalog__grid { display:grid; gap:72px 32px; grid-template-columns:repeat(2,minmax(0,1fr)); } .catalog__note { color:var(--muted); font-size:12px; line-height:1.5; margin:34px 0 0; max-width:68ch; }
-  @media(max-width:767px) { h1 { font-size:clamp(34px,10vw,44px); } .catalog { padding:48px 0 64px; } .catalog__intro { margin:20px 0 36px; } .catalog__grid { gap:48px; grid-template-columns:1fr; } }
+  h1 { font-family:var(--font-display); font-size:clamp(3rem,6vw,5.5rem); font-weight:400; letter-spacing:-.035em; line-height:1.04; margin:var(--space-2) 0 0; text-wrap:balance; }
+  .catalog { padding-bottom:var(--section-space); padding-top:var(--space-7); }
+  .catalog__header { align-items:end; display:grid; gap:var(--grid-gap); grid-template-columns:var(--grid-columns); }
+  .catalog__header > div { grid-column:1 / span 8; }
+  .catalog__intro { color:var(--muted); grid-column:9 / span 4; line-height:1.65; margin:0 0 var(--space-2); max-width:34ch; }
+  .catalog__tools { align-items:end; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; margin-top:var(--space-6); padding-bottom:var(--space-3); }
+  .catalog__filters { display:flex; flex-wrap:wrap; gap:var(--space-1); }
+  .catalog__filters button { background:transparent; border:1px solid transparent; border-radius:999px; font-size:var(--text-sm); min-height:44px; padding:0 18px; }
+  .catalog__filters button:hover { border-color:var(--control-line); }
+  .catalog__filters button[aria-pressed='true'] { background:var(--ink); border-color:var(--ink); color:var(--surface); }
+  .catalog__count { color:var(--muted); font-size:var(--text-xs); margin:0 0 12px var(--space-4); white-space:nowrap; }
+  .catalog__grid { display:grid; gap:var(--space-8) var(--grid-gap); grid-template-columns:var(--grid-columns); margin-top:var(--space-6); }
+  .catalog__item { min-width:0; }
+  .catalog__item[data-layout='lead'] { grid-column:1 / span 7; }
+  .catalog__item[data-layout='portrait'] { grid-column:9 / span 4; margin-top:var(--space-8); }
+  .catalog__item[data-layout='wide'] { grid-column:2 / span 5; }
+  .catalog__item[data-layout='standard'] { grid-column:7 / span 6; margin-top:var(--space-6); }
+  .catalog__item[data-layout='support'] { grid-column:8 / span 5; margin-top:var(--space-8); }
+  .catalog__note { border-top:1px solid var(--line); color:var(--muted); font-size:var(--text-xs); line-height:1.6; margin:var(--space-7) 0 0; max-width:68ch; padding-top:var(--space-3); }
+
+  @media (min-width:768px) and (max-width:1099px) {
+    .catalog__header > div { grid-column:1 / span 7; }
+    .catalog__intro { grid-column:8 / span 5; }
+    .catalog__grid { gap:var(--space-7) var(--space-4); }
+    .catalog__item[data-layout='lead'] { grid-column:1 / span 7; }
+    .catalog__item[data-layout='portrait'],.catalog__item[data-layout='support'] { grid-column:8 / span 5; margin-top:var(--space-7); }
+    .catalog__item[data-layout='wide'] { grid-column:1 / span 6; }
+    .catalog__item[data-layout='standard'] { grid-column:7 / span 6; margin-top:var(--space-5); }
+  }
+
+  @media (max-width:767px) {
+    .catalog { padding-bottom:var(--space-7); padding-top:var(--space-6); }
+    .catalog__header { display:block; }
+    h1 { font-size:clamp(2.7rem,13vw,3.5rem); }
+    .catalog__intro { margin-top:var(--space-4); }
+    .catalog__tools { align-items:start; display:block; margin-top:var(--space-5); padding-bottom:var(--space-3); }
+    .catalog__filters { gap:4px; }
+    .catalog__filters button { padding-inline:14px; }
+    .catalog__count { margin:var(--space-2) 0 0 2px; }
+    .catalog__grid { display:block; margin-top:var(--space-5); }
+    .catalog__item,.catalog__item[data-layout] { margin:0 0 var(--space-6); }
+    .catalog__item:last-child { margin-bottom:0; }
+    .catalog__note { margin-top:var(--space-6); }
+  }
 </style>
