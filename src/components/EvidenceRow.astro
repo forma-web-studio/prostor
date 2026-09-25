@@ -1,0 +1,44 @@
+---
+import { Image } from 'astro:assets';
+import type { Project } from '../data/projects';
+import ArrowIcon from './ArrowIcon.astro';
+import { withBase } from '../utils/urls';
+
+interface Props {
+  project: Project;
+  index: string;
+  reverse?: boolean;
+}
+
+const { project, index, reverse = false } = Astro.props;
+---
+
+<article class:list={['evidence-row', { 'evidence-row--reverse': reverse }]}>
+  <div class="evidence-row__copy">
+    <p class="eyebrow">Решение {index} · {project.title}</p>
+    <h3>{project.evidence.move}</h3>
+    <dl>
+      <div><dt>Контекст</dt><dd>{project.evidence.context}</dd></div>
+      <div><dt>Ограничение</dt><dd>{project.evidence.constraint}</dd></div>
+      <div class="evidence-row__effect"><dt>Эффект</dt><dd>{project.evidence.effect}</dd></div>
+    </dl>
+    <a class="inline-link" href={withBase(`/projects/${project.slug}/`)}>Разобрать весь проект <ArrowIcon /></a>
+  </div>
+  <figure>
+    <div class="evidence-row__media">
+      <Image src={project.gallery.src} alt={project.gallery.alt} width={1122} quality={72} widths={[480, 720, 960, 1122]} sizes="(max-width: 767px) calc(100vw - 40px), (min-width: 1440px) 620px, 46vw" loading="lazy" />
+    </div>
+    <figcaption>{project.gallery.caption}</figcaption>
+  </figure>
+</article>
+
+<style>
+  .evidence-row { align-items:center; border-top:1px solid var(--line); display:grid; gap:var(--grid-gap); grid-template-columns:var(--grid-columns); padding:var(--space-7) 0; }
+  .evidence-row__copy { grid-column:1 / span 5; } figure { grid-column:7 / span 6; margin:0; } .evidence-row--reverse .evidence-row__copy { grid-column:8 / span 5; } .evidence-row--reverse figure { grid-column:1 / span 6; grid-row:1; }
+  h3 { font-family:var(--font-display); font-size:clamp(1.75rem, 3vw, 2.75rem); font-weight:400; letter-spacing:-.025em; line-height:1.18; margin:var(--space-3) 0 var(--space-5); text-wrap:balance; }
+  dl { margin:0 0 var(--space-5); } dl > div { border-top:1px solid var(--line); display:grid; gap:var(--space-3); grid-template-columns:7rem 1fr; padding:var(--space-3) 0; } dt { color:var(--muted); font-size:var(--text-xs); font-weight:600; letter-spacing:.07em; text-transform:uppercase; } dd { font-size:var(--text-sm); line-height:1.6; margin:0; }
+  .evidence-row__effect dd { color:var(--accent-ink); font-weight:600; }
+  .evidence-row__media { aspect-ratio:4 / 5; overflow:hidden; } .evidence-row__media :global(img) { height:100%; object-fit:cover; width:100%; } figcaption { color:var(--muted); font-size:var(--text-xs); margin-top:var(--space-2); }
+  .inline-link { font-size:var(--text-sm); }
+  @media (max-width:767px) { .evidence-row,.evidence-row--reverse { display:flex; flex-direction:column; gap:var(--space-5); padding:var(--space-6) 0; } .evidence-row__copy,figure,.evidence-row--reverse .evidence-row__copy,.evidence-row--reverse figure { width:100%; } h3 { margin-bottom:var(--space-4); } dl > div { grid-template-columns:1fr; gap:var(--space-1); } .evidence-row__media { aspect-ratio:4 / 5; } }
+</style>
