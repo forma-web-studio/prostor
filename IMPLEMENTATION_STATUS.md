@@ -162,3 +162,12 @@
 - Неподтверждённые заявления о реализации убраны: во всех кейсах используется статус «Интерьерная концепция». Остальные три страницы продолжают работать через общий schema-driven стандартный шаблон.
 - `npm run check` и обычная/`BASE_PATH=/prostor-preview/` сборки PASS: 16 страниц. Chromium 1440/768/390, keyboard hotspots/panorama, reduced motion, no-JS и стандартный кейс PASS; нет overflow, broken images, missing alt, console/network errors или ответов 4xx/5xx. Base-path ссылки и assets имеют корректный префикс.
 - Скриншоты: `output/playwright/stage-06/` — full page 1440/768/390, раскрытая evidence-точка и следующий проект. Публикации не было. Следующий шаг — только Этап 7 после явного подтверждения пользователя.
+
+## Цилиндрическая WebGL-панорама — 26.09.2026
+
+- Пользовательский 2172×724 source подключён как цилиндрическая WebGL2-текстура на главной и в flagship-кейсе; плоский draggable track заменён на перспективный обзор из центра сцены.
+- Горизонтальный поворот бесконечный в обе стороны. Проверено 360 клавиатурных шагов по 7° — ровно семь полных оборотов с возвратом progress в 0%; шов визуально проверен на 182°.
+- Мышь поддерживает yaw, ограниченный pitch и inertia. Touch directional lock сохраняет прокрутку страницы: горизонтальный жест 0→16,19%, вертикальный — `scrollY=620` без изменения направления. Reduced motion отключает inertia.
+- Добавлены 44×44 px zoom/reset controls, Arrow-клавиши, `+/-`, Home и live status. При no-JS или отсутствии WebGL остаётся статичный нефокусируемый кадр, элементы управления скрыты.
+- WebP-текстура весит около 188 КБ. Chromium 390/768/1440: WebGL ready, один H1, без overflow, missing alt, broken images, console/network errors и 4xx/5xx.
+- QA: `output/playwright/panorama-360/`. Эта доработка не считается Этапом 7 master redesign.

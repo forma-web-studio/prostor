@@ -1,0 +1,59 @@
+---
+import { getImage } from 'astro:assets';
+import panorama360 from '../assets/images/panorama/dom-u-sada-panorama-360.png';
+
+interface Props {
+  id: string;
+  label: string;
+  alt: string;
+  variant?: 'hero' | 'case';
+}
+
+const { id, label, alt, variant = 'hero' } = Astro.props;
+const texture = await getImage({ src: panorama360, width: 2172, format: 'webp', quality: 84 });
+---
+
+<div
+  class:list={['panorama-surface', `panorama-surface--${variant}`]}
+  data-panorama-viewport
+  tabindex="-1"
+  role="region"
+  aria-label={label}
+  aria-describedby={`${id}-instructions`}
+>
+  <span class="sr-only" id={`${id}-instructions`}>
+    Бесконечная панорама. Перетаскивайте влево и вправо. Стрелки поворачивают обзор, плюс и минус меняют масштаб, Home возвращает исходный ракурс.
+  </span>
+  <span class="sr-only" aria-live="polite" data-panorama-status></span>
+  <img class="panorama-surface__fallback" data-panorama-fallback src={texture.src} width="2172" height="724" {alt} loading="eager" fetchpriority="high" draggable="false" />
+  <canvas class="panorama-surface__canvas" data-panorama-canvas data-texture-src={texture.src} aria-hidden="true"></canvas>
+  <div class="panorama-surface__controls" aria-label="Масштаб панорамы">
+    <button type="button" data-panorama-zoom-in aria-label="Приблизить панораму">+</button>
+    <button type="button" data-panorama-zoom-out aria-label="Отдалить панораму">−</button>
+    <button type="button" data-panorama-reset aria-label="Вернуть исходный ракурс"><span aria-hidden="true">↺</span></button>
+  </div>
+</div>
+
+<style>
+  .panorama-surface { background:var(--surface-muted); overflow:hidden; position:relative; touch-action:pan-y; user-select:none; }
+  .panorama-surface--hero { height:clamp(500px,43vw,620px); }
+  .panorama-surface--case { height:clamp(380px,35vw,480px); }
+  .panorama-surface::after { box-shadow:inset 0 0 0 1px rgba(37,40,36,.05); content:""; inset:0; pointer-events:none; position:absolute; z-index:3; }
+  .panorama-surface:focus-visible { outline-offset:4px; }
+  .panorama-surface__fallback,.panorama-surface__canvas { display:block; height:100%; inset:0; position:absolute; width:100%; }
+  .panorama-surface__fallback { object-fit:cover; transition:opacity var(--duration-fast) var(--ease-standard); }
+  .panorama-surface__canvas { opacity:0; transition:opacity var(--duration-fast) var(--ease-standard); }
+  .panorama-surface[data-panorama-ready] { cursor:grab; }
+  .panorama-surface[data-panorama-ready].is-dragging { cursor:grabbing; }
+  .panorama-surface[data-panorama-ready] .panorama-surface__canvas { opacity:1; }
+  .panorama-surface[data-panorama-ready] .panorama-surface__fallback { opacity:0; }
+  .panorama-surface__controls { bottom:var(--space-3); display:flex; flex-direction:column; opacity:0; pointer-events:none; position:absolute; right:var(--space-3); transition:opacity var(--duration-fast) var(--ease-standard); visibility:hidden; z-index:4; }
+  .panorama-surface[data-panorama-ready] .panorama-surface__controls { opacity:1; pointer-events:auto; visibility:visible; }
+  .panorama-surface__controls button { align-items:center; background:rgba(247,244,237,.94); border:1px solid rgba(37,40,36,.22); color:var(--ink); cursor:pointer; display:flex; font:500 1.25rem/1 var(--font-body); height:44px; justify-content:center; margin-top:-1px; width:44px; }
+  .panorama-surface__controls button:first-child { margin-top:0; }
+  .panorama-surface__controls button:hover { background:var(--ink); color:var(--surface); }
+  .panorama-surface__controls button:focus-visible { outline-offset:2px; z-index:1; }
+  @media (min-width:768px) and (max-width:1099px) { .panorama-surface--hero { height:clamp(430px,64vw,520px); } .panorama-surface--case { height:clamp(360px,52vw,460px); } }
+  @media (max-width:767px) { .panorama-surface--hero { height:min(112vw,460px); } .panorama-surface--case { height:min(94vw,380px); } .panorama-surface__controls { bottom:var(--space-2); right:var(--space-2); } }
+  @media (prefers-reduced-motion:reduce) { .panorama-surface__fallback,.panorama-surface__canvas,.panorama-surface__controls { transition:none; } }
+</style>

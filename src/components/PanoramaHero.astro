@@ -1,7 +1,6 @@
 ---
-import { Picture } from 'astro:assets';
-import panorama from '../assets/images/panorama/dom-u-sada-panorama.jpg';
 import Button from './Button.astro';
+import PanoramaSurface from './PanoramaSurface.astro';
 import { withBase } from '../utils/urls';
 ---
 
@@ -16,32 +15,7 @@ import { withBase } from '../utils/urls';
   </div>
 
   <figure class="panorama" data-panorama>
-    <div
-      class="panorama__viewport"
-      data-panorama-viewport
-      tabindex="-1"
-      role="slider"
-      aria-label="Панорама интерьера проекта Дом у сада"
-      aria-describedby="panorama-instructions"
-      aria-orientation="horizontal"
-      aria-valuemin="0"
-      aria-valuemax="100"
-      aria-valuenow="12"
-    >
-      <span class="sr-only" id="panorama-instructions">Перетаскивайте панораму влево и вправо. Клавиши со стрелками перемещают обзор, Home показывает начало, End — конец.</span>
-      <div class="panorama__track" data-panorama-track>
-        <Picture
-          src={panorama}
-          formats={['avif', 'webp']}
-          widths={[960, 1440, 2172]}
-          sizes="(max-width: 767px) 360vw, (max-width: 1099px) 260vw, 250vw"
-          alt="Светлая гостиная загородного дома с садом, камином, мягкой зоной, дубовым столом и кухней"
-          loading="eager"
-          fetchpriority="high"
-          draggable="false"
-        />
-      </div>
-    </div>
+    <PanoramaSurface id="home-panorama" label="Бесконечная панорама интерьера проекта Дом у сада" alt="Цилиндрическая панорама светлой гостиной загородного дома с садом, камином, мягкой зоной, столовой и кухней" variant="hero" />
     <figcaption class="panorama__caption">
       <span><strong>Дом у сада</strong> · гостиная, столовая и кухня</span>
       <span class="panorama__range" aria-hidden="true"><i data-panorama-progress></i></span>
@@ -59,13 +33,6 @@ import { withBase } from '../utils/urls';
   .hero__actions { align-items:center; display:flex; flex-wrap:wrap; gap:var(--space-4); }
   .hero__actions > a:last-child { font-size:var(--text-sm); }
   .panorama { grid-column:1 / -1; margin:var(--space-5) 0 0; }
-  .panorama__viewport { background:var(--surface-muted); height:clamp(500px, 43vw, 620px); overflow:hidden; position:relative; touch-action:pan-y; user-select:none; }
-  .panorama__viewport::after { box-shadow:inset 0 0 0 1px rgba(37,40,36,.05); content:""; inset:0; pointer-events:none; position:absolute; z-index:2; }
-  .panorama__viewport:focus-visible { outline-offset:4px; }
-  .panorama[data-panorama-ready] .panorama__viewport { cursor:grab; }
-  .panorama[data-panorama-ready] .panorama__viewport.is-dragging { cursor:grabbing; }
-  .panorama__track { left:0; position:absolute; top:50%; transform:translate3d(var(--pan-x, 0px), -50%, 0); width:250%; will-change:transform; }
-  .panorama__track :global(picture), .panorama__track :global(img) { display:block; height:auto; pointer-events:none; width:100%; }
   .panorama__caption { align-items:center; color:var(--muted); display:flex; font-size:var(--text-sm); gap:var(--space-3); justify-content:space-between; margin-top:10px; }
   .panorama__caption strong { color:var(--ink); font-weight:600; }
   .panorama__range { background:var(--line); display:block; flex:0 0 120px; height:1px; position:relative; }
@@ -76,8 +43,6 @@ import { withBase } from '../utils/urls';
     h1 { font-size:clamp(3.75rem, 8vw, 4.5rem); }
     .hero__copy { margin-top:var(--space-4); }
     .panorama { margin-top:var(--space-4); }
-    .panorama__viewport { height:clamp(430px, 64vw, 520px); }
-    .panorama__track { width:260%; }
   }
 
   @media (max-width:767px) {
@@ -85,9 +50,7 @@ import { withBase } from '../utils/urls';
     h1 { font-size:clamp(2.75rem, 13vw, 3.75rem); }
     .hero__copy { margin-top:var(--space-4); }
     .panorama { margin-top:var(--space-4); }
-    .panorama__viewport { height:min(112vw, 460px); }
-    .panorama__track { width:360%; }
     .panorama__caption { align-items:flex-start; flex-direction:column; gap:10px; }
-    .panorama__range { width:100%; }
+    .panorama__range { flex-basis:auto; width:100%; }
   }
 </style>
