@@ -1,0 +1,55 @@
+---
+import { Picture } from 'astro:assets';
+import panorama from '../assets/images/panorama/dom-u-sada-panorama.jpg';
+---
+
+<figure class="case-panorama" data-panorama>
+  <div
+    class="case-panorama__viewport"
+    data-panorama-viewport
+    tabindex="-1"
+    role="slider"
+    aria-label="Панорама общей комнаты проекта Дом у сада"
+    aria-describedby="case-panorama-instructions"
+    aria-orientation="horizontal"
+    aria-valuemin="0"
+    aria-valuemax="100"
+    aria-valuenow="12"
+  >
+    <span class="sr-only" id="case-panorama-instructions">Перетаскивайте панораму влево и вправо. Клавиши со стрелками перемещают обзор, Home показывает начало, End — конец.</span>
+    <div class="case-panorama__track" data-panorama-track>
+      <Picture
+        src={panorama}
+        formats={['avif', 'webp']}
+        widths={[960, 1440, 2172]}
+        sizes="(max-width: 767px) 320vw, (max-width: 1099px) 240vw, 220vw"
+        alt="Общая комната дома с садом, камином, мягкой зоной, дубовым столом и кухней"
+        loading="eager"
+        fetchpriority="high"
+        draggable="false"
+      />
+    </div>
+  </div>
+  <figcaption>
+    <span>Общая комната · от мягкой зоны к кухне</span>
+    <span class="case-panorama__range" aria-hidden="true"><i data-panorama-progress></i></span>
+  </figcaption>
+</figure>
+
+<script src="../scripts/panorama.ts"></script>
+
+<style>
+  .case-panorama { margin:var(--space-6) 0 0; }
+  .case-panorama__viewport { background:var(--surface-muted); height:clamp(380px,35vw,480px); overflow:hidden; position:relative; touch-action:pan-y; user-select:none; }
+  .case-panorama__viewport::after { box-shadow:inset 0 0 0 1px rgba(37,40,36,.05); content:""; inset:0; pointer-events:none; position:absolute; z-index:2; }
+  .case-panorama__viewport:focus-visible { outline-offset:4px; }
+  .case-panorama[data-panorama-ready] .case-panorama__viewport { cursor:grab; }
+  .case-panorama[data-panorama-ready] .case-panorama__viewport.is-dragging { cursor:grabbing; }
+  .case-panorama__track { left:0; position:absolute; top:50%; transform:translate3d(var(--pan-x,0),-50%,0); width:220%; will-change:transform; }
+  .case-panorama__track :global(picture),.case-panorama__track :global(img) { display:block; height:auto; pointer-events:none; width:100%; }
+  figcaption { align-items:center; color:var(--muted); display:flex; font-size:var(--text-sm); gap:var(--space-3); justify-content:space-between; margin-top:10px; }
+  .case-panorama__range { background:var(--line); display:block; flex:0 0 120px; height:1px; position:relative; }
+  .case-panorama__range i { background:var(--ink); border-radius:50%; height:7px; left:var(--pan-progress,12%); position:absolute; top:50%; transform:translate(-50%,-50%); width:7px; }
+  @media (min-width:768px) and (max-width:1099px) { .case-panorama__viewport { height:clamp(360px,52vw,460px); } .case-panorama__track { width:240%; } }
+  @media (max-width:767px) { .case-panorama { margin-top:var(--space-5); } .case-panorama__viewport { height:min(94vw,380px); } .case-panorama__track { width:320%; } figcaption { align-items:flex-start; flex-direction:column; gap:10px; } .case-panorama__range { width:100%; } }
+</style>

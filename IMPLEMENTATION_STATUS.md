@@ -153,3 +153,12 @@
 - `npm run check` PASS: 49 файлов, 0 errors / 0 warnings / 0 hints. Обычная и `BASE_PATH=/prostor-preview/` сборки PASS: 16 страниц; восстановлена обычная финальная сборка.
 - Chromium production-preview: 4/2/2 карточки, direct house deep link, сохранение query/hash, Back/Forward, unknown type, no-JS и base path PASS. На 1440/768/390 нет page/text overflow, missing alt, broken images, console errors, request failures или 4xx/5xx. Filter controls имеют высоту 44 px.
 - Первый проект начинается на 441 px при 768×1024 и 518 px при 390×844. Скриншоты: `output/playwright/stage-05/` — all 1440/768/390, apartments 1440, houses 1440. Публикации не было. Следующий шаг — только Этап 6 после явного подтверждения пользователя.
+
+## Master redesign Этап 6 — 25.09.2026
+
+- Кейс «Дом у сада» перестроен в flagship-историю: контекст → панорама → задача и ограничения → три решения → два evidence-разбора → материалы → параметры концепции → крупный следующий проект → CTA.
+- Project schema расширена структурой `caseStudy`: публичный статус «Интерьерная концепция», локация, год, состав, ориентир срока, brief, ограничения, решения, evidence-модули и следующий проект. Шаблон выбирается по `caseStudy.variant`, без slug-условий; старый локальный meta-словарь удалён.
+- Панорама повторно использует проверенный Stage 3 source и движок в меньшей высоте, без auto-pan. Есть slider semantics и Arrow/Home/End. Две нумерованные evidence-точки имеют нативные `details`, 44×44 px цели и превращаются на mobile в обычные текстовые пояснения.
+- Неподтверждённые заявления о реализации убраны: во всех кейсах используется статус «Интерьерная концепция». Остальные три страницы продолжают работать через общий schema-driven стандартный шаблон.
+- `npm run check` и обычная/`BASE_PATH=/prostor-preview/` сборки PASS: 16 страниц. Chromium 1440/768/390, keyboard hotspots/panorama, reduced motion, no-JS и стандартный кейс PASS; нет overflow, broken images, missing alt, console/network errors или ответов 4xx/5xx. Base-path ссылки и assets имеют корректный префикс.
+- Скриншоты: `output/playwright/stage-06/` — full page 1440/768/390, раскрытая evidence-точка и следующий проект. Публикации не было. Следующий шаг — только Этап 7 после явного подтверждения пользователя.

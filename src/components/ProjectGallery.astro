@@ -1,12 +1,12 @@
 ---
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-interface Props { item: { src: ImageMetadata; alt: string; caption: string }; }
+interface Props { item: { src: ImageMetadata; alt: string; caption: string; note: string }; }
 const { item } = Astro.props;
 ---
 <div class="gallery">
   <figure><div class="gallery__image"><Image src={item.src} alt={item.alt} width={960} quality={70} widths={[480, 720, 960]} sizes="(max-width: 767px) calc(100vw - 40px), 42vw" loading="lazy" /></div></figure>
-  <div class="gallery__copy"><p class="eyebrow">В деталях</p><p>{item.caption}</p><p>Материалы работают в масштабе ежедневного прикосновения: без декора ради декора.</p></div>
+  <div class="gallery__copy"><p class="eyebrow">В деталях</p><p>{item.caption}</p><p>{item.note}</p></div>
 </div>
 <style>
   .gallery { align-items:end; display:grid; gap:24px; grid-template-columns:5fr 6fr; margin-top:32px; }

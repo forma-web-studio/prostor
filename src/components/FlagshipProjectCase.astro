@@ -1,0 +1,113 @@
+---
+import { Image } from 'astro:assets';
+import type { Project } from '../data/projects';
+import Button from './Button.astro';
+import ArrowIcon from './ArrowIcon.astro';
+import CasePanorama from './CasePanorama.astro';
+import CaseEvidence from './CaseEvidence.astro';
+import { withBase } from '../utils/urls';
+
+interface Props { project: Project; next: Project; }
+const { project, next } = Astro.props;
+const study = project.caseStudy;
+const kind = project.kind === 'apartment' ? 'Квартира' : 'Дом';
+const rubles = (value: number) => new Intl.NumberFormat('ru-RU').format(value);
+---
+
+<article class="flagship container">
+  <nav class="crumbs" aria-label="Хлебные крошки"><a href={withBase('/projects/')}>Проекты</a><span aria-hidden="true">/</span><span>{project.title}</span></nav>
+
+  <header class="flagship__header">
+    <p class="eyebrow">{study.status} · {study.year}</p>
+    <h1>{project.title}</h1>
+    <p class="flagship__context">{kind} · {project.area} м² · {study.location}</p>
+    <p class="flagship__intro">{study.intro}</p>
+  </header>
+
+  <CasePanorama />
+
+  <section class="case-overview" aria-labelledby="brief-title">
+    <div><p class="eyebrow">Задача</p><h2 id="brief-title">Дом вокруг ежедневного вида на сад</h2></div>
+    <div class="case-overview__brief"><p>{study.brief}</p></div>
+    <div class="case-overview__constraints"><p class="eyebrow">Ограничения</p><ol>{study.constraints.map((constraint) => <li>{constraint}</li>)}</ol></div>
+  </section>
+
+  <section class="case-decisions" aria-labelledby="decisions-title">
+    <header><p class="eyebrow">Три ключевых решения</p><h2 id="decisions-title">От планировки к ощущению пространства</h2></header>
+    <ol>{study.decisions.map((decision,index) => <li><span>0{index + 1}</span><div><h3>{decision.title}</h3><p>{decision.text}</p></div></li>)}</ol>
+  </section>
+
+  <section class="case-evidence-section" aria-labelledby="evidence-title">
+    <header><p class="eyebrow">Evidence</p><h2 id="evidence-title">Как решения читаются в пространстве</h2></header>
+    {study.evidence.map((evidence,index) => <CaseEvidence evidence={evidence} index={index + 1} reverse={index % 2 === 1} />)}
+  </section>
+
+  <section class="case-materials" aria-labelledby="materials-title">
+    <div><p class="eyebrow">Материалы</p><h2 id="materials-title">Спокойная палитра, связанная с садом</h2><p>Светлое основание удерживает дневной свет, дуб добавляет тепло, а приглушённый зелёный возвращает в интерьер оттенок сада.</p></div>
+    <ul>{project.palette.map((color) => <li><span style={`--swatch:${color.hex}`} aria-hidden="true"></span><strong>{color.label}</strong><small>{color.hex}</small></li>)}</ul>
+  </section>
+
+  <section class="case-facts" aria-labelledby="facts-title">
+    <p class="eyebrow" id="facts-title">Параметры концепции</p>
+    <dl>
+      <div><dt>Локация</dt><dd>{study.location}</dd></div>
+      <div><dt>Год и статус</dt><dd>{study.year} · {study.status}</dd></div>
+      <div><dt>Состав</dt><dd>{study.scope.join(', ')}</dd></div>
+      <div><dt>Ориентир срока</dt><dd>{study.duration}</dd></div>
+    </dl>
+  </section>
+
+  <section class="case-next" aria-labelledby="next-title">
+    <a href={withBase(`/projects/${next.slug}/`)}>
+      <div class="case-next__copy"><p class="eyebrow">Следующий проект</p><h2 id="next-title">{next.title}</h2><p>{next.summary}</p><span>Смотреть проект <ArrowIcon /></span></div>
+      <div class="case-next__media"><Image src={next.cover} alt={next.coverAlt} width={1200} quality={70} widths={[480,800,1200]} sizes="(max-width: 767px) calc(100vw - 40px), 55vw" loading="lazy" /></div>
+    </a>
+  </section>
+
+  <section class="case-cta">
+    <div><p class="eyebrow">Оценка проекта</p><h2>От {rubles(project.pricePerSqm)} ₽/м²</h2><p>Для {project.area} м² предварительный ориентир дизайн-проекта — {rubles(project.estimatedDesignFee)} ₽. Состав и календарь уточняются до старта.</p></div>
+    <Button href={withBase('/contact/')}>Обсудить проект</Button>
+  </section>
+</article>
+
+<style>
+  h1,h2,h3 { font-family:var(--font-display); font-weight:400; letter-spacing:-.03em; text-wrap:balance; }
+  .flagship { padding-bottom:var(--section-space); padding-top:var(--space-4); }
+  .crumbs { color:var(--muted); display:flex; font-size:var(--text-sm); gap:9px; }
+  .flagship__header { display:grid; gap:var(--grid-gap); grid-template-columns:var(--grid-columns); padding-top:var(--space-6); }
+  .flagship__header .eyebrow { grid-column:1 / -1; }
+  h1 { font-size:clamp(3.75rem,8vw,7rem); grid-column:1 / span 8; line-height:1; margin:0; }
+  .flagship__context { color:var(--muted); grid-column:1 / span 6; margin:0; }
+  .flagship__intro { font-size:var(--text-lead); grid-column:8 / span 5; grid-row:2 / span 2; line-height:1.65; margin:0; max-width:34ch; }
+  h2 { font-size:var(--title-section); line-height:1.12; margin:var(--space-2) 0 0; }
+  .case-overview { border-top:1px solid var(--line); display:grid; gap:var(--grid-gap); grid-template-columns:var(--grid-columns); margin-top:var(--section-space); padding-top:var(--space-5); }
+  .case-overview > div:first-child { grid-column:1 / span 5; } .case-overview__brief { grid-column:6 / span 3; } .case-overview__constraints { grid-column:9 / span 4; }
+  .case-overview__brief p { font-size:var(--text-lead); line-height:1.65; margin:0; }
+  .case-overview__constraints ol { counter-reset:constraint; list-style:none; margin:var(--space-3) 0 0; padding:0; }
+  .case-overview__constraints li { border-top:1px solid var(--line); color:var(--muted); font-size:var(--text-sm); line-height:1.55; padding:var(--space-3) 0; }
+  .case-decisions { margin-top:var(--section-space); } .case-decisions > header { display:grid; gap:var(--grid-gap); grid-template-columns:3fr 9fr; } .case-decisions > header h2 { margin:0; max-width:18ch; }
+  .case-decisions > ol { border-top:1px solid var(--line); list-style:none; margin:var(--space-6) 0 0; padding:0; }
+  .case-decisions li { align-items:start; border-bottom:1px solid var(--line); display:grid; gap:var(--grid-gap); grid-template-columns:3fr 3fr 6fr; padding:var(--space-4) 0; }
+  .case-decisions li > span { color:var(--accent-ink); font-size:var(--text-xs); font-weight:700; } .case-decisions li > div { display:contents; }
+  .case-decisions h3 { font-size:clamp(1.45rem,2.2vw,2rem); line-height:1.2; margin:0; } .case-decisions li p { color:var(--muted); line-height:1.65; margin:0; max-width:46ch; }
+  .case-evidence-section { margin-top:var(--section-space); } .case-evidence-section > header { display:grid; gap:var(--grid-gap); grid-template-columns:3fr 9fr; padding-bottom:var(--space-4); } .case-evidence-section > header h2 { margin:0; max-width:18ch; }
+  .case-materials { border-top:1px solid var(--line); display:grid; gap:var(--grid-gap); grid-template-columns:var(--grid-columns); margin-top:var(--section-space); padding-top:var(--space-5); }
+  .case-materials > div { grid-column:1 / span 6; } .case-materials > div > p:last-child { color:var(--muted); line-height:1.65; max-width:46ch; }
+  .case-materials ul { align-self:end; display:grid; gap:var(--space-3); grid-column:8 / span 5; grid-template-columns:repeat(2,1fr); list-style:none; margin:0; padding:0; }
+  .case-materials li { display:grid; grid-template-columns:44px 1fr; min-width:0; } .case-materials li > span { background:var(--swatch); border:1px solid rgba(37,40,36,.12); grid-row:1 / span 2; height:44px; margin-right:10px; width:44px; } .case-materials strong { font-size:var(--text-sm); } .case-materials small { color:var(--muted); font-size:var(--text-xs); }
+  .case-facts { border-top:1px solid var(--line); margin-top:var(--section-space); padding-top:var(--space-4); } .case-facts dl { display:grid; gap:var(--grid-gap); grid-template-columns:repeat(4,1fr); margin:var(--space-4) 0 0; } .case-facts dt { color:var(--muted); font-size:var(--text-xs); font-weight:600; letter-spacing:.06em; text-transform:uppercase; } .case-facts dd { font-size:var(--text-sm); line-height:1.55; margin:6px 0 0; }
+  .case-next { border-top:1px solid var(--line); margin-top:var(--section-space); padding-top:var(--space-5); } .case-next > a { align-items:center; color:inherit; display:grid; gap:var(--grid-gap); grid-template-columns:5fr 7fr; text-decoration:none; } .case-next__copy { padding:var(--space-5); } .case-next__copy h2 { margin-bottom:var(--space-3); } .case-next__copy > p:not(.eyebrow) { color:var(--muted); max-width:34ch; } .case-next__copy > span { align-items:center; border-bottom:1px solid currentColor; display:inline-flex; font-size:var(--text-sm); gap:10px; margin-top:var(--space-4); padding-bottom:3px; } .case-next__media { aspect-ratio:16/10; overflow:hidden; } .case-next__media :global(img) { transition:transform var(--duration-flow) var(--ease-ui); } .case-next a:hover :global(img),.case-next a:focus-visible :global(img) { transform:scale(1.02); }
+  .case-cta { align-items:end; border-top:1px solid var(--line); display:flex; gap:var(--space-5); justify-content:space-between; margin-top:var(--section-space); padding-top:var(--space-6); } .case-cta h2 { max-width:none; } .case-cta > div > p:last-child { color:var(--muted); font-size:var(--text-sm); line-height:1.6; max-width:56ch; }
+  @media(min-width:768px) and (max-width:1099px) { .flagship__intro { grid-column:7 / span 6; } .case-overview > div:first-child { grid-column:1 / span 5; } .case-overview__brief { grid-column:6 / span 7; } .case-overview__constraints { grid-column:6 / span 7; margin-top:var(--space-4); } }
+  @media(max-width:767px) {
+    .flagship { padding-bottom:var(--space-7); } .flagship__header { display:block; padding-top:var(--space-5); } h1 { font-size:clamp(3rem,16vw,4.25rem); margin-top:var(--space-2); } .flagship__context { margin-top:var(--space-3); } .flagship__intro { font-size:1.05rem; margin-top:var(--space-4); }
+    .case-overview { display:block; margin-top:var(--space-7); } .case-overview__brief,.case-overview__constraints { margin-top:var(--space-5); }
+    .case-decisions,.case-evidence-section,.case-materials,.case-facts,.case-next,.case-cta { margin-top:var(--space-7); }
+    .case-decisions > header,.case-evidence-section > header { display:block; } .case-decisions > header h2,.case-evidence-section > header h2 { font-size:2.35rem; margin-top:var(--space-2); }
+    .case-decisions > ol { margin-top:var(--space-5); } .case-decisions li { display:block; } .case-decisions h3 { margin-top:var(--space-2); } .case-decisions li p { margin-top:var(--space-2); }
+    .case-materials { display:block; } .case-materials ul { margin-top:var(--space-5); }
+    .case-facts dl { grid-template-columns:1fr 1fr; }
+    .case-next > a { display:flex; flex-direction:column; gap:var(--space-4); } .case-next__copy { padding:0; width:100%; } .case-next__media { order:-1; width:100%; }
+    .case-cta { align-items:stretch; display:block; } .case-cta :global(.button) { margin-top:var(--space-4); width:100%; }
+  }
+</style>
