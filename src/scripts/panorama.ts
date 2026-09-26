@@ -1,8 +1,8 @@
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const TAU = Math.PI * 2;
-const DEFAULT_FOV = 68;
-const MIN_FOV = 48;
-const MAX_FOV = 78;
+const DEFAULT_FOV = 90;
+const MIN_FOV = 60;
+const MAX_FOV = 105;
 const MAX_PITCH = 8 * Math.PI / 180;
 
 const vertexShaderSource = `#version 300 es
@@ -59,11 +59,15 @@ document.querySelectorAll<HTMLElement>('[data-panorama]').forEach((panorama) => 
   const zoomIn = panorama.querySelector<HTMLButtonElement>('[data-panorama-zoom-in]');
   const zoomOut = panorama.querySelector<HTMLButtonElement>('[data-panorama-zoom-out]');
   const reset = panorama.querySelector<HTMLButtonElement>('[data-panorama-reset]');
-  const textureSource = canvas?.dataset.textureSrc;
-  if (!viewport || !canvas || !progress || !textureSource) return;
+  const desktopTextureSource = canvas?.dataset.textureSrc;
+  const mobileTextureSource = canvas?.dataset.textureSrcMobile;
+  if (!viewport || !canvas || !progress || !desktopTextureSource) return;
 
   const gl = canvas.getContext('webgl2', { alpha:false, antialias:true, powerPreference:'high-performance' });
   if (!gl) return;
+  const textureSource = matchMedia('(max-width: 767px)').matches || gl.getParameter(gl.MAX_TEXTURE_SIZE) < 8192
+    ? mobileTextureSource || desktopTextureSource
+    : desktopTextureSource;
   const vertexShader = compileShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
   const fragmentShader = compileShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
   if (!vertexShader || !fragmentShader) return;
@@ -234,10 +238,9 @@ document.querySelectorAll<HTMLElement>('[data-panorama]').forEach((panorama) => 
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-    gl.generateMipmap(gl.TEXTURE_2D);
     resize();
     panorama.dataset.panoramaReady = '';
     viewport.dataset.panoramaReady = '';

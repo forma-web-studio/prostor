@@ -165,9 +165,9 @@
 
 ## Цилиндрическая WebGL-панорама — 26.09.2026
 
-- Пользовательский source подключён как цилиндрическая WebGL2-текстура на главной и в flagship-кейсе; плоский draggable track заменён на перспективный обзор из центра сцены. 26.09 ImageGen-версия с восстановленными деталями заменила первый файл; delivery texture увеличена до 3840×1280.
+- Пользовательский source подключён как цилиндрическая WebGL2-текстура на главной и в flagship-кейсе. Финальный master повторно перерисован ImageGen, а Real-ESRGAN-детализация и 8 px seam pass дали delivery texture 8192×2731.
 - Горизонтальный поворот бесконечный в обе стороны. Проверено 360 клавиатурных шагов по 7° — ровно семь полных оборотов с возвратом progress в 0%; шов визуально проверен на 182°.
 - Мышь поддерживает yaw, ограниченный pitch и inertia. Touch directional lock сохраняет прокрутку страницы: горизонтальный жест 0→16,19%, вертикальный — `scrollY=620` без изменения направления. Reduced motion отключает inertia.
 - Добавлены 44×44 px zoom/reset controls, Arrow-клавиши, `+/-`, Home и live status. При no-JS или отсутствии WebGL остаётся статичный нефокусируемый кадр, элементы управления скрыты.
-- WebP-текстура 3840×1280 quality 88 весит около 748 КБ. Крайние колонки совпадают с RGB delta 0/0; WebGL seam view 182° визуально прошёл. Chromium: WebGL ready, вращение работает, без overflow и console errors.
+- Desktop WebP 8192×2731 quality 90 весит около 3,43 МБ, mobile 4096 px — 1,09 МБ. Default FOV 90° даёт 2048 source px в видимом кадре. Mipmap sampling отключён, поэтому GPU больше не создаёт пунктирную линию на `fract()`-границе. Chromium seam view 182°: шов без линии, WebGL ready, без overflow и console errors.
 - QA: `output/playwright/panorama-360/`. Эта доработка не считается Этапом 7 master redesign.

@@ -1,6 +1,6 @@
 import sharp from "sharp";
 
-const [inputPath, outputPath, widthArg = "3840", heightArg = "1280", bandArg = "192"] = process.argv.slice(2);
+const [inputPath, outputPath, widthArg = "8192", heightArg = "2731", bandArg = "8"] = process.argv.slice(2);
 
 if (!inputPath || !outputPath) {
   throw new Error("Usage: node scripts/process-panorama.mjs <input> <output> [width] [height] [seam-band]");

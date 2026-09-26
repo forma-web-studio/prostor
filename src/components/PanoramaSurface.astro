@@ -10,7 +10,8 @@ interface Props {
 }
 
 const { id, label, alt, variant = 'hero' } = Astro.props;
-const texture = await getImage({ src: panorama360, width: 3840, format: 'webp', quality: 88 });
+const texture = await getImage({ src: panorama360, width: 8192, format: 'webp', quality: 90 });
+const mobileTexture = await getImage({ src: panorama360, width: 4096, format: 'webp', quality: 88 });
 ---
 
 <div
@@ -25,8 +26,8 @@ const texture = await getImage({ src: panorama360, width: 3840, format: 'webp', 
     Бесконечная панорама. Перетаскивайте влево и вправо. Стрелки поворачивают обзор, плюс и минус меняют масштаб, Home возвращает исходный ракурс.
   </span>
   <span class="sr-only" aria-live="polite" data-panorama-status></span>
-  <img class="panorama-surface__fallback" data-panorama-fallback src={texture.src} width="3840" height="1280" {alt} loading="eager" fetchpriority="high" draggable="false" />
-  <canvas class="panorama-surface__canvas" data-panorama-canvas data-texture-src={texture.src} aria-hidden="true"></canvas>
+  <img class="panorama-surface__fallback" data-panorama-fallback src={mobileTexture.src} srcset={`${mobileTexture.src} 4096w, ${texture.src} 8192w`} sizes="100vw" width="8192" height="2731" {alt} loading="eager" fetchpriority="high" draggable="false" />
+  <canvas class="panorama-surface__canvas" data-panorama-canvas data-texture-src={texture.src} data-texture-src-mobile={mobileTexture.src} aria-hidden="true"></canvas>
   <div class="panorama-surface__controls" aria-label="Масштаб панорамы">
     <button type="button" data-panorama-zoom-in aria-label="Приблизить панораму">+</button>
     <button type="button" data-panorama-zoom-out aria-label="Отдалить панораму">−</button>
