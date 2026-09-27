@@ -6,6 +6,7 @@ dist/
 # Local browser and QA artifacts
 .playwright-cli/
 output/
+tmp/
 
 # Local environment files
 .env
