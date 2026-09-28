@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import type { Project } from '../data/projects';
 import Button from './Button.astro';
 import ProjectGallery from './ProjectGallery.astro';
+import PlanToSpace from './PlanToSpace.astro';
 import ArrowIcon from './ArrowIcon.astro';
 import { withBase } from '../utils/urls';
 
@@ -18,8 +19,10 @@ const rubles = (value: number) => new Intl.NumberFormat('ru-RU').format(value);
   <header class="case__header"><p class="eyebrow">{study.status}</p><h1>{project.title}</h1><p class="assignment">{kind} · {project.area} м² · {study.location}</p><p class="scenario">{study.intro}</p></header>
   <figure class="cover"><div class="cover__media"><Image src={project.cover} alt={project.coverAlt} width={1320} quality={70} widths={[640,960,1320,1920]} sizes="(max-width: 767px) calc(100vw - 40px), min(1320px, 100vw - 120px)" loading="eager" fetchpriority="high" /></div><figcaption>{project.coverCaption}</figcaption></figure>
   <section class="decisions"><div><p class="eyebrow">Ключевые решения</p><p class="decisions__lead">Что меняет сценарий жизни в этом пространстве.</p></div><ol>{study.decisions.map((decision) => <li><strong>{decision.title}</strong><span>{decision.text}</span></li>)}</ol></section>
-  <section class="plan-fragment" aria-labelledby="plan-title"><div><p class="eyebrow">Фрагмент планировки</p><h2 id="plan-title">Логика движения и хранения</h2><p>Схема показывает принцип зонирования, а не рабочий чертёж. Детальные листы готовятся под конкретный объект.</p></div><div class="plan-diagram" aria-label="Условная схема помещений"><span class="plan-room plan-room--one">Общая комната</span><span class="plan-room plan-room--two">Кухня</span><span class="plan-room plan-room--three">Хранение</span><span class="plan-room plan-room--four">Окно</span></div></section>
-  <section class="direction"><ProjectGallery item={project.gallery} /></section>
+  {study.planToSpace
+    ? <PlanToSpace data={study.planToSpace} image={project.gallery.src} imageAlt={project.gallery.alt} />
+    : <section class="plan-fragment" aria-labelledby="plan-title"><div><p class="eyebrow">Фрагмент планировки</p><h2 id="plan-title">Логика движения и хранения</h2><p>Схема показывает принцип зонирования, а не рабочий чертёж. Детальные листы готовятся под конкретный объект.</p></div><div class="plan-diagram" aria-label="Условная схема помещений"><span class="plan-room plan-room--one">Общая комната</span><span class="plan-room plan-room--two">Кухня</span><span class="plan-room plan-room--three">Хранение</span><span class="plan-room plan-room--four">Окно</span></div></section>}
+  {!study.planToSpace && <section class="direction"><ProjectGallery item={project.gallery} /></section>}
   <section class="case-facts"><p class="eyebrow">Параметры концепции</p><div><p><strong>Локация</strong>{study.location}</p><p><strong>Год и статус</strong>{study.year} · {study.status}</p><p><strong>Состав</strong>{study.scope.join(', ')}</p><p><strong>Ориентир срока</strong>{study.duration}</p></div></section>
   <section class="case__next"><p class="eyebrow">Следующий проект</p><a class="inline-link" href={withBase(`/projects/${next.slug}/`)}>{next.title} <ArrowIcon /></a></section>
   <section class="case__cta"><div><p class="eyebrow">Оценка проекта</p><h2>От {rubles(project.pricePerSqm)} ₽/м²</h2><p class="price-total">Для {project.area} м² — ориентир от {rubles(project.estimatedDesignFee)} ₽</p><p class="price-note">Состав, календарь и бюджет обсуждаем до старта работы.</p></div><Button href={withBase('/contact/')}>Обсудить проект</Button></section>

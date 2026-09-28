@@ -16,6 +16,18 @@ export type ProjectEvidence = {
   image: { src: ImageMetadata; alt: string; caption: string };
   hotspots?: Array<{ x: number; y: number; title: string; text: string }>;
 };
+export type ProjectPlanDecision = {
+  id: 'table' | 'storage';
+  label: string;
+  title: string;
+  text: string;
+};
+export type ProjectPlanToSpace = {
+  title: string;
+  intro: string;
+  caption: string;
+  decisions: ProjectPlanDecision[];
+};
 export type ProjectCaseStudy = {
   variant: 'standard' | 'flagship';
   intro: string;
@@ -28,6 +40,7 @@ export type ProjectCaseStudy = {
   constraints: string[];
   decisions: ProjectDecision[];
   evidence: ProjectEvidence[];
+  planToSpace?: ProjectPlanToSpace;
   nextProjectSlug: string;
 };
 
@@ -75,7 +88,18 @@ export const projects: Project[] = [
       decisions: [
         { title:'Стол у окна', text:'Обеденное место становится удобной рабочей точкой с естественным светом.' },
         { title:'Единая плоскость хранения', text:'Закрытые дубовые фасады убирают бытовые вещи из общего пространства.' },
-      ], evidence: [], nextProjectSlug:'dom-u-sada',
+      ],
+      evidence: [],
+      planToSpace: {
+        title: 'Как дневной кабинет снова становится столовой',
+        intro: 'Схема сценария показывает взаимное положение окна, общего стола, прохода и закрытого хранения. Это объяснение замысла без технических размеров и не рабочий чертёж.',
+        caption: 'Схема сценария и визуальная концепция одной общей комнаты.',
+        decisions: [
+          { id:'table', label:'Стол у окна', title:'Один стол поддерживает два режима', text:'Днём естественный свет делает стол удобным рабочим местом. Вечером ноутбук убирается, и та же точка возвращается к общему ужину.' },
+          { id:'storage', label:'Закрытое хранение', title:'Рабочий фон исчезает вместе с техникой', text:'Единая линия дубовых фасадов собирает документы, зарядки и бытовые вещи, поэтому после работы общая комната не выглядит кабинетом.' },
+        ],
+      },
+      nextProjectSlug:'dom-u-sada',
     },
     evidence: {
       context: 'Пара работает из дома и каждый день собирается за общим столом.',
