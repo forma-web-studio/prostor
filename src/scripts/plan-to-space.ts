@@ -2,11 +2,8 @@ export const initPlanToSpace = (root: HTMLElement) => {
   const comparison = root.querySelector<HTMLElement>('[data-comparison]');
   const handle = root.querySelector<HTMLButtonElement>('[data-handle]');
   const presets = root.querySelector<HTMLElement>('[data-presets]');
-  const decisionTabs = root.querySelector<HTMLElement>('[data-decision-tabs]');
-  const decisionButtons = [...root.querySelectorAll<HTMLButtonElement>('[data-decision]')];
-  const decisionPanels = [...root.querySelectorAll<HTMLElement>('[data-decision-panel]')];
   const layers = [...root.querySelectorAll<HTMLElement>('[data-layer]')];
-  if (!comparison || !handle || !presets || !decisionTabs) return;
+  if (!comparison || !handle || !presets) return;
 
   let value = 50;
   let activePointer: number | null = null;
@@ -15,9 +12,9 @@ export const initPlanToSpace = (root: HTMLElement) => {
   let pointerMode: 'pending' | 'horizontal' | 'vertical' = 'pending';
 
   const valueText = (next: number) => {
-    if (next === 0) return 'Только пространство';
-    if (next === 100) return 'Только схема сценария';
-    return `${next}% схемы, ${100 - next}% пространства`;
+    if (next === 0) return 'Только вид комнаты сверху';
+    if (next === 100) return 'Только план';
+    return `${next}% плана, ${100 - next}% вида сверху`;
   };
 
   const setValue = (next: number) => {
@@ -84,19 +81,10 @@ export const initPlanToSpace = (root: HTMLElement) => {
     button.addEventListener('click', () => setValue(Number(button.dataset.value)));
   });
 
-  const setDecision = (id: string) => {
-    root.dataset.active = id;
-    decisionButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.decision === id)));
-    decisionPanels.forEach((panel) => { panel.hidden = panel.dataset.decisionPanel !== id; });
-  };
-
-  decisionButtons.forEach((button) => button.addEventListener('click', () => setDecision(button.dataset.decision ?? '')));
-
   layers.forEach((layer) => layer.setAttribute('aria-hidden', 'true'));
   handle.hidden = false;
   presets.hidden = false;
-  decisionTabs.hidden = false;
   root.classList.add('is-ready');
+  root.setAttribute('data-ready', '');
   setValue(value);
-  setDecision(root.dataset.active ?? decisionButtons[0]?.dataset.decision ?? '');
 };

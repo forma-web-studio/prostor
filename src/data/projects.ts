@@ -1,6 +1,8 @@
 import type { ImageMetadata } from 'astro';
 import svetCover from '../assets/images/projects/svet-i-dub-cover.png';
 import svetDetail from '../assets/images/projects/svet-i-dub-detail-1.png';
+import svetTopDown from '../assets/images/projects/svet-i-dub-top-down.png';
+import svetPlan from '../assets/images/projects/svet-i-dub-plan.svg?url';
 import domCover from '../assets/images/projects/dom-u-sada-detail-1.png';
 import domDetail from '../assets/images/projects/dom-u-sada-detail-2.png';
 import tishinaCover from '../assets/images/projects/tishina-goroda-detail-1.png';
@@ -16,17 +18,14 @@ export type ProjectEvidence = {
   image: { src: ImageMetadata; alt: string; caption: string };
   hotspots?: Array<{ x: number; y: number; title: string; text: string }>;
 };
-export type ProjectPlanDecision = {
-  id: 'table' | 'storage';
-  label: string;
-  title: string;
-  text: string;
-};
 export type ProjectPlanToSpace = {
   title: string;
   intro: string;
   caption: string;
-  decisions: ProjectPlanDecision[];
+  image: ImageMetadata;
+  imageAlt: string;
+  plan: string;
+  planAlt: string;
 };
 export type ProjectCaseStudy = {
   variant: 'standard' | 'flagship';
@@ -91,13 +90,13 @@ export const projects: Project[] = [
       ],
       evidence: [],
       planToSpace: {
-        title: 'Как дневной кабинет снова становится столовой',
-        intro: 'Схема сценария показывает взаимное положение окна, общего стола, прохода и закрытого хранения. Это объяснение замысла без технических размеров и не рабочий чертёж.',
-        caption: 'Схема сценария и визуальная концепция одной общей комнаты.',
-        decisions: [
-          { id:'table', label:'Стол у окна', title:'Один стол поддерживает два режима', text:'Днём естественный свет делает стол удобным рабочим местом. Вечером ноутбук убирается, и та же точка возвращается к общему ужину.' },
-          { id:'storage', label:'Закрытое хранение', title:'Рабочий фон исчезает вместе с техникой', text:'Единая линия дубовых фасадов собирает документы, зарядки и бытовые вещи, поэтому после работы общая комната не выглядит кабинетом.' },
-        ],
+        title: 'План и пространство',
+        intro: 'Один вид сверху: сначала планировка, затем объём, свет и материалы.',
+        caption: 'Окна, проём, стол, хранение и мягкая зона остаются на своих местах.',
+        image: svetTopDown,
+        imageAlt: 'Вид сверху на всю общую комнату с окнами слева, столом на шесть мест, встроенным хранением и мягкой зоной',
+        plan: svetPlan,
+        planAlt: 'План той же общей комнаты в совпадающем масштабе и расположении мебели',
       },
       nextProjectSlug:'dom-u-sada',
     },

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1536 1024" role="img" aria-labelledby="title desc">
+  <title id="title">План общей комнаты проекта «Свет и дуб»</title>
+  <desc id="desc">Окна слева, обеденный стол на шесть мест у окон, центральный проём, встроенное хранение вдоль дальней стены и мягкая зона справа.</desc>
+  <rect width="1536" height="1024" fill="#eeebe3"/>
+  <rect x="84" y="70" width="1368" height="870" fill="#f8f6f0"/>
+
+  <!-- Architectural boundary. The top-center gap is the open doorway. -->
+  <g fill="none" stroke="#252824" stroke-linecap="square">
+    <path d="M70 55H608M840 55H1468V955H70V888" stroke-width="30"/>
+    <path d="M70 55V70M70 888V955" stroke-width="30"/>
+    <path d="M608 55V70M840 55V70" stroke-width="30"/>
+  </g>
+
+  <!-- Window wall aligned with the render. -->
+  <g fill="none" stroke="#68705d">
+    <path d="M84 76V876" stroke-width="9"/>
+    <path d="M104 76V876" stroke-width="3"/>
+    <path d="M82 214H110M82 367H110M82 520H110M82 673H110M82 826H110" stroke-width="4"/>
+  </g>
+
+  <!-- Full-height oak storage along the far-right wall. -->
+  <g stroke="#252824" stroke-width="3">
+    <rect x="838" y="72" width="602" height="108" fill="#d9d0bf"/>
+    <path d="M940 72V180M1042 72V180M1144 72V180M1246 72V180M1348 72V180" fill="none"/>
+    <rect x="1148" y="78" width="92" height="96" fill="#c3b59c"/>
+    <path d="M1148 126H1240" fill="none" stroke="#756b58"/>
+  </g>
+
+  <!-- Dining zone: same footprint and chair count as the top-down render. -->
+  <g stroke="#252824" stroke-width="4">
+    <rect x="240" y="412" width="362" height="200" rx="8" fill="#c8b38d"/>
+    <rect x="304" y="348" width="94" height="72" rx="32" fill="#e3ddd0"/>
+    <rect x="454" y="348" width="94" height="72" rx="32" fill="#e3ddd0"/>
+    <rect x="304" y="604" width="94" height="76" rx="32" fill="#e3ddd0"/>
+    <rect x="454" y="604" width="94" height="76" rx="32" fill="#e3ddd0"/>
+    <rect x="178" y="460" width="74" height="106" rx="32" fill="#e3ddd0"/>
+    <rect x="590" y="460" width="74" height="106" rx="32" fill="#e3ddd0"/>
+  </g>
+  <circle cx="390" cy="508" r="58" fill="none" stroke="#68705d" stroke-width="3" stroke-dasharray="8 8"/>
+
+  <!-- Living zone traced from the same coordinate system. -->
+  <rect x="760" y="316" width="607" height="562" rx="3" fill="#ded5c6" stroke="#8d8578" stroke-width="3"/>
+  <g stroke="#252824" stroke-width="4">
+    <rect x="795" y="292" width="515" height="236" rx="42" fill="#e4ded2"/>
+    <path d="M818 325H1284M955 325V507M1092 325V507" fill="none" stroke="#9e978b" stroke-width="3"/>
+    <circle cx="1024" cy="654" r="104" fill="#d8cdbb"/>
+    <ellipse cx="1215" cy="812" rx="84" ry="82" fill="#e5dfd5"/>
+    <rect x="1336" y="477" width="91" height="278" rx="4" fill="#c8b38d"/>
+  </g>
+
+  <!-- Circulation path kept secondary so geometry remains legible. -->
+  <path d="M724 94V250C724 325 688 378 634 424C600 453 598 511 632 552C674 603 694 672 694 808"
+        fill="none" stroke="#68705d" stroke-width="5" stroke-dasharray="14 14"/>
+  <path d="M678 782L694 812L710 782" fill="none" stroke="#68705d" stroke-width="5"/>
+</svg>
