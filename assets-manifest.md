@@ -58,3 +58,7 @@ Prata 400 и Manrope Variable подключаются локально из Fon
 ## Использование материалов в Этапе 10 — 30.09.2026
 
 Новые изображения не создавались. Overview услуг повторно использует три уже учтённых доказательства и ведёт в соответствующие кейсы: `svet-i-dub-top-down.png` для совпадения плана и пространства, `dom-u-sada-detail-1.png` для общей пространственной системы и `tishina-goroda-detail-1.png` для перехода от общего вида к месту у окна. Исходные файлы, provenance и рабочие материалы остаются вне статической сборки.
+
+## Использование материалов в Этапе 11 — 30.09.2026
+
+Новые изображения не создавались. Detail-страницы услуг переиспользуют существующие project evidence: planning — `svet-i-dub-top-down.png`; design — `dom-u-sada-detail-1.png` и `tishina-goroda-detail-2.png`; supply — `tishina-goroda-detail-1.png`; supervision — `dom-u-sada-detail-2.png` и `liniya-lesa-detail-2.png`; consultation — `svet-i-dub-detail-1.png`. Каждый кадр ведёт в соответствующий полный кейс; исходные материалы и provenance не менялись.

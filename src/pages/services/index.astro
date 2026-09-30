@@ -6,7 +6,7 @@ import ProjectCalculator from '../../components/ProjectCalculator.astro';
 import ServiceEvidence from '../../components/ServiceEvidence.astro';
 import { projects } from '../../data/projects';
 import { serviceDeliverables,serviceEvidenceLinks,services } from '../../data/services';
-import { withBase } from '../../utils/urls';
+import { sitePath } from '../../utils/urls';
 
 const evidenceItems = serviceEvidenceLinks.map(item => {
   const project = projects.find(candidate => candidate.slug === item.projectSlug);
@@ -32,7 +32,7 @@ const evidenceItems = serviceEvidenceLinks.map(item => {
       </div>
       <ol class="service-choice__list">
         {services.map((service,index) => <li>
-          <a href={withBase(`/services/${service.slug}/`)}>
+          <a href={sitePath.service(service.slug)}>
             <span class="service-choice__number">{String(index + 1).padStart(2,'0')}</span>
             <div class="service-choice__name"><h3>{service.title}</h3><p>{service.lead}</p></div>
             <dl>
@@ -69,7 +69,7 @@ const evidenceItems = serviceEvidenceLinks.map(item => {
         <p>Кейсы показывают не отзывы, а связь задачи, выбранного приёма и результата.</p>
       </header>
       {evidenceItems.map((item,index) => <ServiceEvidence
-        href={withBase(`/projects/${item.project.slug}/`)}
+        href={sitePath.project(item.project.slug)}
         label={item.label}
         title={item.title}
         text={item.text}
@@ -82,7 +82,7 @@ const evidenceItems = serviceEvidenceLinks.map(item => {
 
     <section class="service-cta">
       <div><p class="eyebrow">Первый разговор</p><h2>Определим достаточный состав работы</h2><p>Если формат пока неочевиден, начнём с задачи, плана и текущего состояния объекта.</p></div>
-      <Button href={withBase('/contact/')}>Обсудить проект</Button>
+      <Button href={sitePath.contact()}>Обсудить проект</Button>
     </section>
   </main>
 </BaseLayout>
