@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import FlagshipProjectCase from '../../components/FlagshipProjectCase.astro';
-import StandardProjectCase from '../../components/StandardProjectCase.astro';
+import ProjectCase from '../../components/ProjectCase.astro';
 import { projects } from '../../data/projects';
 
 export function getStaticPaths() {
@@ -14,7 +13,5 @@ if (!next) throw new Error(`Unknown next project: ${project.caseStudy.nextProjec
 ---
 
 <BaseLayout title={`${project.title} — ПРОСТОР`} description={project.summary}>
-  {project.caseStudy.variant === 'flagship'
-    ? <FlagshipProjectCase project={project} next={next} />
-    : <StandardProjectCase project={project} next={next} />}
+  <ProjectCase project={project} next={next} />
 </BaseLayout>

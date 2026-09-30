@@ -5,6 +5,7 @@ import Button from './Button.astro';
 import ArrowIcon from './ArrowIcon.astro';
 import CasePanorama from './CasePanorama.astro';
 import CaseEvidence from './CaseEvidence.astro';
+import PlanToSpace from './PlanToSpace.astro';
 import { withBase } from '../utils/urls';
 
 interface Props { project: Project; next: Project; }
@@ -16,20 +17,20 @@ const kind = project.kind === 'apartment' ? 'Квартира' : 'Дом';
 const rubles = (value: number) => new Intl.NumberFormat('ru-RU').format(value);
 ---
 
-<article class="flagship container">
+<article class="project-case container">
   <nav class="crumbs" aria-label="Хлебные крошки"><a href={withBase('/projects/')}>Проекты</a><span aria-hidden="true">/</span><span>{project.title}</span></nav>
 
-  <header class="flagship__header">
+  <header class="project-case__header">
     <p class="eyebrow">{study.status} · {study.year}</p>
     <h1>{project.title}</h1>
-    <p class="flagship__context">{kind} · {project.area} м² · {study.location}</p>
-    <p class="flagship__intro">{study.intro}</p>
+    <p class="project-case__context">{kind} · {project.area} м² · {study.location}</p>
+    <p class="project-case__intro">{study.intro}</p>
   </header>
 
   {presentation.hero.type === 'panorama'
     ? <CasePanorama />
-    : <figure class="flagship-media">
-        <div class="flagship-media__image" style={`--hero-position:${presentation.hero.position ?? 'center'}`}>
+    : <figure class="project-case-media">
+        <div class="project-case-media__image" style={`--hero-position:${presentation.hero.position ?? 'center'}`}>
           <Image src={presentation.hero.src} alt={presentation.hero.alt} width={1320} quality={78} widths={[640,960,1320,1920]} sizes="(max-width: 767px) calc(100vw - 40px), min(1320px, 100vw - 120px)" loading="eager" fetchpriority="high" />
         </div>
         <figcaption>{presentation.hero.caption}</figcaption>
@@ -47,6 +48,8 @@ const rubles = (value: number) => new Intl.NumberFormat('ru-RU').format(value);
             <header><p class="eyebrow">{presentation.decisionsLabel}</p><h2 id="decisions-title">{presentation.decisionsTitle}</h2></header>
             <ol>{study.decisions.map((decision,index) => <li><span>0{index + 1}</span><div><h3>{decision.title}</h3><p>{decision.text}</p></div></li>)}</ol>
           </section>
+        : section === 'plan'
+          ? study.planToSpace && <PlanToSpace data={study.planToSpace} />
         : section === 'evidence'
           ? <section class="case-evidence-section" aria-labelledby="evidence-title">
               <header><p class="eyebrow">{presentation.evidenceLabel}</p><h2 id="evidence-title">{presentation.evidenceTitle}</h2></header>
@@ -54,8 +57,8 @@ const rubles = (value: number) => new Intl.NumberFormat('ru-RU').format(value);
             </section>
           : section === 'materials'
             ? <section class="case-materials" aria-labelledby="materials-title">
-                <div><p class="eyebrow">Материалы</p><h2 id="materials-title">{presentation.materialsTitle}</h2><p>{presentation.materialsText}</p></div>
-                <ul>{project.palette.map((color) => <li><span style={`--swatch:${color.hex}`} aria-hidden="true"></span><strong>{color.label}</strong><small>{color.hex}</small></li>)}</ul>
+                <div><p class="eyebrow">Материалы</p><h2 id="materials-title">{study.materials.title}</h2><p>{study.materials.text}</p></div>
+                <ul>{study.materials.palette.map((color) => <li><span style={`--swatch:${color.hex}`} aria-hidden="true"></span><strong>{color.label}</strong><small>{color.hex}</small></li>)}</ul>
               </section>
             : section === 'facts'
               ? <section class="case-facts" aria-labelledby="facts-title">
@@ -85,18 +88,18 @@ const rubles = (value: number) => new Intl.NumberFormat('ru-RU').format(value);
 
 <style>
   h1,h2,h3 { font-family:var(--font-display); font-weight:400; letter-spacing:-.03em; text-wrap:balance; }
-  .flagship { padding-bottom:var(--section-space); padding-top:var(--space-4); }
+  .project-case { padding-bottom:var(--section-space); padding-top:var(--space-4); }
   .crumbs { color:var(--muted); display:flex; font-size:var(--text-sm); gap:9px; }
-  .flagship__header { display:grid; gap:var(--grid-gap); grid-template-columns:var(--grid-columns); padding-top:var(--space-6); }
-  .flagship__header .eyebrow { grid-column:1 / -1; }
+  .project-case__header { display:grid; gap:var(--grid-gap); grid-template-columns:var(--grid-columns); padding-top:var(--space-6); }
+  .project-case__header .eyebrow { grid-column:1 / -1; }
   h1 { font-size:clamp(3.75rem,8vw,7rem); grid-column:1 / span 8; line-height:1; margin:0; }
-  .flagship__context { color:var(--muted); grid-column:1 / span 6; margin:0; }
-  .flagship__intro { font-size:var(--text-lead); grid-column:8 / span 5; grid-row:2 / span 2; line-height:1.65; margin:0; max-width:34ch; }
-  .flagship-media { margin:var(--space-7) 0 0; }
-  .flagship-media__image { aspect-ratio:3/2; overflow:hidden; }
-  .flagship-media__image :global(picture),.flagship-media__image :global(img) { display:block; height:100%; width:100%; }
-  .flagship-media__image :global(img) { object-fit:cover; object-position:var(--hero-position); }
-  .flagship-media figcaption { color:var(--muted); font-size:var(--text-xs); margin-top:10px; }
+  .project-case__context { color:var(--muted); grid-column:1 / span 6; margin:0; }
+  .project-case__intro { font-size:var(--text-lead); grid-column:8 / span 5; grid-row:2 / span 2; line-height:1.65; margin:0; max-width:34ch; }
+  .project-case-media { margin:var(--space-7) 0 0; }
+  .project-case-media__image { aspect-ratio:3/2; overflow:hidden; }
+  .project-case-media__image :global(picture),.project-case-media__image :global(img) { display:block; height:100%; width:100%; }
+  .project-case-media__image :global(img) { object-fit:cover; object-position:var(--hero-position); }
+  .project-case-media figcaption { color:var(--muted); font-size:var(--text-xs); margin-top:10px; }
   h2 { font-size:var(--title-section); line-height:1.12; margin:var(--space-2) 0 0; }
   .case-overview { border-top:1px solid var(--line); display:grid; gap:var(--grid-gap); grid-template-columns:var(--grid-columns); margin-top:var(--section-space); padding-top:var(--space-5); }
   .case-overview > div:first-child { grid-column:1 / span 5; } .case-overview__brief { grid-column:6 / span 3; } .case-overview__constraints { grid-column:9 / span 4; }
@@ -116,10 +119,10 @@ const rubles = (value: number) => new Intl.NumberFormat('ru-RU').format(value);
   .case-facts { border-top:1px solid var(--line); margin-top:var(--section-space); padding-top:var(--space-4); } .case-facts dl { display:grid; gap:var(--grid-gap); grid-template-columns:repeat(4,1fr); margin:var(--space-4) 0 0; } .case-facts dt { color:var(--muted); font-size:var(--text-xs); font-weight:600; letter-spacing:.06em; text-transform:uppercase; } .case-facts dd { font-size:var(--text-sm); line-height:1.55; margin:6px 0 0; }
   .case-next { border-top:1px solid var(--line); margin-top:var(--section-space); padding-top:var(--space-5); } .case-next > a { align-items:center; color:inherit; display:grid; gap:var(--grid-gap); grid-template-columns:5fr 7fr; text-decoration:none; } .case-next__copy { padding:var(--space-5); } .case-next__copy h2 { margin-bottom:var(--space-3); } .case-next__copy > p:not(.eyebrow) { color:var(--muted); max-width:34ch; } .case-next__copy > span { align-items:center; border-bottom:1px solid currentColor; display:inline-flex; font-size:var(--text-sm); gap:10px; margin-top:var(--space-4); padding-bottom:3px; } .case-next__media { aspect-ratio:16/10; overflow:hidden; } .case-next__media :global(img) { transition:transform var(--duration-flow) var(--ease-ui); } .case-next a:hover :global(img),.case-next a:focus-visible :global(img) { transform:scale(1.02); }
   .case-cta { align-items:end; border-top:1px solid var(--line); display:flex; gap:var(--space-5); justify-content:space-between; margin-top:var(--section-space); padding-top:var(--space-6); } .case-cta h2 { max-width:none; } .case-cta > div > p:last-child { color:var(--muted); font-size:var(--text-sm); line-height:1.6; max-width:56ch; }
-  @media(min-width:768px) and (max-width:1099px) { .flagship__intro { grid-column:7 / span 6; } .case-overview > div:first-child { grid-column:1 / span 5; } .case-overview__brief { grid-column:6 / span 7; } .case-overview__constraints { grid-column:6 / span 7; margin-top:var(--space-4); } }
+  @media(min-width:768px) and (max-width:1099px) { .project-case__intro { grid-column:7 / span 6; } .case-overview > div:first-child { grid-column:1 / span 5; } .case-overview__brief { grid-column:6 / span 7; } .case-overview__constraints { grid-column:6 / span 7; margin-top:var(--space-4); } }
   @media(max-width:767px) {
-    .flagship { padding-bottom:var(--space-7); } .flagship__header { display:block; padding-top:var(--space-5); } h1 { font-size:clamp(3rem,16vw,4.25rem); margin-top:var(--space-2); } .flagship__context { margin-top:var(--space-3); } .flagship__intro { font-size:1.05rem; margin-top:var(--space-4); }
-    .flagship-media { margin-top:var(--space-5); } .flagship-media__image { aspect-ratio:4/3; }
+    .project-case { padding-bottom:var(--space-7); } .project-case__header { display:block; padding-top:var(--space-5); } h1 { font-size:clamp(3rem,16vw,4.25rem); margin-top:var(--space-2); } .project-case__context { margin-top:var(--space-3); } .project-case__intro { font-size:1.05rem; margin-top:var(--space-4); }
+    .project-case-media { margin-top:var(--space-5); } .project-case-media__image { aspect-ratio:4/3; }
     .case-overview { display:block; margin-top:var(--space-7); } .case-overview__brief,.case-overview__constraints { margin-top:var(--space-5); }
     .case-decisions,.case-evidence-section,.case-materials,.case-facts,.case-next,.case-cta { margin-top:var(--space-7); }
     .case-decisions > header,.case-evidence-section > header { display:block; } .case-decisions > header h2,.case-evidence-section > header h2 { font-size:2.35rem; margin-top:var(--space-2); }

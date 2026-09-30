@@ -16,19 +16,19 @@ const { project, index, reverse = false } = Astro.props;
 <article class:list={['evidence-row', { 'evidence-row--reverse': reverse }]}>
   <div class="evidence-row__copy">
     <p class="eyebrow">Решение {index} · {project.title}</p>
-    <h3>{project.evidence.move}</h3>
+    <h3>{project.homeEvidence.move}</h3>
     <dl>
-      <div><dt>Контекст</dt><dd>{project.evidence.context}</dd></div>
-      <div><dt>Ограничение</dt><dd>{project.evidence.constraint}</dd></div>
-      <div class="evidence-row__effect"><dt>Эффект</dt><dd>{project.evidence.effect}</dd></div>
+      <div><dt>Контекст</dt><dd>{project.homeEvidence.context}</dd></div>
+      <div><dt>Ограничение</dt><dd>{project.homeEvidence.constraint}</dd></div>
+      <div class="evidence-row__effect"><dt>Эффект</dt><dd>{project.homeEvidence.effect}</dd></div>
     </dl>
     <a class="inline-link" href={withBase(`/projects/${project.slug}/`)}>Разобрать весь проект <ArrowIcon /></a>
   </div>
   <figure>
     <div class="evidence-row__media">
-      <Image src={project.gallery.src} alt={project.gallery.alt} width={1122} quality={72} widths={[480, 720, 960, 1122]} sizes="(max-width: 767px) calc(100vw - 40px), (min-width: 1440px) 620px, 46vw" loading="lazy" />
+      <Image src={project.homeEvidence.image.src} alt={project.homeEvidence.image.alt} width={1122} quality={72} widths={[480, 720, 960, 1122]} sizes="(max-width: 767px) calc(100vw - 40px), (min-width: 1440px) 620px, 46vw" loading="lazy" />
     </div>
-    <figcaption>{project.gallery.caption}</figcaption>
+    <figcaption>{project.homeEvidence.image.caption}</figcaption>
   </figure>
 </article>
 

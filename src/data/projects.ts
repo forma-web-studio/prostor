@@ -24,8 +24,8 @@ export type ProjectEvidence = {
   };
   hotspots?: Array<{ x: number; y: number; title: string; text: string }>;
 };
-export type ProjectCaseSection = 'overview' | 'decisions' | 'evidence' | 'materials' | 'facts';
-export type ProjectFlagshipPresentation = {
+export type ProjectCaseSection = 'overview' | 'decisions' | 'plan' | 'evidence' | 'materials' | 'facts';
+export type ProjectCasePresentation = {
   hero:
     | { type: 'panorama' }
     | { type: 'image'; src: ImageMetadata; alt: string; caption: string; position?: string };
@@ -35,8 +35,6 @@ export type ProjectFlagshipPresentation = {
   decisionsTitle: string;
   evidenceLabel: string;
   evidenceTitle: string;
-  materialsTitle: string;
-  materialsText: string;
 };
 export type ProjectPlanToSpace = {
   title: string;
@@ -48,7 +46,6 @@ export type ProjectPlanToSpace = {
   planAlt: string;
 };
 export type ProjectCaseStudy = {
-  variant: 'standard' | 'flagship';
   intro: string;
   location: string;
   status: 'Интерьерная концепция';
@@ -60,8 +57,21 @@ export type ProjectCaseStudy = {
   decisions: ProjectDecision[];
   evidence: ProjectEvidence[];
   planToSpace?: ProjectPlanToSpace;
-  presentation?: ProjectFlagshipPresentation;
+  presentation: ProjectCasePresentation;
+  materials: {
+    title: string;
+    text: string;
+    palette: Array<{ hex: string; label: string }>;
+  };
   nextProjectSlug: string;
+};
+
+export type ProjectHomeEvidence = {
+  context: string;
+  constraint: string;
+  move: string;
+  effect: string;
+  image: { src: ImageMetadata; alt: string; caption: string };
 };
 
 export type Project = {
@@ -81,14 +91,7 @@ export type Project = {
   coverCaption: string;
   summary: string;
   caseStudy: ProjectCaseStudy;
-  evidence: {
-    context: string;
-    constraint: string;
-    move: string;
-    effect: string;
-  };
-  gallery: { src: ImageMetadata; alt: string; caption: string; note: string };
-  palette: Array<{ hex: string; label: string }>;
+  homeEvidence: ProjectHomeEvidence;
 };
 
 export const projects: Project[] = [
@@ -100,7 +103,7 @@ export const projects: Project[] = [
     coverCaption: 'Проект интерьера «Свет и дуб»',
     summary: 'Квартира для пары: обедать вместе и работать дома, не занимая всю гостиную.',
     caseStudy: {
-      variant: 'standard', intro: 'Светлая квартира, где один стол поддерживает работу днём и общие ужины вечером.',
+      intro: 'Светлая квартира, где один стол поддерживает работу днём и общие ужины вечером.',
       location: 'Санкт-Петербург · Петроградская сторона', status: 'Интерьерная концепция', year: '2025',
       scope: ['Планировочная концепция', 'Свет', 'Встроенное хранение'], duration: '14–16 недель',
       brief: 'Сохранить простор общей комнаты и найти постоянное место для работы без отдельного кабинета.',
@@ -109,7 +112,19 @@ export const projects: Project[] = [
         { title:'Стол у окна', text:'Обеденное место становится удобной рабочей точкой с естественным светом.' },
         { title:'Единая плоскость хранения', text:'Закрытые дубовые фасады убирают бытовые вещи из общего пространства.' },
       ],
-      evidence: [],
+      evidence: [
+        {
+          label:'Стол и хранение',
+          title:'Один материал связывает два сценария',
+          text:'Стол у окна получает дневной свет для работы, а закрытые дубовые фасады принимают технику и бытовые вещи. Вечером рабочий фон исчезает, и та же зона снова становится столовой.',
+          image:{
+            src:svetDetail,
+            alt:'Дубовый стол у окна и закрытые фасады встроенного хранения',
+            caption:'Стол и хранение объединены одним тоном дерева.',
+            framing:'portrait',
+          },
+        },
+      ],
       planToSpace: {
         title: 'План и пространство',
         intro: 'Один вид сверху: сначала планировка, затем объём, свет и материалы.',
@@ -119,16 +134,29 @@ export const projects: Project[] = [
         plan: svetPlan,
         planAlt: 'План той же общей комнаты в совпадающем масштабе и расположении мебели',
       },
+      presentation: {
+        hero: { type:'image', src:svetCover, alt:'Общий вид светлой гостиной-столовой с дубовым столом у окна', caption:'Общий вид: стол занимает освещённую часть комнаты, хранение собрано вдоль дальней стены.' },
+        sectionOrder: ['overview', 'decisions', 'plan', 'evidence', 'materials', 'facts'],
+        overviewTitle: 'Общая комната для работы и ужинов',
+        decisionsLabel: 'Два ключевых решения',
+        decisionsTitle: 'Как сохранить жилой характер комнаты',
+        evidenceLabel: 'От плана к детали',
+        evidenceTitle: 'Геометрия и повседневный сценарий',
+      },
+      materials: {
+        title:'Тёплое дерево удерживает свет',
+        text:'Молочные стены и лён отражают дневной свет, дуб связывает стол с хранением, а графит обозначает небольшие функциональные детали.',
+        palette:[{ hex:'#E8E0D2', label:'молочный' }, { hex:'#B67D51', label:'дуб' }, { hex:'#C6C0B4', label:'лён' }, { hex:'#535547', label:'графит' }],
+      },
       nextProjectSlug:'dom-u-sada',
     },
-    evidence: {
+    homeEvidence: {
       context: 'Пара работает из дома и каждый день собирается за общим столом.',
       constraint: 'Рабочее место не должно превращать гостиную в постоянный кабинет.',
       move: 'Стол перенесён к окну, а техника и бытовые вещи собраны за закрытыми дубовыми фасадами.',
       effect: 'Днём здесь достаточно естественного света для работы; вечером та же зона снова становится столовой без видимого рабочего фона.',
+      image:{ src:svetDetail, alt:'Дубовый стол у окна и закрытые фасады встроенного хранения', caption:'Стол и хранение объединены одним тоном дерева.' },
     },
-    gallery: { src: svetDetail, alt: 'Дубовый стол у окна и закрытые фасады встроенного хранения', caption: 'Стол и хранение объединены одним тоном дерева.', note:'Материалы связывают рабочий и обеденный сценарии без отдельной декоративной зоны.' },
-    palette: [{ hex: '#E8E0D2', label: 'молочный' }, { hex: '#B67D51', label: 'дуб' }, { hex: '#C6C0B4', label: 'лён' }, { hex: '#535547', label: 'графит' }],
   },
   {
     slug: 'dom-u-sada', title: 'Дом у сада', order: 2, featured: false, flagship: false, kind: 'house', area: 164,
@@ -138,7 +166,7 @@ export const projects: Project[] = [
     coverCaption: 'Проект интерьера «Дом у сада»',
     summary: 'Дом для семьи, где общая комната продолжается в сад.',
     caseStudy: {
-      variant: 'flagship', intro: 'Загородный дом, где общая комната продолжает сад и собирает повседневные маршруты семьи.',
+      intro: 'Загородный дом, где общая комната продолжает сад и собирает повседневные маршруты семьи.',
       location: 'Санкт-Петербург · Курортный район', status: 'Интерьерная концепция', year: '2024',
       scope: ['Планировочная концепция', 'Визуальная концепция', 'Материалы и предметы'], duration: '18–20 недель',
       brief: 'Собрать гостиную, столовую и кухню в одно спокойное пространство, сохранив сад главным ориентиром из каждой повседневной точки.',
@@ -160,19 +188,21 @@ export const projects: Project[] = [
         decisionsTitle: 'От планировки к ощущению пространства',
         evidenceLabel: 'Пространство в работе',
         evidenceTitle: 'Как решения читаются в общей комнате',
-        materialsTitle: 'Спокойная палитра, связанная с садом',
-        materialsText: 'Светлое основание удерживает дневной свет, дуб добавляет тепло, а приглушённый зелёный возвращает в интерьер оттенок сада.',
+      },
+      materials: {
+        title:'Спокойная палитра, связанная с садом',
+        text:'Светлое основание удерживает дневной свет, дуб добавляет тепло, а приглушённый зелёный возвращает в интерьер оттенок сада.',
+        palette:[{ hex:'#D9D0C0', label:'известняк' }, { hex:'#9C6D42', label:'дуб' }, { hex:'#EEE8DF', label:'лён' }, { hex:'#67705A', label:'садовый зелёный' }],
       },
       nextProjectSlug:'tishina-goroda',
     },
-    evidence: {
+    homeEvidence: {
       context: 'Семья проводит большую часть дня в общей комнате, обращённой к саду.',
       constraint: 'Высокая мебель могла бы перекрыть длинную перспективу и отделить столовую от окон.',
       move: 'Низкая посадка и свободная ось между диваном, столом и остеклением сохраняют непрерывный взгляд наружу.',
       effect: 'Сад остаётся виден из главных повседневных точек: за столом, на диване и при движении через комнату.',
+      image:{ src:domDetail, alt:'Деревянный стол и льняной текстиль у окна с видом на сад', caption:'Дерево и лён смягчают каменные поверхности.' },
     },
-    gallery: { src: domDetail, alt: 'Деревянный стол и льняной текстиль у окна с видом на сад', caption: 'Дерево и лён смягчают каменные поверхности.', note:'Повтор материалов связывает столовую с мягкой зоной и светлым каменным основанием.' },
-    palette: [{ hex: '#D9D0C0', label: 'известняк' }, { hex: '#9C6D42', label: 'дуб' }, { hex: '#EEE8DF', label: 'лён' }, { hex: '#67705A', label: 'садовый зелёный' }],
   },
   {
     slug: 'tishina-goroda', title: 'Тишина города', order: 3, featured: true, flagship: true, kind: 'apartment', area: 62,
@@ -182,7 +212,7 @@ export const projects: Project[] = [
     coverCaption: 'Проект интерьера «Тишина города»',
     summary: 'Квартира в городе, где вечером можно убрать всё лишнее и остаться у окна.',
     caseStudy: {
-      variant: 'flagship', intro: 'Небольшая городская квартира, где закрытое хранение освобождает комнату, а место у окна остаётся открытым свету.',
+      intro: 'Небольшая городская квартира, где закрытое хранение освобождает комнату, а место у окна остаётся открытым свету.',
       location: 'Санкт-Петербург · Васильевский остров', status: 'Интерьерная концепция', year: '2025',
       scope: ['Планировочная концепция', 'Материалы', 'Свет'], duration: '14–16 недель',
       brief: 'Убрать повседневный визуальный шум и сохранить в общей комнате место для спокойного вечера.',
@@ -221,18 +251,6 @@ export const projects: Project[] = [
             position:'center',
           },
         },
-        {
-          label:'Материальная деталь',
-          title:'Фактуры смягчают компактный объём',
-          text:'Матовая окраска фасадов, плотная ткань кресла, шерсть ковра и тёмный камень различаются на близком расстоянии, оставаясь в одной приглушённой гамме.',
-          image:{
-            src:tishinaDetail,
-            alt:'Крупный фрагмент кресла, шерстяного пледа, ковра и тёмного каменного столика',
-            caption:'Ткань, шерсть и камень дают глубину без контрастного декора.',
-            framing:'macro',
-            position:'18% 82%',
-          },
-        },
       ],
       presentation: {
         hero: {
@@ -247,20 +265,22 @@ export const projects: Project[] = [
         decisionsLabel: 'Три точных решения',
         decisionsTitle: 'Что спрятано, что оставлено открытым',
         evidenceLabel: 'От общего к частному',
-        evidenceTitle: 'Хранение, место у окна и фактуры',
-        materialsTitle: 'Материалы работают на свет, а не на контраст',
-        materialsText: 'Тёплый серый связывает фасады и стены, шерсть смягчает посадку, а графит и тёмный камень удерживают глубину у пола.',
+        evidenceTitle: 'Хранение и место у окна',
+      },
+      materials: {
+        title:'Материалы работают на свет, а не на контраст',
+        text:'Тёплый серый связывает фасады и стены, шерсть смягчает посадку, а графит и тёмный камень удерживают глубину у пола.',
+        palette:[{ hex:'#C9C4B9', label:'тёплый серый' }, { hex:'#786F63', label:'дымчатый' }, { hex:'#E6E1D7', label:'шерсть' }, { hex:'#31322E', label:'графит' }],
       },
       nextProjectSlug:'liniya-lesa',
     },
-    evidence: {
+    homeEvidence: {
       context: 'Небольшая городская квартира должна поддерживать и активный день, и спокойный вечер.',
       constraint: 'Открытое хранение добавляло бы визуальный шум, а отдельная зона отдыха дробила бы комнату.',
       move: 'Хранение собрано в закрытом нижнем объёме, а кресло поставлено у окна без дополнительной перегородки.',
       effect: 'Повседневные вещи уходят из поля зрения, при этом у окна появляется отдельное место для чтения и паузы.',
+      image:{ src:tishinaDetail, alt:'Кресло у окна рядом со спокойным встроенным хранением', caption:'Место для чтения отделено от остальной комнаты.' },
     },
-    gallery: { src: tishinaDetail, alt: 'Кресло у окна рядом со спокойным встроенным хранением', caption: 'Место для чтения отделено от остальной комнаты.', note:'Один предмет и направленный свет создают паузу без дополнительной стены.' },
-    palette: [{ hex: '#C9C4B9', label: 'тёплый серый' }, { hex: '#786F63', label: 'дымчатый' }, { hex: '#E6E1D7', label: 'шерсть' }, { hex: '#31322E', label: 'графит' }],
   },
   {
     slug: 'liniya-lesa', title: 'Линия леса', order: 4, featured: true, flagship: false, kind: 'house', area: 128,
@@ -270,7 +290,7 @@ export const projects: Project[] = [
     coverCaption: 'Проект интерьера «Линия леса»',
     summary: 'Дом в лесу, в котором общий свет и вид на сосны задают ритм дня.',
     caseStudy: {
-      variant: 'standard', intro: 'Дом в лесу, где посадка и проходы подчинены длинному виду на сосны.',
+      intro: 'Дом в лесу, где посадка и проходы подчинены длинному виду на сосны.',
       location: 'Ленинградская область · Выборгское направление', status: 'Интерьерная концепция', year: '2026',
       scope: ['Планировочная концепция', 'Хранение', 'Материалы'], duration: '18–20 недель',
       brief: 'Сохранить открытый вид из общей комнаты и сделать путь к террасе частью повседневного сценария.',
@@ -278,17 +298,57 @@ export const projects: Project[] = [
       decisions: [
         { title:'Низкая мягкая группа', text:'Посадка остаётся ниже линии окна и не спорит с пейзажем.' },
         { title:'Скамья вдоль окна', text:'Лёгкий предмет добавляет место для паузы, не сужая маршрут.' },
-      ], evidence: [], nextProjectSlug:'svet-i-dub',
+        { title:'Палитра из пейзажа', text:'Камень, тёмный дуб и оливковый текстиль продолжают оттенки сосен, не имитируя их буквально.' },
+      ],
+      evidence: [
+        {
+          label:'Связь с видом',
+          title:'Низкая посадка сохраняет линию леса',
+          text:'Диван и столики остаются ниже нижней трети окна. Сосны читаются из глубины комнаты, а мебель не образует перед остеклением второй горизонт.',
+          image:{ src:liniyaCover, alt:'Гостиная с низким оливковым диваном и открытым видом на сосновый лес', caption:'Низкая мягкая группа оставляет пейзаж главным планом комнаты.', framing:'landscape', position:'center' },
+        },
+        {
+          label:'Место у окна',
+          title:'Скамья добавляет паузу, не занимая проход',
+          text:'Узкая деревянная скамья стоит вдоль остекления и не выступает в маршрут к террасе. Здесь можно остановиться у окна, не добавляя отдельное кресло и тяжёлую мягкую группу.',
+          image:{ src:liniyaDetail, alt:'Узкая деревянная скамья у большого окна с видом на сосны', caption:'Скамья следует линии окна; камень, дуб и оливковый оттенок продолжают природную палитру.', framing:'portrait', position:'center' },
+        },
+      ],
+      presentation: {
+        hero:{ type:'image', src:liniyaCover, alt:'Общий вид гостиной с низкой мебелью и панорамой соснового леса', caption:'Общий вид: мебель удерживается ниже линии остекления, проход к террасе остаётся свободным.' },
+        sectionOrder:['overview', 'evidence', 'decisions', 'materials', 'facts'],
+        overviewTitle:'Комната, собранная вокруг длинного вида',
+        decisionsLabel:'Три спокойных решения',
+        decisionsTitle:'Меньше предметов между домом и лесом',
+        evidenceLabel:'Линия взгляда',
+        evidenceTitle:'Вид, низкая посадка и место у окна',
+      },
+      materials:{
+        title:'Природная палитра без буквального декора',
+        text:'Светлый камень принимает северный свет, тёмный дуб обозначает тонкие горизонтали, а оливковый текстиль связывает интерьер с соснами за окном.',
+        palette:[{ hex:'#E1DDD2', label:'светлый камень' }, { hex:'#855D3D', label:'тёмный дуб' }, { hex:'#777B5B', label:'оливковый' }, { hex:'#34372E', label:'графит' }],
+      },
+      nextProjectSlug:'svet-i-dub',
     },
-    evidence: {
+    homeEvidence: {
       context: 'Загородный дом раскрывается к соснам, а семья перемещается между общей комнатой и террасой.',
       constraint: 'Массивная мебель у остекления перекрыла бы нижнюю часть вида и сузила проход.',
       move: 'Основная посадка опущена ниже линии окна, вдоль него оставлена лёгкая деревянная скамья.',
       effect: 'Пейзаж читается сидя и в движении, а путь к террасе остаётся свободным.',
+      image:{ src:liniyaDetail, alt:'Деревянная скамья у большого окна с видом на сосновый лес', caption:'Камень, дерево и приглушённый зелёный собирают вид в интерьере.' },
     },
-    gallery: { src: liniyaDetail, alt: 'Деревянная скамья у большого окна с видом на сосновый лес', caption: 'Камень, дерево и приглушённый зелёный собирают вид в интерьере.', note:'Приглушённая палитра удерживает внимание на естественном свете и соснах.' },
-    palette: [{ hex: '#E1DDD2', label: 'светлый камень' }, { hex: '#855D3D', label: 'тёмный дуб' }, { hex: '#777B5B', label: 'оливковый' }, { hex: '#34372E', label: 'графит' }],
   },
 ];
 
 export const featuredProjects = projects.filter(({ featured }) => featured).sort((a, b) => a.order - b.order);
+
+const projectSlugs = new Set(projects.map(({ slug }) => slug));
+for (const project of projects) {
+  const nextSlug = project.caseStudy.nextProjectSlug;
+  if (nextSlug === project.slug) throw new Error(`Project cannot link to itself: ${project.slug}`);
+  if (!projectSlugs.has(nextSlug)) throw new Error(`Unknown next project for ${project.slug}: ${nextSlug}`);
+  const evidenceCount = project.caseStudy.evidence.length + (project.caseStudy.planToSpace ? 1 : 0);
+  if (project.caseStudy.decisions.length < 2 || evidenceCount < 2) {
+    throw new Error(`Incomplete case study: ${project.slug}`);
+  }
+}
