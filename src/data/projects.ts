@@ -15,8 +15,28 @@ export type ProjectEvidence = {
   label: string;
   title: string;
   text: string;
-  image: { src: ImageMetadata; alt: string; caption: string };
+  image: {
+    src: ImageMetadata;
+    alt: string;
+    caption: string;
+    framing?: 'landscape' | 'portrait' | 'macro';
+    position?: string;
+  };
   hotspots?: Array<{ x: number; y: number; title: string; text: string }>;
+};
+export type ProjectCaseSection = 'overview' | 'decisions' | 'evidence' | 'materials' | 'facts';
+export type ProjectFlagshipPresentation = {
+  hero:
+    | { type: 'panorama' }
+    | { type: 'image'; src: ImageMetadata; alt: string; caption: string; position?: string };
+  sectionOrder: ProjectCaseSection[];
+  overviewTitle: string;
+  decisionsLabel: string;
+  decisionsTitle: string;
+  evidenceLabel: string;
+  evidenceTitle: string;
+  materialsTitle: string;
+  materialsText: string;
 };
 export type ProjectPlanToSpace = {
   title: string;
@@ -40,6 +60,7 @@ export type ProjectCaseStudy = {
   decisions: ProjectDecision[];
   evidence: ProjectEvidence[];
   planToSpace?: ProjectPlanToSpace;
+  presentation?: ProjectFlagshipPresentation;
   nextProjectSlug: string;
 };
 
@@ -130,7 +151,19 @@ export const projects: Project[] = [
       evidence: [
         { label:'Связь с садом', title:'Пейзаж остаётся частью комнаты', text:'Свободная ось и низкая посадка сохраняют вид на зелень из гостиной и при движении к столовой.', image:{ src:domCover, alt:'Гостиная дома с низкой мебелью и широким видом в сад', caption:'Линия взгляда проходит над мягкой группой к панорамному остеклению.' }, hotspots:[{ x:25, y:38, title:'Свободная ось', text:'В проходе к окнам нет высокой мебели и визуальных перегородок.' }, { x:69, y:70, title:'Низкая посадка', text:'Высота дивана сохраняет нижнюю часть сада в поле зрения.' }] },
         { label:'Ежедневный маршрут', title:'Столовая стоит на границе дома и сада', text:'Стол получает естественный свет и остаётся связан с кухней, не перегораживая путь через общую комнату.', image:{ src:domDetail, alt:'Дубовый стол у окна с видом на сад и льняным текстилем', caption:'Стол, окно и проход собраны в один ежедневный маршрут.' } },
-      ], nextProjectSlug:'tishina-goroda',
+      ],
+      presentation: {
+        hero: { type:'panorama' },
+        sectionOrder: ['overview', 'decisions', 'evidence', 'materials', 'facts'],
+        overviewTitle: 'Дом вокруг ежедневного вида на сад',
+        decisionsLabel: 'Три ключевых решения',
+        decisionsTitle: 'От планировки к ощущению пространства',
+        evidenceLabel: 'Пространство в работе',
+        evidenceTitle: 'Как решения читаются в общей комнате',
+        materialsTitle: 'Спокойная палитра, связанная с садом',
+        materialsText: 'Светлое основание удерживает дневной свет, дуб добавляет тепло, а приглушённый зелёный возвращает в интерьер оттенок сада.',
+      },
+      nextProjectSlug:'tishina-goroda',
     },
     evidence: {
       context: 'Семья проводит большую часть дня в общей комнате, обращённой к саду.',
@@ -142,22 +175,83 @@ export const projects: Project[] = [
     palette: [{ hex: '#D9D0C0', label: 'известняк' }, { hex: '#9C6D42', label: 'дуб' }, { hex: '#EEE8DF', label: 'лён' }, { hex: '#67705A', label: 'садовый зелёный' }],
   },
   {
-    slug: 'tishina-goroda', title: 'Тишина города', order: 3, featured: true, flagship: false, kind: 'apartment', area: 62,
+    slug: 'tishina-goroda', title: 'Тишина города', order: 3, featured: true, flagship: true, kind: 'apartment', area: 62,
     style: 'Японский минимализм', pricePerSqm: 4400, estimatedDesignFee: 285000,
     cover: tishinaCover,
     coverAlt: 'Гостиная городской квартиры с мягким диваном, встроенным хранением и видом на город',
     coverCaption: 'Проект интерьера «Тишина города»',
     summary: 'Квартира в городе, где вечером можно убрать всё лишнее и остаться у окна.',
     caseStudy: {
-      variant: 'standard', intro: 'Небольшая городская квартира с визуально спокойной общей комнатой и отдельным местом у окна.',
+      variant: 'flagship', intro: 'Небольшая городская квартира, где закрытое хранение освобождает комнату, а место у окна остаётся открытым свету.',
       location: 'Санкт-Петербург · Васильевский остров', status: 'Интерьерная концепция', year: '2025',
       scope: ['Планировочная концепция', 'Материалы', 'Свет'], duration: '14–16 недель',
       brief: 'Убрать повседневный визуальный шум и сохранить в общей комнате место для спокойного вечера.',
       constraints: ['Открытое хранение перегружает компактную комнату.', 'Отдельная перегородка для отдыха сократила бы полезную площадь.'],
       decisions: [
-        { title:'Закрытое нижнее хранение', text:'Повседневные вещи уходят из поля зрения, а верх стены остаётся свободным.' },
-        { title:'Место у окна', text:'Кресло формирует отдельный сценарий отдыха без перегородки.' },
-      ], evidence: [], nextProjectSlug:'liniya-lesa',
+        { title:'Закрытый низ, открытый ритм', text:'Основной объём хранения закрыт, а несколько ниш оставлены для книг и предметов, которыми пользуются каждый день.' },
+        { title:'Кресло вместо перегородки', text:'Место для чтения обозначено светом и отдельной посадкой, поэтому комната сохраняет всю полезную ширину.' },
+        { title:'Светлое поле у окна', text:'Тёплые серые поверхности и спокойный текстиль отражают дневной свет, не превращая комнату в белый фон.' },
+      ],
+      evidence: [
+        {
+          label:'Логика хранения',
+          title:'Большая система не выглядит тяжёлой',
+          text:'Глухие фасады собраны в нижней и боковой части стены. Открытыми остаются только несколько ниш: достаточно для повседневных вещей, но недостаточно для визуального шума.',
+          image:{
+            src:tishinaCover,
+            alt:'Общая комната с закрытым хранением вдоль правой стены и несколькими открытыми нишами',
+            caption:'Закрытые объёмы принимают основную нагрузку, открытые ниши сохраняют глубину стены.',
+            framing:'landscape',
+            position:'center',
+          },
+          hotspots:[
+            { x:83, y:34, title:'Открыто только необходимое', text:'Книги и несколько предметов остаются под рукой, остальное убрано за фасады.' },
+            { x:82, y:74, title:'Хранение ниже линии взгляда', text:'Сплошной нижний объём не перекрывает окно и не дробит комнату отдельными шкафами.' },
+          ],
+        },
+        {
+          label:'Место у окна',
+          title:'Для чтения не понадобилась отдельная комната',
+          text:'Кресло стоит у естественного света и рядом с книгами. Оно создаёт самостоятельный вечерний сценарий, но не перекрывает проход и не отделяется стеной.',
+          image:{
+            src:tishinaDetail,
+            alt:'Мягкое кресло у окна рядом с книгами и встроенным хранением',
+            caption:'Кресло, локальный свет и ближайшая полка формируют тихое место без перегородки.',
+            framing:'portrait',
+            position:'center',
+          },
+        },
+        {
+          label:'Материальная деталь',
+          title:'Фактуры смягчают компактный объём',
+          text:'Матовая окраска фасадов, плотная ткань кресла, шерсть ковра и тёмный камень различаются на близком расстоянии, оставаясь в одной приглушённой гамме.',
+          image:{
+            src:tishinaDetail,
+            alt:'Крупный фрагмент кресла, шерстяного пледа, ковра и тёмного каменного столика',
+            caption:'Ткань, шерсть и камень дают глубину без контрастного декора.',
+            framing:'macro',
+            position:'18% 82%',
+          },
+        },
+      ],
+      presentation: {
+        hero: {
+          type:'image',
+          src:tishinaCover,
+          alt:'Общий вид небольшой городской гостиной с окном, мягкой зоной и встроенным хранением',
+          caption:'Общий вид: свет остаётся главным акцентом, хранение собирается вдоль одной стены.',
+          position:'center',
+        },
+        sectionOrder: ['overview', 'evidence', 'decisions', 'materials', 'facts'],
+        overviewTitle: 'Тишина без лишней комнаты',
+        decisionsLabel: 'Три точных решения',
+        decisionsTitle: 'Что спрятано, что оставлено открытым',
+        evidenceLabel: 'От общего к частному',
+        evidenceTitle: 'Хранение, место у окна и фактуры',
+        materialsTitle: 'Материалы работают на свет, а не на контраст',
+        materialsText: 'Тёплый серый связывает фасады и стены, шерсть смягчает посадку, а графит и тёмный камень удерживают глубину у пола.',
+      },
+      nextProjectSlug:'liniya-lesa',
     },
     evidence: {
       context: 'Небольшая городская квартира должна поддерживать и активный день, и спокойный вечер.',

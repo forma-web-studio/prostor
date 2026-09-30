@@ -6,14 +6,14 @@ interface Props { evidence: ProjectEvidence; index: number; reverse?: boolean; }
 const { evidence, index, reverse = false } = Astro.props;
 ---
 
-<article class:list={['case-evidence', { 'case-evidence--reverse':reverse }]}>
+<article class:list={['case-evidence', `case-evidence--${evidence.image.framing ?? 'landscape'}`, { 'case-evidence--reverse':reverse }]}>
   <div class="case-evidence__copy">
-    <p class="eyebrow">Evidence {String(index).padStart(2,'0')} · {evidence.label}</p>
+    <p class="eyebrow">Разбор {String(index).padStart(2,'0')} · {evidence.label}</p>
     <h3>{evidence.title}</h3>
     <p>{evidence.text}</p>
   </div>
   <figure>
-    <div class="case-evidence__image">
+    <div class="case-evidence__image" style={`--image-position:${evidence.image.position ?? 'center'};`}>
       <Image src={evidence.image.src} alt={evidence.image.alt} width={1200} quality={72} widths={[480,720,960,1200]} sizes="(max-width: 767px) calc(100vw - 40px), (min-width: 1440px) 748px, 55vw" loading="lazy" />
       {evidence.hotspots && <div class="case-evidence__hotspots" aria-label="Примечания к изображению">
         {evidence.hotspots.map((hotspot, hotspotIndex) => <details style={`--hotspot-x:${hotspot.x}%;--hotspot-y:${hotspot.y}%`} class:list={{ 'is-right':hotspot.x > 55 }}>
@@ -32,7 +32,11 @@ const { evidence, index, reverse = false } = Astro.props;
   .case-evidence--reverse .case-evidence__copy { grid-column:9 / span 4; } .case-evidence--reverse figure { grid-column:1 / span 7; grid-row:1; }
   h3 { font-family:var(--font-display); font-size:clamp(2rem,3.5vw,3.25rem); font-weight:400; letter-spacing:-.03em; line-height:1.12; margin:var(--space-3) 0 var(--space-4); text-wrap:balance; }
   .case-evidence__copy > p:last-child { color:var(--muted); line-height:1.7; margin:0; max-width:34ch; }
-  .case-evidence__image { aspect-ratio:3/2; overflow:hidden; position:relative; } .case-evidence__image :global(img) { height:100%; object-fit:cover; width:100%; }
+  .case-evidence__image { aspect-ratio:3/2; overflow:hidden; position:relative; } .case-evidence__image :global(img) { height:100%; object-fit:cover; object-position:var(--image-position); width:100%; }
+  .case-evidence--portrait figure { grid-column:7 / span 5; } .case-evidence--portrait.case-evidence--reverse figure { grid-column:1 / span 5; }
+  .case-evidence--portrait .case-evidence__image { aspect-ratio:4/5; }
+  .case-evidence--macro .case-evidence__image { aspect-ratio:16/9; }
+  .case-evidence--macro .case-evidence__image :global(img) { transform:scale(1.6); transform-origin:var(--image-position); }
   figcaption { color:var(--muted); font-size:var(--text-xs); margin-top:10px; }
   .case-evidence__hotspots { inset:0; pointer-events:none; position:absolute; }
   details { left:var(--hotspot-x); pointer-events:auto; position:absolute; top:var(--hotspot-y); z-index:3; }
@@ -44,8 +48,11 @@ const { evidence, index, reverse = false } = Astro.props;
   @media(max-width:767px) {
     .case-evidence,.case-evidence--reverse { display:flex; flex-direction:column; gap:var(--space-5); padding:var(--space-6) 0; }
     .case-evidence__copy,figure,.case-evidence--reverse .case-evidence__copy,.case-evidence--reverse figure { width:100%; }
-    .case-evidence__image { aspect-ratio:auto; overflow:visible; }
+    .case-evidence__image,.case-evidence--portrait .case-evidence__image,.case-evidence--macro .case-evidence__image { aspect-ratio:auto; overflow:visible; }
     .case-evidence__image :global(picture) { aspect-ratio:4/3; display:block; overflow:hidden; }
+    .case-evidence--portrait .case-evidence__image :global(picture) { aspect-ratio:4/5; }
+    .case-evidence--macro .case-evidence__image :global(picture) { aspect-ratio:16/10; }
+    .case-evidence--macro .case-evidence__image { overflow:hidden; }
     .case-evidence__hotspots { display:grid; gap:var(--space-2); inset:auto; margin-top:var(--space-3); position:relative; }
     details,details.is-right { border-top:1px solid var(--line); left:auto; padding-top:var(--space-2); position:relative; top:auto; }
     summary { border:0; border-radius:0; box-shadow:none; height:44px; justify-content:flex-start; transform:none; width:100%; }

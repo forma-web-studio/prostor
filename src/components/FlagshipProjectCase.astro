@@ -10,6 +10,8 @@ import { withBase } from '../utils/urls';
 interface Props { project: Project; next: Project; }
 const { project, next } = Astro.props;
 const study = project.caseStudy;
+const presentation = study.presentation;
+if (!presentation) throw new Error(`Missing flagship presentation: ${project.slug}`);
 const kind = project.kind === 'apartment' ? 'Квартира' : 'Дом';
 const rubles = (value: number) => new Intl.NumberFormat('ru-RU').format(value);
 ---
@@ -24,38 +26,49 @@ const rubles = (value: number) => new Intl.NumberFormat('ru-RU').format(value);
     <p class="flagship__intro">{study.intro}</p>
   </header>
 
-  <CasePanorama />
+  {presentation.hero.type === 'panorama'
+    ? <CasePanorama />
+    : <figure class="flagship-media">
+        <div class="flagship-media__image" style={`--hero-position:${presentation.hero.position ?? 'center'}`}>
+          <Image src={presentation.hero.src} alt={presentation.hero.alt} width={1320} quality={78} widths={[640,960,1320,1920]} sizes="(max-width: 767px) calc(100vw - 40px), min(1320px, 100vw - 120px)" loading="eager" fetchpriority="high" />
+        </div>
+        <figcaption>{presentation.hero.caption}</figcaption>
+      </figure>}
 
-  <section class="case-overview" aria-labelledby="brief-title">
-    <div><p class="eyebrow">Задача</p><h2 id="brief-title">Дом вокруг ежедневного вида на сад</h2></div>
-    <div class="case-overview__brief"><p>{study.brief}</p></div>
-    <div class="case-overview__constraints"><p class="eyebrow">Ограничения</p><ol>{study.constraints.map((constraint) => <li>{constraint}</li>)}</ol></div>
-  </section>
-
-  <section class="case-decisions" aria-labelledby="decisions-title">
-    <header><p class="eyebrow">Три ключевых решения</p><h2 id="decisions-title">От планировки к ощущению пространства</h2></header>
-    <ol>{study.decisions.map((decision,index) => <li><span>0{index + 1}</span><div><h3>{decision.title}</h3><p>{decision.text}</p></div></li>)}</ol>
-  </section>
-
-  <section class="case-evidence-section" aria-labelledby="evidence-title">
-    <header><p class="eyebrow">Evidence</p><h2 id="evidence-title">Как решения читаются в пространстве</h2></header>
-    {study.evidence.map((evidence,index) => <CaseEvidence evidence={evidence} index={index + 1} reverse={index % 2 === 1} />)}
-  </section>
-
-  <section class="case-materials" aria-labelledby="materials-title">
-    <div><p class="eyebrow">Материалы</p><h2 id="materials-title">Спокойная палитра, связанная с садом</h2><p>Светлое основание удерживает дневной свет, дуб добавляет тепло, а приглушённый зелёный возвращает в интерьер оттенок сада.</p></div>
-    <ul>{project.palette.map((color) => <li><span style={`--swatch:${color.hex}`} aria-hidden="true"></span><strong>{color.label}</strong><small>{color.hex}</small></li>)}</ul>
-  </section>
-
-  <section class="case-facts" aria-labelledby="facts-title">
-    <p class="eyebrow" id="facts-title">Параметры концепции</p>
-    <dl>
-      <div><dt>Локация</dt><dd>{study.location}</dd></div>
-      <div><dt>Год и статус</dt><dd>{study.year} · {study.status}</dd></div>
-      <div><dt>Состав</dt><dd>{study.scope.join(', ')}</dd></div>
-      <div><dt>Ориентир срока</dt><dd>{study.duration}</dd></div>
-    </dl>
-  </section>
+  {presentation.sectionOrder.map((section) => (
+    section === 'overview'
+      ? <section class="case-overview" aria-labelledby="brief-title">
+          <div><p class="eyebrow">Задача</p><h2 id="brief-title">{presentation.overviewTitle}</h2></div>
+          <div class="case-overview__brief"><p>{study.brief}</p></div>
+          <div class="case-overview__constraints"><p class="eyebrow">Ограничения</p><ol>{study.constraints.map((constraint) => <li>{constraint}</li>)}</ol></div>
+        </section>
+      : section === 'decisions'
+        ? <section class="case-decisions" aria-labelledby="decisions-title">
+            <header><p class="eyebrow">{presentation.decisionsLabel}</p><h2 id="decisions-title">{presentation.decisionsTitle}</h2></header>
+            <ol>{study.decisions.map((decision,index) => <li><span>0{index + 1}</span><div><h3>{decision.title}</h3><p>{decision.text}</p></div></li>)}</ol>
+          </section>
+        : section === 'evidence'
+          ? <section class="case-evidence-section" aria-labelledby="evidence-title">
+              <header><p class="eyebrow">{presentation.evidenceLabel}</p><h2 id="evidence-title">{presentation.evidenceTitle}</h2></header>
+              {study.evidence.map((evidence,index) => <CaseEvidence evidence={evidence} index={index + 1} reverse={index % 2 === 1} />)}
+            </section>
+          : section === 'materials'
+            ? <section class="case-materials" aria-labelledby="materials-title">
+                <div><p class="eyebrow">Материалы</p><h2 id="materials-title">{presentation.materialsTitle}</h2><p>{presentation.materialsText}</p></div>
+                <ul>{project.palette.map((color) => <li><span style={`--swatch:${color.hex}`} aria-hidden="true"></span><strong>{color.label}</strong><small>{color.hex}</small></li>)}</ul>
+              </section>
+            : section === 'facts'
+              ? <section class="case-facts" aria-labelledby="facts-title">
+                  <p class="eyebrow" id="facts-title">Параметры концепции</p>
+                  <dl>
+                    <div><dt>Локация</dt><dd>{study.location}</dd></div>
+                    <div><dt>Год и статус</dt><dd>{study.year} · {study.status}</dd></div>
+                    <div><dt>Состав</dt><dd>{study.scope.join(', ')}</dd></div>
+                    <div><dt>Ориентир срока</dt><dd>{study.duration}</dd></div>
+                  </dl>
+                </section>
+              : null
+  ))}
 
   <section class="case-next" aria-labelledby="next-title">
     <a href={withBase(`/projects/${next.slug}/`)}>
@@ -79,6 +92,11 @@ const rubles = (value: number) => new Intl.NumberFormat('ru-RU').format(value);
   h1 { font-size:clamp(3.75rem,8vw,7rem); grid-column:1 / span 8; line-height:1; margin:0; }
   .flagship__context { color:var(--muted); grid-column:1 / span 6; margin:0; }
   .flagship__intro { font-size:var(--text-lead); grid-column:8 / span 5; grid-row:2 / span 2; line-height:1.65; margin:0; max-width:34ch; }
+  .flagship-media { margin:var(--space-7) 0 0; }
+  .flagship-media__image { aspect-ratio:3/2; overflow:hidden; }
+  .flagship-media__image :global(picture),.flagship-media__image :global(img) { display:block; height:100%; width:100%; }
+  .flagship-media__image :global(img) { object-fit:cover; object-position:var(--hero-position); }
+  .flagship-media figcaption { color:var(--muted); font-size:var(--text-xs); margin-top:10px; }
   h2 { font-size:var(--title-section); line-height:1.12; margin:var(--space-2) 0 0; }
   .case-overview { border-top:1px solid var(--line); display:grid; gap:var(--grid-gap); grid-template-columns:var(--grid-columns); margin-top:var(--section-space); padding-top:var(--space-5); }
   .case-overview > div:first-child { grid-column:1 / span 5; } .case-overview__brief { grid-column:6 / span 3; } .case-overview__constraints { grid-column:9 / span 4; }
@@ -101,6 +119,7 @@ const rubles = (value: number) => new Intl.NumberFormat('ru-RU').format(value);
   @media(min-width:768px) and (max-width:1099px) { .flagship__intro { grid-column:7 / span 6; } .case-overview > div:first-child { grid-column:1 / span 5; } .case-overview__brief { grid-column:6 / span 7; } .case-overview__constraints { grid-column:6 / span 7; margin-top:var(--space-4); } }
   @media(max-width:767px) {
     .flagship { padding-bottom:var(--space-7); } .flagship__header { display:block; padding-top:var(--space-5); } h1 { font-size:clamp(3rem,16vw,4.25rem); margin-top:var(--space-2); } .flagship__context { margin-top:var(--space-3); } .flagship__intro { font-size:1.05rem; margin-top:var(--space-4); }
+    .flagship-media { margin-top:var(--space-5); } .flagship-media__image { aspect-ratio:4/3; }
     .case-overview { display:block; margin-top:var(--space-7); } .case-overview__brief,.case-overview__constraints { margin-top:var(--space-5); }
     .case-decisions,.case-evidence-section,.case-materials,.case-facts,.case-next,.case-cta { margin-top:var(--space-7); }
     .case-decisions > header,.case-evidence-section > header { display:block; } .case-decisions > header h2,.case-evidence-section > header h2 { font-size:2.35rem; margin-top:var(--space-2); }
