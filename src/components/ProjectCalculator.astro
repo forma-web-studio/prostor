@@ -2,11 +2,58 @@
 import { services } from '../data/services';
 import { withBase } from '../utils/urls';
 import ArrowIcon from './ArrowIcon.astro';
+
+const estimableServices = services.filter(service => 'estimate' in service);
 ---
 <section class="calculator" data-calculator aria-labelledby="calculator-title">
-  <div><p class="eyebrow">Предварительная оценка</p><h2 id="calculator-title">С чего начинается проект</h2><p>Диапазон помогает сориентироваться до первой встречи. Точный расчёт зависит от планировки и состава помещений.</p></div>
-  <form><label>Тип объекта<select name="kind"><option value="apartment">Квартира</option><option value="house">Дом</option></select></label><label>Площадь, м²<input name="area" value="80" inputmode="numeric" aria-describedby="calc-area-error" /><i id="calc-area-error"></i></label><label>Задача<select name="service">{services.filter(s=>s.rate).map(s=><option value={s.slug}>{s.title}</option>)}</select></label></form>
-  <div class="calculator__result" aria-live="polite"><p>Ориентир</p><strong data-calc-price>—</strong><span data-calc-term>—</span><a class="inline-link" data-calc-link href={withBase('/contact/')}>Перейти к консультации <ArrowIcon /></a></div>
+  <div class="calculator__intro">
+    <p class="eyebrow">Предварительная оценка</p>
+    <h2 id="calculator-title">Проверить порядок бюджета</h2>
+    <p>Расчёт доступен для планировки и полного дизайн-проекта. Это ориентир до знакомства с объектом, а не публичная оферта.</p>
+  </div>
+  <form novalidate>
+    <label>Тип объекта<select name="kind"><option value="apartment">Квартира</option><option value="house">Дом</option></select></label>
+    <label>Площадь, м²<input name="area" value="80" inputmode="decimal" autocomplete="off" aria-describedby="calc-area-error" /><i id="calc-area-error" aria-live="polite"></i></label>
+    <label>Задача<select name="service">{estimableServices.map(service => <option value={service.slug}>{service.title}</option>)}</select></label>
+    <button type="submit">Обновить расчёт</button>
+  </form>
+  <div class="calculator__result" aria-live="polite" aria-atomic="true">
+    <p>Ориентировочный диапазон</p>
+    <strong data-calc-price>—</strong>
+    <span data-calc-term>—</span>
+    <a class="inline-link" data-calc-link href={withBase('/contact/')}>Перейти к консультации <ArrowIcon /></a>
+  </div>
 </section>
 <script src="../scripts/calculator.ts"></script>
-<style>.calculator{border-block:1px solid var(--line);display:grid;gap:32px;grid-template-columns:1.1fr 1fr 1fr;padding:48px 0}.calculator h2{font-family:Prata,Georgia,serif;font-size:clamp(32px,3vw,46px);font-weight:400;line-height:1.1;margin:10px 0 16px}.calculator p{font-size:15px;margin:0;max-width:37ch}.calculator form{display:grid;gap:14px}.calculator label{font-size:13px;font-weight:650}.calculator select,.calculator input{appearance:none;background-color:rgba(250,248,243,.25);border:1px solid var(--control-line);border-radius:0;box-shadow:0 1px 0 rgba(255,255,255,.58) inset;display:block;margin-top:6px;min-height:50px;padding:10px 12px;width:100%}.calculator select{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 17px) 22px,calc(100% - 12px) 22px;background-repeat:no-repeat;background-size:5px 5px;padding-right:38px}.calculator select:focus,.calculator input:focus{background-color:var(--paper);border-color:var(--focus);box-shadow:0 0 0 3px rgba(79,92,69,.12),0 1px 0 #fff inset;outline:0}.calculator input[aria-invalid='true']{background:#fbf3f1;border-color:var(--error);box-shadow:0 0 0 3px rgba(150,59,52,.08)}.calculator i{color:var(--error);display:block;font-size:12px;font-style:normal;margin-top:4px;min-height:18px}.calculator__result{align-self:end;background:var(--paper);border:1px solid var(--line);box-shadow:0 12px 26px rgba(37,40,36,.05);padding:24px}.calculator__result p{color:var(--muted);font-size:12px;text-transform:uppercase}.calculator__result strong,.calculator__result span{display:block}.calculator__result strong{font-family:Prata,Georgia,serif;font-size:32px;font-variant-numeric:tabular-nums;font-weight:400;margin:8px 0;transition:opacity var(--duration-fast) var(--ease-ui),transform var(--duration-fast) var(--ease-ui)}.calculator__result span{color:var(--muted);font-size:14px;margin-bottom:18px;transition:opacity var(--duration-fast) var(--ease-ui)}.calculator__result.is-updating strong,.calculator__result.is-updating span{opacity:.35;transform:translateY(2px)}.calculator__result a{font-size:14px}@media(max-width:767px){.calculator{display:block;padding:40px 0}.calculator form,.calculator__result{margin-top:28px}}</style>
+<style>
+  .calculator { border-block:1px solid var(--line); display:grid; gap:var(--grid-gap); grid-template-columns:repeat(12,minmax(0,1fr)); padding:var(--space-7) 0; }
+  .calculator__intro { grid-column:1 / span 4; }
+  .calculator h2 { font-family:var(--font-display); font-size:clamp(2rem,3vw,2.9rem); font-weight:400; letter-spacing:-.025em; line-height:1.1; margin:var(--space-2) 0 var(--space-3); }
+  .calculator__intro > p:last-child { color:var(--muted); font-size:var(--text-sm); line-height:1.65; margin:0; max-width:37ch; }
+  .calculator form { display:grid; gap:var(--space-3); grid-column:6 / span 3; }
+  .calculator label { font-size:var(--text-xs); font-weight:650; }
+  .calculator select,.calculator input { appearance:none; background-color:rgba(250,248,243,.25); border:1px solid var(--control-line); border-radius:0; box-shadow:0 1px 0 rgba(255,255,255,.58) inset; display:block; margin-top:6px; min-height:50px; padding:10px 12px; width:100%; }
+  .calculator select { background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%); background-position:calc(100% - 17px) 22px,calc(100% - 12px) 22px; background-repeat:no-repeat; background-size:5px 5px; padding-right:38px; }
+  .calculator select:focus,.calculator input:focus { background-color:var(--paper); border-color:var(--focus); box-shadow:0 0 0 3px rgba(79,92,69,.12),0 1px 0 #fff inset; outline:0; }
+  .calculator input[aria-invalid='true'] { background:#fbf3f1; border-color:var(--error); box-shadow:0 0 0 3px rgba(150,59,52,.08); }
+  .calculator i { color:var(--error); display:block; font-size:var(--text-xs); font-style:normal; line-height:1.35; margin-top:4px; min-height:2.7em; }
+  .calculator button { align-items:center; background:transparent; border:1px solid var(--ink); color:var(--ink); cursor:pointer; display:inline-flex; font:inherit; font-size:var(--text-sm); justify-content:center; min-height:48px; padding:10px 16px; transition:background-color var(--duration-fast) var(--ease-ui),color var(--duration-fast) var(--ease-ui); }
+  .calculator button:hover,.calculator button:focus-visible { background:var(--ink); color:var(--paper); }
+  .calculator__result { align-self:end; background:var(--paper); border:1px solid var(--line); box-shadow:0 12px 26px rgba(37,40,36,.05); grid-column:10 / span 3; min-height:226px; padding:var(--space-4); }
+  .calculator__result p { color:var(--muted); font-size:var(--text-xs); margin:0; text-transform:uppercase; }
+  .calculator__result strong,.calculator__result span { display:block; }
+  .calculator__result strong { font-family:var(--font-display); font-size:clamp(1.65rem,2.3vw,2.15rem); font-variant-numeric:tabular-nums; font-weight:400; line-height:1.2; margin:var(--space-2) 0; min-height:2.4em; transition:opacity var(--duration-fast) var(--ease-ui),transform var(--duration-fast) var(--ease-ui); }
+  .calculator__result span { color:var(--muted); font-size:var(--text-sm); line-height:1.5; margin-bottom:var(--space-3); min-height:3em; transition:opacity var(--duration-fast) var(--ease-ui); }
+  .calculator__result.is-updating strong,.calculator__result.is-updating span { opacity:.35; transform:translateY(2px); }
+  .calculator__result a { font-size:var(--text-sm); }
+  @media(max-width:1023px){
+    .calculator__intro { grid-column:1 / span 5; }
+    .calculator form { grid-column:6 / span 3; }
+    .calculator__result { grid-column:9 / span 4; }
+  }
+  @media(max-width:767px){
+    .calculator { display:block; padding:var(--space-6) 0; }
+    .calculator form,.calculator__result { margin-top:var(--space-5); }
+    .calculator__result { min-height:0; }
+  }
+</style>
