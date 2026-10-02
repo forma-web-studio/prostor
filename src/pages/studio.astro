@@ -1,26 +1,187 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProcessSteps from '../components/ProcessSteps.astro';
 import Button from '../components/Button.astro';
 import ArrowIcon from '../components/ArrowIcon.astro';
-import { Image } from 'astro:assets';
 import { projects } from '../data/projects';
+import { contacts, studioDeliverables, studioFaq, studioPrinciples } from '../data/site';
 import { withBase } from '../utils/urls';
+
 const cityProject = projects.find(({ slug }) => slug === 'tishina-goroda')!;
+const proof = cityProject.homeEvidence;
 ---
-<BaseLayout title="Подход — ПРОСТОР" description="Дизайн интерьера: от планировки и выбора материалов до рабочей документации.">
-  <article class="studio container"><p class="eyebrow">Подход</p><h1>Сначала — как вы живёте</h1><p class="lead">Сначала разбираемся, как устроен ваш день, а затем собираем пространство в ясную, спокойную систему.</p>
-    <section class="focus"><div><p class="eyebrow">Одно решение в деталях</p><h2>Тишина города</h2><p>{cityProject.summary}</p><ul>{cityProject.caseStudy.decisions.map((decision) => <li>{decision.text}</li>)}</ul><a class="inline-link" href={withBase('/projects/tishina-goroda/')}>Смотреть проект <ArrowIcon /></a></div><figure><div class="focus__media"><Image src={cityProject.cover} alt={cityProject.coverAlt} width={1200} quality={70} widths={[640,960,1200]} sizes="(max-width: 767px) calc(100vw - 40px), 48vw" loading="lazy" /></div><figcaption>{cityProject.coverCaption}</figcaption></figure></section>
-    <section><p class="eyebrow">Что вы получаете</p><div class="services"><div><h2>Планировка</h2><p>Логика движения, света и хранения до выбора декора.</p></div><div><h2>Концепция</h2><p>Материалы, палитра и атмосфера, которые поддерживают повседневную жизнь.</p></div><div><h2>Документация</h2><p>Понятный набор решений для дальнейшей реализации.</p></div></div><p class="service-note">Состав проекта уточняется под ваше пространство: от отдельных планировочных решений до полного комплекта чертежей.</p></section>
-    <section><p class="eyebrow">Процесс</p><h2 class="sequence-title">От разговора к проекту</h2><ProcessSteps /></section>
-    <section><p class="eyebrow">Вопросы</p><div class="faq"><details><summary>Что подготовить к первому разговору?</summary><p>План, площадь и несколько слов о привычках и пожеланиях.</p></details><details><summary>Как строятся этапы?</summary><p>От знакомства и планировки к концепции и документации.</p></details><details><summary>Что входит в концепт?</summary><p>Направление по материалам, свету и атмосфере пространства.</p></details></div></section><Button href={withBase('/contact/')}>Обсудить интерьер</Button>
+
+<BaseLayout title="Подход — ПРОСТОР" description="Как ПРОСТОР работает с планировкой, материалами и границами интерьерного проекта.">
+  <article class="studio container">
+    <header class="studio-hero">
+      <div class="studio-hero__title">
+        <p class="eyebrow">Подход студии</p>
+        <h1>Сначала понять жизнь пространства</h1>
+      </div>
+      <div class="studio-hero__intro">
+        <p>Мы начинаем не со стиля, а с повседневных сценариев: как вы входите, работаете, отдыхаете, храните вещи и встречаетесь за одним столом.</p>
+        <p>Так планировка, свет и материалы становятся одной системой, а каждое решение можно проверить по задаче, а не только по кадру.</p>
+        <dl>
+          <div><dt>Территория работы</dt><dd>{contacts.territory}</dd></div>
+          <div><dt>Формат</dt><dd>Квартиры и загородные дома</dd></div>
+        </dl>
+      </div>
+    </header>
+
+    <section class="proof" aria-labelledby="proof-title">
+      <div class="proof__copy">
+        <p class="eyebrow">Метод на одном решении</p>
+        <h2 id="proof-title">«Тишина города»: убрать шум, не дробя комнату</h2>
+        <dl>
+          <div><dt>Задача</dt><dd>{proof.context}</dd></div>
+          <div><dt>Ограничение</dt><dd>{proof.constraint}</dd></div>
+          <div><dt>Решение</dt><dd>{proof.move}</dd></div>
+          <div class="proof__effect"><dt>Что изменилось</dt><dd>{proof.effect}</dd></div>
+        </dl>
+        <a class="inline-link" href={withBase('/projects/tishina-goroda/')}>Посмотреть полный проект <ArrowIcon /></a>
+      </div>
+      <figure>
+        <div class="proof__media">
+          <Image src={proof.image.src} alt={proof.image.alt} width={1122} quality={74} widths={[480,720,960,1122]} sizes="(max-width: 767px) calc(100vw - 40px), (min-width: 1440px) 620px, 46vw" loading="lazy" />
+        </div>
+        <figcaption>{proof.image.caption}</figcaption>
+      </figure>
+    </section>
+
+    <section class="deliverables" aria-labelledby="deliverables-title">
+      <header class="section-heading">
+        <div><p class="eyebrow">Что получает клиент</p><h2 id="deliverables-title">Результат, который можно согласовать и передать дальше</h2></div>
+        <p>Точный комплект зависит от выбранной услуги. До начала работы фиксируем не только состав выдачи, но и то, где заканчивается участие студии.</p>
+      </header>
+      <ol class="deliverables__list">
+        {studioDeliverables.map(({ number, title, text, boundary }) => (
+          <li><span>{number}</span><h3>{title}</h3><p>{text}</p><strong>{boundary}</strong></li>
+        ))}
+      </ol>
+      <a class="inline-link deliverables__link" href={withBase('/services/')}>Сравнить состав услуг <ArrowIcon /></a>
+    </section>
+
+    <section class="process-section" aria-labelledby="process-title">
+      <header class="section-heading">
+        <div><p class="eyebrow">Как строится работа</p><h2 id="process-title">Решения развиваются поэтапно</h2></div>
+        <p>Процесс описывает порядок работы, а не обещает одинаковый комплект для любой задачи. Состав результата определяется услугой.</p>
+      </header>
+      <ProcessSteps />
+    </section>
+
+    <section class="principles" aria-labelledby="principles-title">
+      <header><p class="eyebrow">Рабочие принципы</p><h2 id="principles-title">Как принимаются решения</h2></header>
+      <ol>
+        {studioPrinciples.map(({ title, text }, index) => (
+          <li><span>0{index + 1}</span><h3>{title}</h3><p>{text}</p></li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="faq-section" aria-labelledby="faq-title">
+      <header><p class="eyebrow">До начала работы</p><h2 id="faq-title">Частые вопросы</h2></header>
+      <div class="faq">
+        {studioFaq.map(({ question, answer }) => <details><summary>{question}</summary><p>{answer}</p></details>)}
+      </div>
+    </section>
+
+    <section class="studio-cta" aria-labelledby="cta-title">
+      <div><p class="eyebrow">Первый разговор</p><h2 id="cta-title">Определим достаточный состав проекта</h2></div>
+      <div><p>Пришлите план, фотографии и несколько слов о задаче. Сверим исходные данные и предложим ближайший шаг без расширения работы на ходу.</p><Button href={withBase('/contact/')}>Обсудить пространство</Button></div>
+    </section>
   </article>
 </BaseLayout>
+
 <style>
-  h1,h2 { font-family:Prata,Georgia,serif; font-weight:400; text-wrap:balance; } .studio { padding:72px 0 64px; } .studio>section { margin-top:72px; }
-  h1 { font-size:clamp(48px,6vw,82px); line-height:1.06; margin:12px 0; max-width:14ch; } .lead { font-size:18px; max-width:45ch; }
-  .focus { align-items:end; display:grid; gap:48px; grid-template-columns:5fr 6fr; } .focus h2 { font-size:42px; margin:12px 0; } .focus p:not(.eyebrow) { max-width:36ch; } .focus ul { margin:20px 0 24px; padding-left:20px; } .focus li + li { margin-top:8px; } figure { margin:0; } .focus__media { aspect-ratio:3/2; overflow:hidden; } figcaption { color:var(--muted); font-size:14px; margin-top:10px; }
-  .services { display:grid; gap:24px; grid-template-columns:repeat(3,1fr); margin-top:32px; } .services>div,details { border-top:1px solid var(--line); padding-top:16px; } .services h2 { font-size:30px; margin:0; } .service-note { color:var(--muted); font-size:14px; margin:24px 0 0; }
-  .sequence-title { font-size:clamp(34px,4vw,48px); margin:10px 0 0; } .faq { display:grid; gap:16px; margin-top:32px; max-width:760px; } summary { cursor:pointer; font-weight:600; padding-bottom:12px; }
-  .studio > :global(.button) { margin-top:64px; } @media(max-width:767px) { .studio { padding:48px 0; } .studio>section { margin-top:48px; } .focus { display:block; } .focus figure { margin-top:32px; } .services { grid-template-columns:1fr; } .studio > :global(.button) { margin-top:48px; width:100%; } }
+  h1,h2,h3 { font-family:var(--font-display); font-weight:400; letter-spacing:-.03em; text-wrap:balance; }
+  .studio { padding-bottom:var(--section-space); padding-top:var(--space-7); }
+  .studio-hero { display:grid; gap:var(--grid-gap); grid-template-columns:var(--grid-columns); }
+  .studio-hero__title { grid-column:1 / span 8; }
+  h1 { font-size:var(--title-page); line-height:1.04; margin:var(--space-2) 0 0; max-width:12ch; }
+  .studio-hero__intro { grid-column:9 / span 4; padding-top:34px; }
+  .studio-hero__intro > p { line-height:1.72; margin:0; }
+  .studio-hero__intro > p + p { color:var(--muted); margin-top:var(--space-3); }
+  .studio-hero__intro dl { border-top:1px solid var(--line); margin:var(--space-5) 0 0; }
+  .studio-hero__intro dl > div { display:grid; gap:var(--space-2); grid-template-columns:8rem 1fr; padding:var(--space-3) 0; }
+  .studio-hero__intro dl > div + div { border-top:1px solid var(--line); }
+  dt { color:var(--muted); font-size:var(--text-xs); font-weight:600; letter-spacing:.06em; text-transform:uppercase; }
+  dd { font-size:var(--text-sm); line-height:1.55; margin:0; }
+
+  .proof { align-items:center; border-top:1px solid var(--line); display:grid; gap:var(--grid-gap); grid-template-columns:var(--grid-columns); margin-top:var(--section-space); padding-top:var(--space-7); }
+  .proof__copy { grid-column:1 / span 5; }
+  .proof h2 { font-size:clamp(2rem,3.6vw,3.25rem); line-height:1.13; margin:var(--space-2) 0 var(--space-5); }
+  .proof dl { margin:0 0 var(--space-5); }
+  .proof dl > div { border-top:1px solid var(--line); display:grid; gap:var(--space-3); grid-template-columns:7.5rem 1fr; padding:var(--space-3) 0; }
+  .proof__effect dd { color:var(--accent-ink); font-weight:600; }
+  .proof figure { grid-column:7 / span 6; margin:0; }
+  .proof__media { aspect-ratio:4/5; overflow:hidden; }
+  .proof__media :global(img) { height:100%; object-fit:cover; width:100%; }
+  figcaption { color:var(--muted); font-size:var(--text-xs); margin-top:var(--space-2); }
+
+  .deliverables,.process-section,.principles,.faq-section,.studio-cta { margin-top:var(--section-space); }
+  .deliverables,.process-section,.principles,.faq-section { border-top:1px solid var(--line); padding-top:var(--space-6); }
+  .section-heading { display:grid; gap:var(--grid-gap); grid-template-columns:var(--grid-columns); }
+  .section-heading > div { grid-column:1 / span 7; }
+  .section-heading h2,.principles h2,.faq-section h2 { font-size:var(--title-section); line-height:1.12; margin:var(--space-2) 0 0; max-width:18ch; }
+  .section-heading > p { color:var(--muted); grid-column:9 / span 4; line-height:1.68; margin:26px 0 0; }
+  .deliverables__list { display:grid; gap:var(--grid-gap); grid-template-columns:repeat(3,minmax(0,1fr)); list-style:none; margin:var(--space-6) 0 0; padding:0; }
+  .deliverables__list li { border-top:1px solid var(--line); display:flex; flex-direction:column; min-height:320px; padding-top:var(--space-3); }
+  .deliverables__list span,.principles li > span { color:var(--accent-ink); font-size:var(--text-xs); font-weight:700; }
+  .deliverables__list h3 { font-size:clamp(1.45rem,2.2vw,2rem); line-height:1.2; margin:var(--space-4) 0 var(--space-3); }
+  .deliverables__list p { color:var(--muted); font-size:var(--text-sm); line-height:1.65; margin:0; }
+  .deliverables__list strong { border-top:1px solid var(--line); font-size:var(--text-sm); font-weight:600; line-height:1.55; margin-top:auto; padding-top:var(--space-3); }
+  .deliverables__link { font-size:var(--text-sm); margin-top:var(--space-5); }
+
+  .principles { display:grid; gap:var(--grid-gap); grid-template-columns:var(--grid-columns); }
+  .principles > header { grid-column:1 / span 4; }
+  .principles > ol { border-top:1px solid var(--line); grid-column:6 / span 7; list-style:none; margin:0; padding:0; }
+  .principles li { display:grid; gap:var(--space-2) var(--space-4); grid-template-columns:2.5rem 1fr 1.2fr; padding:var(--space-4) 0; }
+  .principles li + li { border-top:1px solid var(--line); }
+  .principles h3 { font-size:clamp(1.25rem,2vw,1.65rem); line-height:1.25; margin:0; }
+  .principles li p { color:var(--muted); font-size:var(--text-sm); line-height:1.65; margin:0; }
+
+  .faq-section { display:grid; gap:var(--grid-gap); grid-template-columns:var(--grid-columns); }
+  .faq-section > header { grid-column:1 / span 4; }
+  .faq { grid-column:6 / span 7; }
+  details { border-top:1px solid var(--line); }
+  details:last-child { border-bottom:1px solid var(--line); }
+  summary { cursor:pointer; font-weight:600; line-height:1.45; list-style-position:outside; padding:var(--space-4) var(--space-5) var(--space-4) 0; }
+  details p { color:var(--muted); font-size:var(--text-sm); line-height:1.7; margin:0; max-width:62ch; padding:0 var(--space-5) var(--space-4) 0; }
+
+  .studio-cta { align-items:start; border-top:1px solid var(--line); display:grid; gap:var(--grid-gap); grid-template-columns:var(--grid-columns); padding-top:var(--space-7); }
+  .studio-cta > div:first-child { grid-column:1 / span 7; }
+  .studio-cta h2 { font-size:clamp(2.5rem,5vw,4rem); line-height:1.1; margin:var(--space-2) 0 0; max-width:14ch; }
+  .studio-cta > div:last-child { grid-column:9 / span 4; }
+  .studio-cta > div:last-child p { line-height:1.65; margin:0 0 var(--space-4); }
+
+  @media(min-width:768px) and (max-width:1099px) {
+    .studio-hero__title { grid-column:1 / span 7; } .studio-hero__intro { grid-column:8 / span 5; }
+    .proof__copy { grid-column:1 / span 6; } .proof figure { grid-column:7 / span 6; }
+    .section-heading > div { grid-column:1 / span 7; } .section-heading > p { grid-column:8 / span 5; }
+    .principles > header,.faq-section > header { grid-column:1 / span 4; } .principles > ol,.faq { grid-column:5 / span 8; }
+    .principles li { grid-template-columns:2.5rem 1fr; } .principles li p { grid-column:2; }
+    .studio-cta { display:block; } .studio-cta > div:last-child { margin-top:var(--space-5); max-width:38ch; }
+  }
+  @media(max-width:767px) {
+    .studio { padding-bottom:var(--space-7); padding-top:var(--space-6); }
+    .studio-hero,.proof,.section-heading,.principles,.faq-section,.studio-cta { display:block; }
+    h1 { font-size:clamp(2.65rem,12vw,3.75rem); }
+    .studio-hero__intro { padding-top:var(--space-5); }
+    .studio-hero__intro dl > div,.proof dl > div { grid-template-columns:1fr; gap:var(--space-1); }
+    .proof { margin-top:var(--space-7); padding-top:var(--space-6); } .proof h2 { font-size:2.3rem; }
+    .proof figure { margin-top:var(--space-5); }
+    .deliverables,.process-section,.principles,.faq-section,.studio-cta { margin-top:var(--space-7); }
+    .deliverables,.process-section,.principles,.faq-section { padding-top:var(--space-5); }
+    .section-heading h2,.principles h2,.faq-section h2 { font-size:2.3rem; }
+    .section-heading > p { margin-top:var(--space-4); }
+    .deliverables__list { display:block; margin-top:var(--space-5); }
+    .deliverables__list li { min-height:0; padding:var(--space-4) 0; }
+    .deliverables__list h3 { margin:var(--space-3) 0 var(--space-2); }
+    .deliverables__list strong { margin-top:var(--space-4); }
+    .principles > ol,.faq { margin-top:var(--space-5); }
+    .principles li { display:block; } .principles h3 { margin:var(--space-2) 0; }
+    .studio-cta { padding-top:var(--space-6); } .studio-cta > div:last-child { margin-top:var(--space-5); }
+    .studio-cta :global(.button) { width:100%; }
+  }
 </style>

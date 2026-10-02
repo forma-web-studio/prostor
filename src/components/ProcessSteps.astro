@@ -1,12 +1,14 @@
 ---
-const steps = [
-  { number:'01', title:'Знакомство', text:'Фиксируем сценарии жизни, задачи и ограничения пространства.', result:'Результат: заполненная карта задач.' },
-  { number:'02', title:'Планировка', text:'Проверяем движение, свет, мебель и хранение до выбора декора.', result:'Результат: 2–3 планировочных сценария.' },
-  { number:'03', title:'Концепция', text:'Собираем материалы, свет и атмосферу в единую систему.', result:'Результат: визуальная концепция и палитра.' },
-  { number:'04', title:'Документация', text:'Переводим согласованное решение в материалы для реализации.', result:'Результат: чертежи, ведомости и спецификации.' },
-];
+import { studioProcess } from '../data/site';
+
+interface Props { steps?: typeof studioProcess; }
+const { steps = studioProcess } = Astro.props;
 ---
-<ol class="process">{steps.map(({ number, title, text, result }) => <li><span>{number}</span><h3>{title}</h3><p>{text}</p><p class="process__result">{result}</p></li>)}</ol>
+<ol class="process">{steps.map(({ number, title, text }) => <li><span>{number}</span><h3>{title}</h3><p>{text}</p></li>)}</ol>
 <style>
-  .process { border-top:1px solid var(--line); display:grid; gap:24px; grid-template-columns:repeat(4, 1fr); list-style:none; margin:32px 0 0; padding:20px 0 0; } li { min-width:0; } span { color:var(--olive); font-size:13px; font-weight:700; } h3 { font-size:18px; font-weight:600; margin:18px 0 8px; } p { color:var(--muted); font-size:14px; margin:0; } .process__result { border-top:1px solid var(--line); color:var(--ink); font-size:12px; font-weight:600; margin-top:16px; padding-top:12px; } @media(max-width:767px) { .process { display:block; } li { border-bottom:1px solid var(--line); padding:20px 0; } li:last-child { border-bottom:0; } h3 { margin:8px 0; } .process__result { margin-top:12px; } }
+  .process { border-top:1px solid var(--line); display:grid; gap:var(--grid-gap); grid-template-columns:repeat(4,minmax(0,1fr)); list-style:none; margin:var(--space-5) 0 0; padding:var(--space-3) 0 0; }
+  li { min-width:0; padding-top:var(--space-1); } span { color:var(--accent-ink); font-size:var(--text-xs); font-weight:700; }
+  h3 { font-family:var(--font-display); font-size:clamp(1.3rem,2vw,1.7rem); font-weight:400; line-height:1.25; margin:var(--space-4) 0 var(--space-2); }
+  p { color:var(--muted); font-size:var(--text-sm); line-height:1.65; margin:0; }
+  @media(max-width:767px) { .process { display:block; padding-top:0; } li { border-bottom:1px solid var(--line); padding:var(--space-4) 0; } li:last-child { border-bottom:0; } h3 { margin:var(--space-2) 0; } }
 </style>
