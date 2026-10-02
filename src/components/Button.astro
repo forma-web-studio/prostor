@@ -28,6 +28,7 @@ const unavailable = disabled || loading;
   .button--secondary:hover { background:var(--paper); box-shadow:0 7px 16px rgba(37,40,36,.07); text-decoration:none; transform:translateY(-1px); }
   .button--secondary:active { background:var(--paper-deep); box-shadow:var(--shadow-control-pressed); transform:translateY(1px); }
   .button--text { border:0; font-size:14px; min-height:44px; padding:4px 0; }
+  @media(max-width:767px) { .button { font-size:16px; } .button--text { font-size:14px; } }
   .button--text::before { border:0; border-bottom:1px solid currentColor; inset:auto 0 7px; opacity:.45; }
   .button--text:hover::before { opacity:1; transform:scaleX(.72); transform-origin:left; }
   .button[aria-disabled='true'], .button:disabled { box-shadow:none; opacity:.48; pointer-events:none; }

@@ -56,5 +56,10 @@ const mobileTexture = await getImage({ src: panorama360, width: 4096, format: 'w
   .panorama-surface__controls button:focus-visible { outline-offset:2px; z-index:1; }
   @media (min-width:768px) and (max-width:1099px) { .panorama-surface--hero { height:clamp(430px,64vw,520px); } .panorama-surface--case { height:clamp(360px,52vw,460px); } }
   @media (max-width:767px) { .panorama-surface--hero { height:min(112vw,460px); } .panorama-surface--case { height:min(94vw,380px); } .panorama-surface__controls { bottom:var(--space-2); right:var(--space-2); } }
+  @media (orientation:landscape) and (max-height:520px) and (max-width:932px) {
+    .panorama-surface--hero { height:clamp(240px,72svh,360px); }
+    .panorama-surface--case { height:clamp(220px,68svh,320px); }
+    .panorama-surface__controls { bottom:var(--space-2); right:var(--space-2); }
+  }
   @media (prefers-reduced-motion:reduce) { .panorama-surface__fallback,.panorama-surface__canvas,.panorama-surface__controls { transition:none; } }
 </style>

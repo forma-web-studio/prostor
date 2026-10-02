@@ -148,7 +148,7 @@ const evidenceItems = serviceEvidenceLinks.map(item => {
     .services-intro > p:last-child { margin-top:var(--space-4); }
     .services-intro { padding-bottom:var(--space-7); }
     .section-heading { padding-bottom:var(--space-4); }
-    .section-heading h2,.deliverables h2,.project-proof h2,.service-cta h2 { font-size:2.35rem; margin-top:var(--space-2); }
+    .section-heading h2,.deliverables h2,.project-proof h2,.service-cta h2 { font-size:clamp(2rem,9vw,2.35rem); margin-top:var(--space-2); overflow-wrap:break-word; }
     .service-choice__list a { display:grid; gap:var(--space-3); grid-template-columns:34px 1fr; padding:var(--space-5) 0; }
     .service-choice__number { grid-column:1; }
     .service-choice__name,.service-choice dl,.service-choice__meta { grid-column:2; }

@@ -36,7 +36,7 @@ const sizesByLayout = {
       {catalogProjects.map((project, index) => {
         const layout = project.flagship ? 'lead' : layouts[index] ?? 'standard';
         return <div class="catalog__item" data-project-item data-project-kind={project.kind} data-default-layout={layout} data-layout={layout}>
-          <ProjectCard project={project} linked size={layout === 'portrait' ? 'small' : 'large'} sizes={sizesByLayout[layout]} />
+          <ProjectCard project={project} linked headingLevel="h2" size={layout === 'portrait' ? 'small' : 'large'} sizes={sizesByLayout[layout]} />
         </div>;
       })}
     </div>
