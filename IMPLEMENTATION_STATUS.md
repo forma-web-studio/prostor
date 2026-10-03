@@ -280,3 +280,13 @@
 - Portrait → landscape сохраняет ракурс WebGL и значение plan-to-space; Chromium scroll anchoring удерживает тот же визуальный якорь. Keyboard/touch фильтр, panorama, plan-to-space, hotspots, FAQ, next-project и contact flow, а также no-JS и reduced motion прошли. Mobile 390×844 и desktop 1440×900 regression PASS.
 - `npm run check`, обычная и `BASE_PATH=/prostor/` production-сборки PASS: 16 страниц. Статический аудит base-path release: 49 ссылок/ресурсов, missing=0, без markdown/source maps/рабочих документов; фильтр и calculator → contact prefill работают под `/prostor/`.
 - Доказательства: `output/playwright/stage-15/`; проверенная release-копия: `output/release-stage-15-base-verified/`. Новых ассетов нет. Deploy checkout, push и публикация не выполнялись. Этап 16 не начат.
+
+## Master redesign Этап 16 — 03.10.2026
+
+- Для viewport от 1600 px общий 12-колоночный контейнер расширен с 1320 до asset-native 1536 px; page padding и grid gap растут отдельным ultrawide-token. Текстовые `max-width` и сетка сохранены; mobile/tablet media rules не расширялись.
+- Главная, каталог, case hero/evidence/next-project, service evidence, studio proof и plan-to-space получили точные ultrawide `sizes` и промежуточные responsive candidates. На 2560 px hero кейса рендерится в 1536 px и получает `w=1536`; остальные ключевые медиа имеют запас кандидата от 3%.
+- WebGL-панорама на ultrawide получила более широкий и высокий исследуемый кадр. Текстура 8192 используется только от desktop 1100 px и при поддержке GPU; mobile/tablet и fallback сохраняют 4096-вариант. Новые изображения не создавались.
+- Production Chromium matrix: 112/112 layout checks — все 16 маршрутов на 1440×1000, 1920×1080, 2560×1440 и regression 390×844, 768×1024, 1024×768, 1440×900. Отдельно проверены home, case, services и contact при 125% zoom. Нет overflow, broken images, heading skips, console/page/request errors, запрещённых публичных формулировок и недогруженных responsive images.
+- Mouse/keyboard панорамы, plan-to-space 0/100, filter/history, FAQ, next-project, contact flow, touch plan/hotspot, no-JS и reduced motion PASS. Footer, navigation, overlays и пустоты проверены на full-page PNG.
+- `npm run check`, обычная и `BASE_PATH=/prostor/` production-сборки PASS: 16 страниц. Статический аудит base-path release: 49 ссылок/ресурсов, missing=0, без markdown/source maps/рабочих документов; base-path filter и calculator → contact prefill PASS.
+- Доказательства: `output/playwright/stage-16/`; проверенная release-копия: `output/release-stage-16-base-verified/`. Deploy checkout, push и публикация не выполнялись. Этап 17 не начат.

@@ -6,10 +6,10 @@ import { projects } from '../../data/projects';
 const catalogProjects = [...projects].sort((a, b) => a.order - b.order);
 const layouts = ['lead', 'portrait', 'wide', 'standard'] as const;
 const sizesByLayout = {
-  lead: '(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 44vw, (min-width: 1440px) 748px, 54vw',
-  portrait: '(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 44vw, (min-width: 1440px) 420px, 30vw',
-  wide: '(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 44vw, (min-width: 1440px) 530px, 39vw',
-  standard: '(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 44vw, (min-width: 1440px) 640px, 46vw',
+  lead: '(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 44vw, (min-width: 1600px) 880px, (min-width: 1440px) 760px, 54vw',
+  portrait: '(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 44vw, (min-width: 1600px) 488px, (min-width: 1440px) 424px, 30vw',
+  wide: '(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 44vw, (min-width: 1600px) 620px, (min-width: 1440px) 532px, 39vw',
+  standard: '(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 44vw, (min-width: 1600px) 750px, (min-width: 1440px) 644px, 46vw',
 };
 ---
 

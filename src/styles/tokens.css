@@ -83,3 +83,11 @@
     --grid-gap:clamp(20px,2.35vw,26px);
   }
 }
+
+@media (min-width:1600px) {
+  :root {
+    --page-pad:clamp(96px,6.25vw,160px);
+    --width-wide:96rem;
+    --grid-gap:36px;
+  }
+}

@@ -65,9 +65,8 @@ document.querySelectorAll<HTMLElement>('[data-panorama]').forEach((panorama) => 
 
   const gl = canvas.getContext('webgl2', { alpha:false, antialias:true, powerPreference:'high-performance' });
   if (!gl) return;
-  const textureSource = matchMedia('(max-width: 767px)').matches || gl.getParameter(gl.MAX_TEXTURE_SIZE) < 8192
-    ? mobileTextureSource || desktopTextureSource
-    : desktopTextureSource;
+  const useHighResolutionTexture = matchMedia('(min-width: 1100px)').matches && gl.getParameter(gl.MAX_TEXTURE_SIZE) >= 8192;
+  const textureSource = useHighResolutionTexture ? desktopTextureSource : mobileTextureSource || desktopTextureSource;
   const vertexShader = compileShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
   const fragmentShader = compileShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
   if (!vertexShader || !fragmentShader) return;
