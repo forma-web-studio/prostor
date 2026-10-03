@@ -46,10 +46,10 @@ const estimableServices = services.filter(service => 'estimate' in service);
   .calculator__result span { color:var(--muted); font-size:var(--text-sm); line-height:1.5; margin-bottom:var(--space-3); min-height:3em; transition:opacity var(--duration-fast) var(--ease-ui); }
   .calculator__result.is-updating strong,.calculator__result.is-updating span { opacity:.35; transform:translateY(2px); }
   .calculator__result a { font-size:var(--text-sm); }
-  @media(max-width:1023px){
+  @media(min-width:768px) and (max-width:1099px){
     .calculator__intro { grid-column:1 / span 5; }
-    .calculator form { grid-column:6 / span 3; }
-    .calculator__result { grid-column:9 / span 4; }
+    .calculator form { grid-column:7 / span 6; }
+    .calculator__result { grid-column:7 / span 6; margin-top:var(--space-3); min-height:0; }
   }
   @media(max-width:767px){
     .calculator { display:block; padding:var(--space-6) 0; }

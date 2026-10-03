@@ -25,7 +25,7 @@ const { href,label,title,text,projectTitle,image,alt,reverse = false } = Astro.p
   </div>
   <figure>
     <div class="service-evidence__media">
-      <Image src={image} alt={alt} width={1200} quality={72} widths={[480,720,960,1200]} sizes="(max-width: 767px) calc(100vw - 40px), (min-width: 1440px) 748px, 55vw" loading="lazy" />
+      <Image src={image} alt={alt} width={1200} quality={72} widths={[480,560,720,960,1200]} sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 52vw, (min-width: 1440px) 748px, 55vw" loading="lazy" />
     </div>
   </figure>
 </article>
@@ -40,6 +40,7 @@ const { href,label,title,text,projectTitle,image,alt,reverse = false } = Astro.p
   .service-evidence__copy > p:not(.eyebrow) { color:var(--muted); line-height:1.7; margin:0 0 var(--space-4); max-width:36ch; }
   .service-evidence__media { aspect-ratio:3/2; overflow:hidden; }
   .service-evidence__media :global(img) { height:100%; object-fit:cover; width:100%; }
+  @media(min-width:768px) and (max-width:1099px){ .service-evidence__copy { grid-column:1 / span 5; } figure { grid-column:6 / span 7; } .service-evidence--reverse .service-evidence__copy { grid-column:8 / span 5; } .service-evidence--reverse figure { grid-column:1 / span 7; } }
   @media(max-width:767px){
     .service-evidence,.service-evidence--reverse { display:flex; flex-direction:column; gap:var(--space-5); padding:var(--space-6) 0; }
     .service-evidence__copy,figure,.service-evidence--reverse .service-evidence__copy,.service-evidence--reverse figure { width:100%; }

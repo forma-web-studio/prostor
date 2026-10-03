@@ -6,10 +6,10 @@ import { projects } from '../../data/projects';
 const catalogProjects = [...projects].sort((a, b) => a.order - b.order);
 const layouts = ['lead', 'portrait', 'wide', 'standard'] as const;
 const sizesByLayout = {
-  lead: '(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 58vw, (min-width: 1440px) 748px, 54vw',
-  portrait: '(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 34vw, (min-width: 1440px) 420px, 30vw',
+  lead: '(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 44vw, (min-width: 1440px) 748px, 54vw',
+  portrait: '(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 44vw, (min-width: 1440px) 420px, 30vw',
   wide: '(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 44vw, (min-width: 1440px) 530px, 39vw',
-  standard: '(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 46vw, (min-width: 1440px) 640px, 46vw',
+  standard: '(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 44vw, (min-width: 1440px) 640px, 46vw',
 };
 ---
 
@@ -72,10 +72,7 @@ const sizesByLayout = {
     .catalog__header > div { grid-column:1 / span 7; }
     .catalog__intro { grid-column:8 / span 5; }
     .catalog__grid { gap:var(--space-7) var(--space-4); }
-    .catalog__item[data-layout='lead'] { grid-column:1 / span 7; }
-    .catalog__item[data-layout='portrait'],.catalog__item[data-layout='support'] { grid-column:8 / span 5; margin-top:var(--space-7); }
-    .catalog__item[data-layout='wide'] { grid-column:1 / span 6; }
-    .catalog__item[data-layout='standard'] { grid-column:7 / span 6; margin-top:var(--space-5); }
+    .catalog__item[data-layout] { grid-column:span 6; margin-top:0; }
   }
 
   @media (max-width:767px) {

@@ -4,6 +4,7 @@ import type { ProjectEvidence } from '../data/projects';
 
 interface Props { evidence: ProjectEvidence; index: number; reverse?: boolean; }
 const { evidence, index, reverse = false } = Astro.props;
+const tabletSize = evidence.image.framing === 'portrait' ? '36.5vw' : '52vw';
 ---
 
 <article class:list={['case-evidence', `case-evidence--${evidence.image.framing ?? 'landscape'}`, { 'case-evidence--reverse':reverse }]}>
@@ -14,7 +15,7 @@ const { evidence, index, reverse = false } = Astro.props;
   </div>
   <figure>
     <div class="case-evidence__image" style={`--image-position:${evidence.image.position ?? 'center'};`}>
-      <Image src={evidence.image.src} alt={evidence.image.alt} width={1200} quality={72} widths={[480,720,960,1200]} sizes="(max-width: 767px) calc(100vw - 40px), (min-width: 1440px) 748px, 55vw" loading="lazy" />
+      <Image src={evidence.image.src} alt={evidence.image.alt} width={1200} quality={72} widths={[480,560,720,960,1200]} sizes={`(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) ${tabletSize}, (min-width: 1440px) 748px, 55vw`} loading="lazy" />
       {evidence.hotspots && <div class="case-evidence__hotspots" aria-label="Примечания к изображению">
         {evidence.hotspots.map((hotspot, hotspotIndex) => <details style={`--hotspot-x:${hotspot.x}%;--hotspot-y:${hotspot.y}%`} class:list={{ 'is-right':hotspot.x > 55 }}>
           <summary><span aria-hidden="true">{hotspotIndex + 1}</span><span class="sr-only">{hotspot.title}</span></summary>
@@ -45,6 +46,7 @@ const { evidence, index, reverse = false } = Astro.props;
   details > div { background:var(--surface); box-shadow:var(--shadow-raised); left:24px; padding:14px 16px; position:absolute; top:24px; width:min(240px,48vw); }
   details.is-right > div { left:auto; right:24px; }
   details strong { display:block; font-size:var(--text-sm); } details p { color:var(--muted); font-size:var(--text-xs); line-height:1.5; margin:6px 0 0; }
+  @media(min-width:768px) and (max-width:1099px) { .case-evidence__copy { grid-column:1 / span 5; } figure { grid-column:6 / span 7; } .case-evidence--reverse .case-evidence__copy { grid-column:8 / span 5; } .case-evidence--reverse figure { grid-column:1 / span 7; } .case-evidence--portrait figure { grid-column:8 / span 5; } .case-evidence--portrait.case-evidence--reverse figure { grid-column:1 / span 5; } }
   @media(max-width:767px) {
     .case-evidence,.case-evidence--reverse { display:flex; flex-direction:column; gap:var(--space-5); padding:var(--space-6) 0; }
     .case-evidence__copy,figure,.case-evidence--reverse .case-evidence__copy,.case-evidence--reverse figure { width:100%; }

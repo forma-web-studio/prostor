@@ -39,10 +39,11 @@ import { withBase } from '../utils/urls';
   .panorama__range i { background:var(--ink); border-radius:50%; height:7px; left:var(--pan-progress, 12%); position:absolute; top:50%; transform:translate(-50%,-50%); width:7px; }
 
   @media (min-width:768px) and (max-width:1099px) {
-    .hero { display:block; }
-    h1 { font-size:clamp(3.75rem, 8vw, 4.5rem); }
-    .hero__copy { margin-top:var(--space-4); }
-    .panorama { margin-top:var(--space-4); }
+    .hero { display:grid; padding-top:var(--space-5); }
+    h1 { font-size:clamp(3.45rem, 7.2vw, 4.45rem); grid-column:1 / span 7; max-width:12ch; }
+    .hero__copy { align-self:end; grid-column:8 / span 5; padding-bottom:4px; }
+    .hero__copy p { max-width:32ch; }
+    .panorama { grid-column:1 / -1; margin-top:var(--space-5); }
   }
 
   @media (max-width:767px) {

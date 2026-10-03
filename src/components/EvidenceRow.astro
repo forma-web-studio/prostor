@@ -26,7 +26,7 @@ const { project, index, reverse = false } = Astro.props;
   </div>
   <figure>
     <div class="evidence-row__media">
-      <Image src={project.homeEvidence.image.src} alt={project.homeEvidence.image.alt} width={1122} quality={72} widths={[480, 720, 960, 1122]} sizes="(max-width: 767px) calc(100vw - 40px), (min-width: 1440px) 620px, 46vw" loading="lazy" />
+      <Image src={project.homeEvidence.image.src} alt={project.homeEvidence.image.alt} width={1122} quality={72} widths={[480, 560, 720, 960, 1122]} sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 44vw, (min-width: 1440px) 620px, 46vw" loading="lazy" />
     </div>
     <figcaption>{project.homeEvidence.image.caption}</figcaption>
   </figure>
