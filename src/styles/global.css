@@ -37,10 +37,14 @@ input:hover, select:hover, textarea:hover { border-color: var(--muted); }
 .inline-link:hover::after, .inline-link:focus-visible::after { opacity:1; transform:scaleX(.72); }
 .icon-arrow { flex:0 0 auto; height:12px; transition:transform var(--duration-fast) var(--ease-ui); width:18px; }
 a:hover > .icon-arrow, a:focus-visible > .icon-arrow, button:hover > .icon-arrow, button:focus-visible > .icon-arrow { transform:translateX(3px); }
-.motion-ready [data-reveal] { opacity:0; transform:translateY(18px); }
-.motion-ready [data-image-reveal] { clip-path:inset(0 0 14% 0); opacity:0; }
+.motion-ready [data-reveal]:not(.is-revealed) { opacity:0; transform:translateY(12px); }
+.motion-ready [data-image-reveal]:not(.is-revealed) { clip-path:inset(0 0 10% 0); opacity:0; }
 .motion-ready [data-reveal].is-revealed { opacity:1; transform:none; transition:opacity var(--duration-reveal) var(--ease-reveal) var(--reveal-delay, 0ms), transform var(--duration-reveal) var(--ease-reveal) var(--reveal-delay, 0ms); }
-.motion-ready [data-image-reveal].is-revealed { clip-path:inset(0); opacity:1; transition:clip-path 640ms var(--ease-reveal), opacity 560ms var(--ease-reveal); }
+.motion-ready [data-image-reveal].is-revealed { clip-path:inset(0); opacity:1; transition:clip-path var(--duration-reveal) var(--ease-reveal), opacity var(--duration-reveal) var(--ease-reveal); }
+@view-transition { navigation:auto; }
+::view-transition-group(root) { animation-duration:var(--duration-spatial); animation-timing-function:var(--ease-reveal); }
+::view-transition-group(project-svet-i-dub),::view-transition-group(project-dom-u-sada),::view-transition-group(project-tishina-goroda),::view-transition-group(project-liniya-lesa) { animation-duration:var(--duration-spatial); animation-timing-function:var(--ease-reveal); overflow:hidden; }
+::view-transition-old(project-svet-i-dub),::view-transition-old(project-dom-u-sada),::view-transition-old(project-tishina-goroda),::view-transition-old(project-liniya-lesa),::view-transition-new(project-svet-i-dub),::view-transition-new(project-dom-u-sada),::view-transition-new(project-tishina-goroda),::view-transition-new(project-liniya-lesa) { animation-duration:var(--duration-spatial); height:100%; object-fit:cover; width:100%; }
 @media (max-width: 767px) {
   :root {
     --text-xs: .8125rem;
@@ -50,4 +54,4 @@ a:hover > .icon-arrow, a:focus-visible > .icon-arrow, button:hover > .icon-arrow
   figcaption { line-height:1.5; }
 }
 @media (max-width: 359px) { h1 { font-size:var(--title-page-narrow) !important; hyphens:none; overflow-wrap:normal; } }
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } .motion-ready [data-reveal], .motion-ready [data-image-reveal] { clip-path:none; opacity:1; transform:none; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; } [data-project-media],[data-project-hero] { view-transition-name:none !important; } .motion-ready [data-reveal], .motion-ready [data-image-reveal] { clip-path:none; opacity:1; transform:none; } ::view-transition-group(root) { animation-duration:.01ms; } }

@@ -70,10 +70,13 @@
   /* Motion */
   --ease-ui: cubic-bezier(.22,.61,.36,1);
   --ease-reveal: cubic-bezier(.2,.68,.28,1);
-  --duration-fast: 180ms;
-  --duration-ui: 220ms;
-  --duration-flow: 280ms;
-  --duration-reveal: 560ms;
+  --duration-micro: 180ms;
+  --duration-section: 520ms;
+  --duration-spatial: 700ms;
+  --duration-fast: var(--duration-micro);
+  --duration-ui: var(--duration-micro);
+  --duration-flow: var(--duration-section);
+  --duration-reveal: var(--duration-section);
 }
 
 @media (min-width:768px) and (max-width:1099px) {

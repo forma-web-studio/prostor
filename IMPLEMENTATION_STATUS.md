@@ -290,3 +290,13 @@
 - Mouse/keyboard панорамы, plan-to-space 0/100, filter/history, FAQ, next-project, contact flow, touch plan/hotspot, no-JS и reduced motion PASS. Footer, navigation, overlays и пустоты проверены на full-page PNG.
 - `npm run check`, обычная и `BASE_PATH=/prostor/` production-сборки PASS: 16 страниц. Статический аудит base-path release: 49 ссылок/ресурсов, missing=0, без markdown/source maps/рабочих документов; base-path filter и calculator → contact prefill PASS.
 - Доказательства: `output/playwright/stage-16/`; проверенная release-копия: `output/release-stage-16-base-verified/`. Deploy checkout, push и публикация не выполнялись. Этап 17 не начат.
+
+## Master redesign Этап 17 — 05.10.2026
+
+- Motion сведён к трём уровням: micro 180 ms, section reveal 520 ms и spatial shared transition 700 ms. Случайные длительности карточек и image reveal заменены токенами; reduced motion отключает displacement, morph и инерцию панорамы.
+- Reveal больше не использует очередь по 640 ms: observer включается до readiness, группы раскрываются независимо, а защитный flush через 520 ms не оставляет скрытых секций в full-page capture. Без JavaScript весь контент видим по умолчанию.
+- Progressive View Transitions связывает только активированную media карточки или next-project preview с hero соответствующего кейса. Имена уникальны по slug и назначаются динамически, поэтому filtered grid не содержит duplicate names. В браузере без API остаётся обычная ссылка; router и перехват навигации не добавлялись.
+- После прямого перехода фокус переносится на H1 кейса без прокрутки. Back/Forward и deep links не зависят от transition state. Для панорамного hero переиспользуется существующий cover как краткий transition poster до готовности WebGL; новых ассетов нет.
+- Chromium matrix 64/64 PASS: все 16 маршрутов на 390×844, 768×1024, 1024×768 и 1440×900 без overflow, broken images, скрытых reveal-секций, duplicate transition names, console/page/request errors и запрещённых формулировок. Card → case, next project, mouse, keyboard, touch, Back/Forward, deep links, reduced motion, no-API и no-JS PASS.
+- `npm run check`, обычная и `BASE_PATH=/prostor/` production-сборки PASS: по 16 страниц. Статический аудит обеих сборок: 50 refs, missing=0, без localhost/127.0.0.1, секретов, markdown/source maps, рабочих документов и публичных пометок про AI, учебность, demo или вымышленность. Base-path shared transition, filter и calculator → contact prefill PASS.
+- Доказательства: `output/playwright/stage-17/`; проверенные сборки: `output/release-stage-17-verified/` и `output/release-stage-17-base-verified/`. Deploy checkout, push и публикация не выполнялись. Этап 18 не начат.

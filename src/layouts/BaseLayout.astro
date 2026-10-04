@@ -36,6 +36,7 @@ const socialImage = `${productionRoot}/prostor/og/prostor.jpg`;
     <Header />
     <main id="main" class="site-main"><slot /></main>
     <Footer />
+    <script src="../scripts/project-transitions.ts"></script>
     <script>
       const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
       const editorialGroups = [
@@ -71,9 +72,7 @@ const socialImage = `${productionRoot}/prostor/og/prostor.jpg`;
           }
           groupByTarget.set(element, group);
         }));
-        const pendingGroups: HTMLElement[][] = [];
         const revealedGroups = new Set<HTMLElement[]>();
-        let activeGroups = 0;
         let observer: IntersectionObserver;
         const revealGroup = (group: HTMLElement[], immediately = false) => {
           if (revealedGroups.has(group)) return;
@@ -87,31 +86,17 @@ const socialImage = `${productionRoot}/prostor/og/prostor.jpg`;
             requestAnimationFrame(() => requestAnimationFrame(() => group.forEach((element) => element.style.removeProperty('transition'))));
           }
         };
-        const flushQueue = () => {
-          while (activeGroups < 2 && pendingGroups.length) {
-            const group = pendingGroups.shift()!;
-            if (revealedGroups.has(group)) continue;
-            activeGroups += 1;
-            revealGroup(group);
-            window.setTimeout(() => {
-              activeGroups -= 1;
-              flushQueue();
-            }, 640);
-          }
-        };
         observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
           const group = groupByTarget.get(entry.target as HTMLElement);
-          if (group && !revealedGroups.has(group) && !pendingGroups.includes(group)) pendingGroups.push(group);
-          flushQueue();
-        }), { rootMargin:'0px 0px -8% 0px', threshold:.08 });
+          if (group) revealGroup(group);
+        }), { rootMargin:'0px 0px 12% 0px', threshold:.04 });
         groupByTarget.forEach((_, element) => observer.observe(element));
-        document.documentElement.classList.add('motion-ready');
+        requestAnimationFrame(() => document.documentElement.classList.add('motion-ready'));
+        window.setTimeout(() => revealGroups.forEach((group) => revealGroup(group)), 520);
         document.addEventListener('focusin', (event) => {
           const focusedGroup = [...groupByTarget.entries()].find(([element]) => element.contains(event.target as Node))?.[1];
           if (!focusedGroup || revealedGroups.has(focusedGroup)) return;
-          const queuedIndex = pendingGroups.indexOf(focusedGroup);
-          if (queuedIndex >= 0) pendingGroups.splice(queuedIndex, 1);
           revealGroup(focusedGroup, true);
         });
       }
