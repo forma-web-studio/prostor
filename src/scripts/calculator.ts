@@ -10,9 +10,10 @@ if (calculator) {
   const link = calculator.querySelector<HTMLAnchorElement>('[data-calc-link]')!;
   const area = form.elements.namedItem('area') as HTMLInputElement;
   const error = calculator.querySelector<HTMLElement>('#calc-area-error')!;
+  const status = calculator.querySelector<HTMLElement>('[data-calc-status]')!;
   const typeLabels:Record<ObjectKind,string> = { apartment:'Квартира',house:'Загородный дом' };
 
-  const update = (moveFocus = false) => {
+  const update = (moveFocus = false, announce = false) => {
     const data = new FormData(form);
     const square = parseProjectArea(area.value);
     const service = String(data.get('service'));
@@ -28,6 +29,7 @@ if (calculator) {
       error.textContent = 'Укажите положительное число от 25 до 500 м².';
       price.textContent = '—';
       term.textContent = 'Исправьте площадь, чтобы увидеть диапазон.';
+      if (announce) status.textContent = `Ошибка: ${error.textContent}`;
       if (moveFocus) area.focus();
       return false;
     }
@@ -38,15 +40,16 @@ if (calculator) {
     error.textContent = '';
     price.textContent = formatEstimateRange(estimate.low,estimate.high);
     term.textContent = `Ориентировочный срок: ${estimate.weeks[0]}–${estimate.weeks[1]} недель`;
+    if (announce) status.textContent = `${price.textContent}. ${term.textContent}`;
     return true;
   };
 
   form.addEventListener('submit',event => {
     event.preventDefault();
-    update(true);
+    update(true, true);
   });
   form.addEventListener('input',() => update());
-  form.addEventListener('change',() => update());
+  form.addEventListener('change',() => update(false, true));
   area.addEventListener('blur',() => {
     const square = parseProjectArea(area.value);
     if (square !== null) area.value = String(square).replace('.',',');

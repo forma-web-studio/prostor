@@ -102,10 +102,14 @@ document.querySelectorAll<HTMLElement>('[data-panorama]').forEach((panorama) => 
   let lastTime = 0;
   let velocity = 0;
   let inertiaFrame = 0;
+  let announceTimer = 0;
 
   const normalizedYaw = () => ((yaw % TAU) + TAU) % TAU;
   const announce = () => {
-    if (status) status.textContent = `Направление ${Math.round(normalizedYaw() / TAU * 360)} градусов, угол обзора ${Math.round(fov)} градусов`;
+    window.clearTimeout(announceTimer);
+    announceTimer = window.setTimeout(() => {
+      if (status) status.textContent = `Направление ${Math.round(normalizedYaw() / TAU * 360)} градусов, угол обзора ${Math.round(fov)} градусов`;
+    }, 140);
   };
   const draw = () => {
     gl.uniform2f(resolutionUniform, canvas.width, canvas.height);

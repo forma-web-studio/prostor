@@ -18,7 +18,7 @@ const rubles = (value: number) => new Intl.NumberFormat('ru-RU').format(value);
 ---
 
 <article class="project-case container">
-  <nav class="crumbs" aria-label="Хлебные крошки"><a href={withBase('/projects/')}>Проекты</a><span aria-hidden="true">/</span><span>{project.title}</span></nav>
+  <nav class="crumbs" aria-label="Хлебные крошки"><a href={withBase('/projects/')}>Проекты</a><span aria-hidden="true">/</span><span aria-current="page">{project.title}</span></nav>
 
   <header class="project-case__header">
     <p class="eyebrow">{study.status} · {study.year}</p>

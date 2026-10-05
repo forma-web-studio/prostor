@@ -14,26 +14,27 @@ const texture = await getImage({ src: panorama360, width: 8192, format: 'webp', 
 const mobileTexture = await getImage({ src: panorama360, width: 4096, format: 'webp', quality: 88 });
 ---
 
-<div
+<section
   class:list={['panorama-surface', `panorama-surface--${variant}`]}
   data-panorama-viewport
   tabindex="-1"
   role="region"
   aria-label={label}
   aria-describedby={`${id}-instructions`}
+  aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown + - Home"
 >
   <span class="sr-only" id={`${id}-instructions`}>
     Бесконечная панорама. Перетаскивайте влево и вправо. Стрелки поворачивают обзор, плюс и минус меняют масштаб, Home возвращает исходный ракурс.
   </span>
-  <span class="sr-only" aria-live="polite" data-panorama-status></span>
+  <span class="sr-only" aria-live="polite" aria-atomic="true" data-panorama-status></span>
   <img class="panorama-surface__fallback" data-panorama-fallback src={mobileTexture.src} srcset={`${mobileTexture.src} 4096w, ${texture.src} 8192w`} sizes="100vw" width="8192" height="2731" {alt} loading="eager" fetchpriority="high" draggable="false" />
   <canvas class="panorama-surface__canvas" data-panorama-canvas data-texture-src={texture.src} data-texture-src-mobile={mobileTexture.src} aria-hidden="true"></canvas>
-  <div class="panorama-surface__controls" aria-label="Масштаб панорамы">
+  <div class="panorama-surface__controls" role="group" aria-label="Масштаб панорамы">
     <button type="button" data-panorama-zoom-in aria-label="Приблизить панораму">+</button>
     <button type="button" data-panorama-zoom-out aria-label="Отдалить панораму">−</button>
     <button type="button" data-panorama-reset aria-label="Вернуть исходный ракурс"><span aria-hidden="true">↺</span></button>
   </div>
-</div>
+</section>
 
 <style>
   .panorama-surface { background:var(--surface-muted); overflow:hidden; position:relative; touch-action:pan-y; user-select:none; }

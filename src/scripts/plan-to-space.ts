@@ -69,12 +69,12 @@ export const initPlanToSpace = (root: HTMLElement) => {
   comparison.addEventListener('pointercancel', finishPointer);
 
   handle.addEventListener('keydown', (event) => {
-    const keys = ['ArrowLeft', 'ArrowRight', 'Home', 'End'];
+    const keys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'];
     if (!keys.includes(event.key)) return;
     event.preventDefault();
     if (event.key === 'Home') setValue(0);
     else if (event.key === 'End') setValue(100);
-    else setValue(value + (event.key === 'ArrowRight' ? 5 : -5));
+    else setValue(value + (event.key === 'ArrowRight' || event.key === 'ArrowUp' ? 5 : -5));
   });
 
   presets.querySelectorAll<HTMLButtonElement>('[data-value]').forEach((button) => {

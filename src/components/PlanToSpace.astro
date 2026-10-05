@@ -51,6 +51,7 @@ const titleId = 'plan-to-space-title';
         aria-valuenow="50"
         aria-valuetext="Поровну: план и вид сверху"
         aria-orientation="horizontal"
+        aria-describedby="plan-to-space-instructions plan-to-space-caption"
         data-handle
         hidden
       >
@@ -60,13 +61,15 @@ const titleId = 'plan-to-space-title';
       </button>
     </div>
 
+    <p class="sr-only" id="plan-to-space-instructions">Стрелки меняют положение на 5 процентов. Home показывает вид сверху, End показывает план.</p>
+
     <div class="plan-to-space__presets" role="group" aria-label="Положение сравнения" data-presets hidden>
       <button type="button" data-value="0" aria-label="Только вид комнаты сверху">Вид сверху</button>
       <button type="button" data-value="50" aria-label="План и вид сверху поровну" aria-pressed="true">50 / 50</button>
       <button type="button" data-value="100" aria-label="Только план">План</button>
     </div>
 
-    <p class="plan-to-space__caption">{data.caption}</p>
+    <p class="plan-to-space__caption" id="plan-to-space-caption">{data.caption}</p>
   </div>
 </section>
 

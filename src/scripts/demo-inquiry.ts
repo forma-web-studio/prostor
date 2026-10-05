@@ -21,6 +21,10 @@ if (form) {
   let transitioning = false;
   let showingReview = false;
 
+  form.dataset.enhanced = '';
+  form.querySelector<HTMLElement>('.inquiry__progress')!.hidden = false;
+  actions.hidden = false;
+
   const field = <T extends HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(name: string) => form.elements.namedItem(name) as T;
   const toDateValue = (value: Date) => `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, '0')}-${String(value.getDate()).padStart(2, '0')}`;
   const tomorrow = new Date();
@@ -185,6 +189,7 @@ if (form) {
 
   const renderReview = (moveFocus = true) => {
     const title = document.createElement('h2');
+    title.id = 'inquiry-review-title';
     title.textContent = 'Заявка не отправлена';
     title.tabIndex = -1;
     const intro = document.createElement('p');

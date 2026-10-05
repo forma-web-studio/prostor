@@ -17,7 +17,7 @@ const desktopSize = evidence.image.framing === 'portrait' ? '620px' : '880px';
   <figure>
     <div class="case-evidence__image" style={`--image-position:${evidence.image.position ?? 'center'};`}>
       <Image src={evidence.image.src} alt={evidence.image.alt} width={1200} quality={72} widths={[480,560,640,720,800,960,1200]} sizes={`(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) ${tabletSize}, (min-width: 1600px) ${desktopSize}, (min-width: 1440px) ${evidence.image.framing === 'portrait' ? '532px' : '760px'}, 55vw`} loading="lazy" />
-      {evidence.hotspots && <div class="case-evidence__hotspots" aria-label="Примечания к изображению">
+      {evidence.hotspots && <div class="case-evidence__hotspots" role="group" aria-label="Примечания к изображению" data-hotspots>
         {evidence.hotspots.map((hotspot, hotspotIndex) => <details style={`--hotspot-x:${hotspot.x}%;--hotspot-y:${hotspot.y}%`} class:list={{ 'is-right':hotspot.x > 55 }}>
           <summary><span aria-hidden="true">{hotspotIndex + 1}</span><span class="sr-only">{hotspot.title}</span></summary>
           <div><strong>{hotspot.title}</strong><p>{hotspot.text}</p></div>
@@ -27,6 +27,19 @@ const desktopSize = evidence.image.framing === 'portrait' ? '620px' : '880px';
     <figcaption>{evidence.image.caption}</figcaption>
   </figure>
 </article>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-hotspots]').forEach((group) => {
+    group.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const open = group.querySelector<HTMLDetailsElement>('details[open]');
+      if (!open) return;
+      event.preventDefault();
+      open.open = false;
+      open.querySelector<HTMLElement>('summary')?.focus();
+    });
+  });
+</script>
 
 <style>
   .case-evidence { align-items:center; border-top:1px solid var(--line); display:grid; gap:var(--grid-gap); grid-template-columns:var(--grid-columns); padding:var(--space-7) 0; }
