@@ -10,8 +10,9 @@ interface Props {
 }
 
 const { id, label, alt, variant = 'hero' } = Astro.props;
-const texture = await getImage({ src: panorama360, width: 8192, format: 'webp', quality: 90 });
-const mobileTexture = await getImage({ src: panorama360, width: 4096, format: 'webp', quality: 88 });
+const textureDesktop = await getImage({ src: panorama360, width: 8192, format: 'avif', quality: 55 });
+const textureTablet = await getImage({ src: panorama360, width: 4096, format: 'avif', quality: 55 });
+const textureMobile = await getImage({ src: panorama360, width: 2048, format: 'avif', quality: 55 });
 ---
 
 <section
@@ -27,8 +28,11 @@ const mobileTexture = await getImage({ src: panorama360, width: 4096, format: 'w
     Бесконечная панорама. Перетаскивайте влево и вправо. Стрелки поворачивают обзор, плюс и минус меняют масштаб, Home возвращает исходный ракурс.
   </span>
   <span class="sr-only" aria-live="polite" aria-atomic="true" data-panorama-status></span>
-  <img class="panorama-surface__fallback" data-panorama-fallback src={mobileTexture.src} srcset={`${mobileTexture.src} 4096w, ${texture.src} 8192w`} sizes="100vw" width="8192" height="2731" {alt} loading="eager" fetchpriority="high" draggable="false" />
-  <canvas class="panorama-surface__canvas" data-panorama-canvas data-texture-src={texture.src} data-texture-src-mobile={mobileTexture.src} aria-hidden="true"></canvas>
+  <picture>
+    <source media="(min-width: 1100px)" srcset={textureDesktop.src} type="image/avif" />
+    <img class="panorama-surface__fallback" data-panorama-fallback src={textureMobile.src} srcset={`${textureMobile.src} 2048w, ${textureTablet.src} 4096w`} sizes="400vw" width="8192" height="2731" {alt} loading="eager" fetchpriority="high" draggable="false" />
+  </picture>
+  <canvas class="panorama-surface__canvas" data-panorama-canvas data-texture-src-safe={textureTablet.src} aria-hidden="true"></canvas>
   <div class="panorama-surface__controls" role="group" aria-label="Масштаб панорамы">
     <button type="button" data-panorama-zoom-in aria-label="Приблизить панораму">+</button>
     <button type="button" data-panorama-zoom-out aria-label="Отдалить панораму">−</button>
@@ -42,7 +46,7 @@ const mobileTexture = await getImage({ src: panorama360, width: 4096, format: 'w
   .panorama-surface--case { height:clamp(380px,35vw,480px); }
   .panorama-surface::after { box-shadow:inset 0 0 0 1px rgba(37,40,36,.05); content:""; inset:0; pointer-events:none; position:absolute; z-index:3; }
   .panorama-surface:focus-visible { outline-offset:4px; }
-  .panorama-surface__fallback,.panorama-surface__canvas { display:block; height:100%; inset:0; position:absolute; width:100%; }
+  .panorama-surface > picture,.panorama-surface__fallback,.panorama-surface__canvas { display:block; height:100%; inset:0; position:absolute; width:100%; }
   .panorama-surface__fallback { object-fit:cover; transition:opacity var(--duration-fast) var(--ease-standard); }
   .panorama-surface__canvas { opacity:0; transition:opacity var(--duration-fast) var(--ease-standard); }
   .panorama-surface[data-panorama-ready] { cursor:grab; }

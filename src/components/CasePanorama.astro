@@ -7,7 +7,7 @@ const { projectSlug, poster } = Astro.props;
 ---
 
 <figure class="case-panorama" data-panorama data-project-hero={projectSlug}>
-  <Image class="case-panorama__transition-poster" src={poster} alt="" width={1536} widths={[640,960,1200,1536]} sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 90.6vw, (min-width: 1600px) 1536px, min(1320px, 100vw - 120px)" loading="eager" aria-hidden="true" />
+  <Image class="case-panorama__transition-poster" src={poster} alt="" width={1536} quality={66} widths={[640,960,1200,1536]} sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1099px) 90.6vw, (min-width: 1600px) 1536px, min(1320px, 100vw - 120px)" loading="lazy" fetchpriority="low" aria-hidden="true" />
   <PanoramaSurface id="case-panorama" label="Бесконечная панорама общей комнаты проекта Дом у сада" alt="Цилиндрическая панорама общей комнаты дома с садом, камином, мягкой зоной, столовой и кухней" variant="case" />
   <figcaption>
     <span>Общая комната · от мягкой зоны к кухне</span>

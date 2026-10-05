@@ -7,6 +7,7 @@
     "dev": "astro dev",
     "check": "astro check",
     "build": "astro build",
+    "audit:performance": "node scripts/audit-performance.mjs",
     "preview": "astro preview"
   },
   "dependencies": {

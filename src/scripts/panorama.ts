@@ -54,19 +54,20 @@ const compileShader = (gl: WebGL2RenderingContext, type: number, source: string)
 document.querySelectorAll<HTMLElement>('[data-panorama]').forEach((panorama) => {
   const viewport = panorama.querySelector<HTMLElement>('[data-panorama-viewport]');
   const canvas = panorama.querySelector<HTMLCanvasElement>('[data-panorama-canvas]');
+  const fallback = panorama.querySelector<HTMLImageElement>('[data-panorama-fallback]');
   const progress = panorama.querySelector<HTMLElement>('[data-panorama-progress]');
   const status = panorama.querySelector<HTMLElement>('[data-panorama-status]');
   const zoomIn = panorama.querySelector<HTMLButtonElement>('[data-panorama-zoom-in]');
   const zoomOut = panorama.querySelector<HTMLButtonElement>('[data-panorama-zoom-out]');
   const reset = panorama.querySelector<HTMLButtonElement>('[data-panorama-reset]');
-  const desktopTextureSource = canvas?.dataset.textureSrc;
-  const mobileTextureSource = canvas?.dataset.textureSrcMobile;
-  if (!viewport || !canvas || !progress || !desktopTextureSource) return;
+  if (!viewport || !canvas || !fallback || !progress) return;
 
   const gl = canvas.getContext('webgl2', { alpha:false, antialias:true, powerPreference:'high-performance' });
   if (!gl) return;
-  const useHighResolutionTexture = matchMedia('(min-width: 1100px)').matches && gl.getParameter(gl.MAX_TEXTURE_SIZE) >= 8192;
-  const textureSource = useHighResolutionTexture ? desktopTextureSource : mobileTextureSource || desktopTextureSource;
+  const selectedTextureSource = fallback.currentSrc || fallback.src;
+  const textureSource = matchMedia('(min-width: 1100px)').matches && gl.getParameter(gl.MAX_TEXTURE_SIZE) < 8192
+    ? canvas.dataset.textureSrcSafe || selectedTextureSource
+    : selectedTextureSource;
   const vertexShader = compileShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
   const fragmentShader = compileShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
   if (!vertexShader || !fragmentShader) return;

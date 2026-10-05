@@ -62,3 +62,10 @@ Prata 400 и Manrope Variable подключаются локально из Fon
 ## Использование материалов в Этапе 11 — 30.09.2026
 
 Новые изображения не создавались. Detail-страницы услуг переиспользуют существующие project evidence: planning — `svet-i-dub-top-down.png`; design — `dom-u-sada-detail-1.png` и `tishina-goroda-detail-2.png`; supply — `tishina-goroda-detail-1.png`; supervision — `dom-u-sada-detail-2.png` и `liniya-lesa-detail-2.png`; consultation — `svet-i-dub-detail-1.png`. Каждый кадр ведёт в соответствующий полный кейс; исходные материалы и provenance не менялись.
+
+## Media pipeline Этапа 19 — 05.10.2026
+
+- Runtime импортирует девять актуальных project PNG, `svet-i-dub-plan.svg` и один исходный 360° PNG. Astro воспроизводимо выпускает responsive WebP для обычных кадров и AVIF 2048/4096/8192 px quality 55 для панорамы.
+- Browser получает ровно один вариант панорамы: 2048 px / 142 085 байт на 390 px DPR 1; 4096 px / 327 219 байт на 390 px DPR 2 и tablet; 8192 px / 656 798 байт от 1100 px. Fallback и WebGL используют один `currentSrc`, поэтому отдельная texture-загрузка не дублируется.
+- 8192-вариант сознательно превышает ориентир обычного raster: это цельная 360° texture, где 90° кадр использует только четверть ширины. Сложный tiler и progressive second download не добавлялись, потому что AVIF уменьшил прежнюю desktop delivery с 1 954 578 до 656 798 байт при сохранении исходного разрешения.
+- Обычные responsive candidates остаются WebP; крупнейшие реально сгенерированные варианты — 230 118 и 229 122 байт для вертикального evidence «Линии леса», остальные не превышают 203 676 байт. Ранние project JPG и плоская `dom-u-sada-panorama.jpg` архивны, не импортируются runtime и не попадают в чистую сборку. Master-файлы, prompts и QA остаются в `references/`/`output/` и также не публикуются.
