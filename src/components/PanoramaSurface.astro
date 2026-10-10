@@ -13,6 +13,9 @@ const { id, label, alt, variant = 'hero' } = Astro.props;
 const textureDesktop = await getImage({ src: panorama360, width: 8192, format: 'avif', quality: 55 });
 const textureTablet = await getImage({ src: panorama360, width: 4096, format: 'avif', quality: 55 });
 const textureMobile = await getImage({ src: panorama360, width: 2048, format: 'avif', quality: 55 });
+const fallbackDesktop = await getImage({ src: panorama360, width: 8192, format: 'webp', quality: 58 });
+const fallbackTablet = await getImage({ src: panorama360, width: 4096, format: 'webp', quality: 58 });
+const fallbackMobile = await getImage({ src: panorama360, width: 2048, format: 'webp', quality: 58 });
 ---
 
 <section
@@ -30,9 +33,11 @@ const textureMobile = await getImage({ src: panorama360, width: 2048, format: 'a
   <span class="sr-only" aria-live="polite" aria-atomic="true" data-panorama-status></span>
   <picture>
     <source media="(min-width: 1100px)" srcset={textureDesktop.src} type="image/avif" />
-    <img class="panorama-surface__fallback" data-panorama-fallback src={textureMobile.src} srcset={`${textureMobile.src} 2048w, ${textureTablet.src} 4096w`} sizes="400vw" width="8192" height="2731" {alt} loading="eager" fetchpriority="high" draggable="false" />
+    <source srcset={`${textureMobile.src} 2048w, ${textureTablet.src} 4096w`} sizes="400vw" type="image/avif" />
+    <source media="(min-width: 1100px)" srcset={fallbackDesktop.src} type="image/webp" />
+    <img class="panorama-surface__fallback" data-panorama-fallback src={fallbackMobile.src} srcset={`${fallbackMobile.src} 2048w, ${fallbackTablet.src} 4096w`} sizes="400vw" width="8192" height="2731" {alt} loading="eager" fetchpriority="high" draggable="false" />
   </picture>
-  <canvas class="panorama-surface__canvas" data-panorama-canvas data-texture-src-safe={textureTablet.src} aria-hidden="true"></canvas>
+  <canvas class="panorama-surface__canvas" data-panorama-canvas data-texture-src-safe-avif={textureTablet.src} data-texture-src-safe-webp={fallbackTablet.src} aria-hidden="true"></canvas>
   <div class="panorama-surface__controls" role="group" aria-label="Масштаб панорамы">
     <button type="button" data-panorama-zoom-in aria-label="Приблизить панораму">+</button>
     <button type="button" data-panorama-zoom-out aria-label="Отдалить панораму">−</button>

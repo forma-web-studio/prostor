@@ -65,8 +65,11 @@ document.querySelectorAll<HTMLElement>('[data-panorama]').forEach((panorama) => 
   const gl = canvas.getContext('webgl2', { alpha:false, antialias:true, powerPreference:'high-performance' });
   if (!gl) return;
   const selectedTextureSource = fallback.currentSrc || fallback.src;
+  const selectedSafeTextureSource = selectedTextureSource.includes('.avif')
+    ? canvas.dataset.textureSrcSafeAvif
+    : canvas.dataset.textureSrcSafeWebp;
   const textureSource = matchMedia('(min-width: 1100px)').matches && gl.getParameter(gl.MAX_TEXTURE_SIZE) < 8192
-    ? canvas.dataset.textureSrcSafe || selectedTextureSource
+    ? selectedSafeTextureSource || selectedTextureSource
     : selectedTextureSource;
   const vertexShader = compileShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
   const fragmentShader = compileShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
