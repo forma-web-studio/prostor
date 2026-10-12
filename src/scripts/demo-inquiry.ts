@@ -17,6 +17,7 @@ if (form) {
   const filesLabel = form.querySelector<HTMLElement>('[data-files]')!;
   const date = form.elements.namedItem('date') as HTMLInputElement;
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const inquiryEmail = form.dataset.inquiryEmail ?? '';
   let currentStep = 0;
   let transitioning = false;
   let showingReview = false;
@@ -187,6 +188,29 @@ if (form) {
     list.append(row);
   };
 
+  const getSummaryRows = () => {
+    const rows = summaryFields.flatMap(([name, label, format]) => {
+      const value = format(field<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(name).value.trim());
+      return value ? [[label, value] as const] : [];
+    });
+    const selectedFiles = [...(files.files ?? [])];
+    if (selectedFiles.length) rows.push(['Файлы', selectedFiles.map((item) => item.name).join(', ')]);
+    return rows;
+  };
+
+  const getSummaryText = (rows: ReadonlyArray<readonly [string, string]>) => {
+    const lines = ['Здравствуйте!', '', 'Хочу обсудить интерьерный проект. Ниже подготовленная сводка:', ''];
+    rows.forEach(([label, value]) => lines.push(`${label}: ${value}`));
+    if (files.files?.length) lines.push('', 'Файлы из формы нужно приложить к письму вручную.');
+    lines.push('', 'Письмо подготовлено на сайте ПРОСТОР и отправляется только после подтверждения в почтовой программе.');
+    return lines.join('\n');
+  };
+
+  const copyText = async (value: string) => {
+    if (!navigator.clipboard?.writeText) throw new Error('clipboard unavailable');
+    await navigator.clipboard.writeText(value);
+  };
+
   const renderReview = (moveFocus = true) => {
     const title = document.createElement('h2');
     title.id = 'inquiry-review-title';
@@ -196,25 +220,61 @@ if (form) {
     intro.className = 'review__intro';
     intro.textContent = 'Ниже — сводка для проверки. Она существует только в текущем окне браузера.';
     const list = document.createElement('dl');
-    summaryFields.forEach(([name, label, format]) => {
-      const value = format(field<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(name).value.trim());
-      if (value) addSummaryRow(list, label, value);
-    });
-    const selectedFiles = [...(files.files ?? [])];
-    if (selectedFiles.length) addSummaryRow(list, 'Файлы', selectedFiles.map((item) => item.name).join(', '));
+    const summaryRows = getSummaryRows();
+    summaryRows.forEach(([label, value]) => addSummaryRow(list, label, value));
 
     const notice = document.createElement('div');
     notice.className = 'review__notice';
     const noticeTitle = document.createElement('strong');
     noticeTitle.textContent = 'Время не забронировано';
     const noticeText = document.createElement('p');
-    noticeText.textContent = 'Данные и файлы никуда не ушли. Чтобы начать разговор и согласовать время, свяжитесь со студией по телефону или email, указанным рядом с формой.';
+    noticeText.textContent = 'Данные и файлы никуда не ушли. Скопируйте сводку или откройте подготовленное письмо — отправка произойдёт только после вашего подтверждения в почтовой программе.';
+    const transfer = document.createElement('div');
+    transfer.className = 'review__transfer';
+    const transferTitle = document.createElement('p');
+    transferTitle.className = 'review__transfer-title';
+    transferTitle.textContent = 'Передать сводку';
+    const transferNote = document.createElement('p');
+    transferNote.className = 'review__transfer-note';
+    transferNote.textContent = files.files?.length
+      ? 'Выбранные файлы не прикрепляются автоматически: добавьте их вручную после открытия письма.'
+      : 'Письмо откроется в вашей почтовой программе и останется черновиком до отправки.';
+    const transferActions = document.createElement('div');
+    transferActions.className = 'review__transfer-actions';
+    const copyButton = document.createElement('button');
+    copyButton.type = 'button';
+    copyButton.className = 'review__action review__action--secondary';
+    copyButton.textContent = 'Скопировать сводку';
+    const mailLink = document.createElement('a');
+    mailLink.className = 'review__action review__action--primary';
+    mailLink.textContent = 'Открыть письмо';
+    const summaryText = getSummaryText(summaryRows);
+    const subjectName = field<HTMLInputElement>('name').value.trim();
+    mailLink.href = `mailto:${inquiryEmail}?subject=${encodeURIComponent(`Обсуждение проекта — ${subjectName}`)}&body=${encodeURIComponent(summaryText)}`;
+    const copyStatus = document.createElement('p');
+    copyStatus.className = 'review__copy-status';
+    copyStatus.setAttribute('role', 'status');
+    copyStatus.setAttribute('aria-live', 'polite');
+    copyButton.addEventListener('click', async () => {
+      copyButton.disabled = true;
+      try {
+        await copyText(summaryText);
+        copyStatus.textContent = 'Сводка скопирована.';
+      } catch {
+        copyStatus.textContent = 'Не удалось скопировать. Выделите данные в сводке вручную.';
+      } finally {
+        copyButton.disabled = false;
+      }
+    });
+    transferActions.append(copyButton, mailLink);
+    transfer.append(transferTitle, transferNote, transferActions, copyStatus);
     const edit = document.createElement('button');
     edit.type = 'button';
     edit.className = 'review__edit';
     edit.textContent = 'Вернуться к редактированию';
     edit.addEventListener('click', () => history.back());
-    notice.append(noticeTitle, noticeText, edit);
+    notice.append(noticeTitle, noticeText);
+    notice.append(transfer, edit);
     review.replaceChildren(title, intro, list, notice);
     review.hidden = false;
     steps.forEach((step) => step.hidden = true);
