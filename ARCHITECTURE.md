@@ -1,67 +1,73 @@
 # Архитектура ПРОСТОРА
 
-Стек и общие критерии — в ../README.md. Все пути ниже относительно будущего приложения в этой папке.
+## Контур системы
 
-Актуальная последовательность реализации — [IMPLEMENTATION_HANDOFF.md](IMPLEMENTATION_HANDOFF.md), два этапа Terra вместо старой последовательности CHAT_TASKS.md. Архитектурные решения закреплены Astra 08.09.2026.
+Astro собирает статический сайт. Контент и основной порядок чтения существуют в HTML; JavaScript подключается только для локальных progressive-enhancement сценариев. React/Vue, client router, CMS и серверные endpoints не используются.
 
 ```text
 src/
   layouts/BaseLayout.astro
-  components/{Header,Footer,Button,SectionHeading,ProjectCard,ProjectGallery,ProjectFilter,ProcessSteps,DemoInquiry}.astro
-  pages/index.astro
-  pages/projects/index.astro
-  pages/projects/[slug].astro
-  pages/{studio,contact,404}.astro
-  data/{projects,site}.ts
-  styles/{tokens,global}.css
-  scripts/{menu,project-filter,demo-inquiry}.ts
-  utils/urls.ts
-  assets/images/{hero,projects,studio}/
-public/fonts/
-astro.config.mjs
-package.json
+  components/
+    Header.astro, Footer.astro, Button.astro, ArrowIcon.astro
+    ProjectCard.astro, ProjectCase.astro, CaseEvidence.astro
+    PanoramaHero.astro, CasePanorama.astro, PanoramaSurface.astro
+    PlanToSpace.astro, ProjectCalculator.astro, DemoInquiry.astro
+    ServiceDetail.astro, ServiceEvidence.astro, ProcessSteps.astro
+  data/projects.ts, services.ts, site.ts
+  pages/
+    index.astro, 404.astro, contact.astro, privacy.astro, studio.astro
+    projects/index.astro, projects/[slug].astro
+    services/index.astro, services/[slug].astro
+    robots.txt.ts, sitemap.xml.ts
+  scripts/
+    menu.ts, project-filter.ts, project-transitions.ts
+    panorama.ts, plan-to-space.ts, calculator.ts, demo-inquiry.ts
+  styles/tokens.css, global.css
+  utils/seo.ts, urls.ts
 ```
 
-## Контракты
+## Данные и маршруты
 
-Project: slug:string; title:string; kind:'apartment'|'house'; area:number; cover:ImageMetadata; coverAlt:string; summary:string; challenge:string; solution:string; gallery:Array<{src:ImageMetadata;alt:string;caption?:string}>; palette:Array<{hex:string;material:string}>.
+`projects.ts` содержит четыре проекта и полный `caseStudy`: status, brief, constraints, decisions, evidence, materials, facts, presentation и next-project. Один `ProjectCase.astro` рендерит все четыре маршрута; различия задаются данными, а не slug-условиями.
 
-ProjectCard получает project:Project и size:'large'|'small' (по умолчанию large). Галерея принимает items из Project.gallery; aspect ratio задаётся композицией, не случайной высотой. Button: href?:string, variant:'solid'|'outline'|'text'; при href это ссылка, при действии button.
+`services.ts` содержит пять услуг, параметры калькулятора, deliverables и связи с кейсами. Один `ServiceDetail.astro` рендерит все detail routes. Build-time guards запрещают неизвестные связи, self-link и неполные кейсы.
 
-BaseLayout: title, description, image?, noindex?; импортирует global.css, формирует meta, шрифты и общий footer. site.ts: имя, отметка о демо, навигация; реальные контакты не выдумывать. Ссылки строить через единый helper с учётом BASE_URL.
+`site.ts` хранит только общие подтверждаемые тексты и структуру. Неподтверждённые телефон, email, адрес, часы, территория, отзывы и клиенты отсутствуют.
 
-Статические детальные маршруты создаются через getStaticPaths из projects.ts. Несуществующий slug ведёт на 404. Все данные существуют в одном месте; не дублировать названия в карточках и страницах.
+## Progressive enhancement
 
-## Интерактивность
+- Header: мобильное меню с `aria-expanded`, `inert`, Escape и focus return; без JavaScript ссылки видимы.
+- Project filter: `aria-pressed`, live count, `?type=`, Back/Forward; без JavaScript видны все проекты.
+- Panorama: WebGL2 cylinder, pointer/touch directional lock, keyboard, zoom/reset и status; fallback — responsive `<picture>`.
+- Plan-to-space: совпадающие plan/top-down слои, slider semantics, pointer/keyboard/touch; без JavaScript обе стороны остаются читаемыми.
+- View Transitions: необязательный card/next-project morph без router; обычные ссылки являются базовым контрактом.
+- Calculator и inquiry: локальная валидация и prefill; нет fetch, storage или скрытой отправки.
+- Inquiry result: копируемая readonly-сводка с доступным Clipboard fallback; файлы представлены только именами.
 
-ProjectFilter: три button с aria-pressed. При выборе скрываются неподходящие карточки через hidden; live region сообщает количество. Пустое состояние предусмотрено для будущих данных: «Проектов этого типа пока нет». Без JS показываются все проекты и скрывается неработающее управление. Параметр ?type=house сохраняет выбранную категорию; неизвестное значение → Все.
+## URL и metadata
 
-ProjectGallery: обычные изображения, без обязательного lightbox. Масштабирование можно добавить позже; в первой версии не усложнять.
+`astro.config.mjs` нормализует `BASE_PATH`, принимает только валидный `SITE_URL`-origin и проверяет `SITE_INDEXABLE`. `src/utils/urls.ts` строит внутренние base-aware ссылки. `src/utils/seo.ts`, `BaseLayout.astro`, `robots.txt.ts` и `sitemap.xml.ts` используют один environment contract.
 
-DemoInquiry: поля имя (обязательно), контакт (обязательно), тип объекта, примерная площадь (необязательно), описание. Над полями «Демонстрация формы — данные никуда не отправляются». Submit «Проверить форму». После корректного ввода статус «Форма заполнена корректно. Это демонстрация; заявка не отправлена». Ошибки возле полей, aria-describedby, фокус на первом ошибочном поле. Никаких запросов или сохранения контактов.
+Demo build по умолчанию: `noindex,nofollow`, без canonical, абсолютных OG URL и JSON-LD. Indexable build возможен только при `SITE_INDEXABLE=true` и явном `SITE_URL`; 404 всегда остаётся noindex. JSON-LD ограничен `WebPage`, `WebSite` и `ImageObject`.
 
-## Проверка
+## Media pipeline
 
-Проверить выбор всех категорий, URL-параметр и неизвестный параметр, загрузку каждого кейса напрямую, навигацию клавиатурой, ошибки формы и демостатус. Галерея не должна менять ширину страницы или вызывать скачки при загрузке.
+Обычные локальные изображения проходят через `astro:assets` и получают responsive WebP candidates. Панорама использует один source 8192×2731; Astro выпускает AVIF и WebP 2048/4096/8192. Browser-selected `currentSrc` переиспользуется WebGL, а при отказе high-resolution texture выполняется однократное восстановление на safe 4096 WebP.
 
-## Решения для быстрой первой версии
+В `src/assets` остаются только runtime imports. Исходные masters, ранние материалы и provenance хранятся в `references/`; QA и release copies — в игнорируемом `output/`.
 
-- Статический Astro, TypeScript strict, обычный CSS. npm; dev/check/build/preview в package.json, check запускает astro check. Исполнитель проверяет совместимость актуальных Astro, Node и @astrojs/check по официальной документации, фиксирует Node в .nvmrc и зависимости в package-lock.json. Не фиксировать выдуманный номер версии из этого документа.
-- Нет React, Tailwind, CMS, серверных endpoints, View Transitions, lightbox, карты, внешних виджетов, аналитики и UI-библиотеки. CSS Grid вместо masonry. Astro-скрипты подключать только там, где они нужны.
-- BaseLayout владеет ровно одним Header, main и Footer; страницы передают контент в slot. Общие глобальные стили: reset, типографика, контейнер, утилиты доступности. Стили компонентов — в самих .astro; никаких глобальных селекторов по случайному порядку секций.
-- utils/urls.ts экспортирует withBase для внутренних путей с query/hash; входные внутренние пути начинаются с /. Внешние https, mailto и tel не пропускаются через helper. Использовать BASE_URL для ссылок, шрифтов и public-файлов; импортированные Astro assets не префиксовать повторно.
-- output: static, trailingSlash: always. BASE_PATH окружения задаёт base (по умолчанию /), SITE_URL — реальный домен, если известен. Без домена не генерировать фиктивные canonical, sitemap и абсолютный og:image. По умолчанию noindex для демонстрации. Публикация и CI не входят в этапы.
-- Добавить к Project поле coverPosition?:string; к элементу gallery — position?:string. Это object-position, стартовое значение 50% 50%; менять после просмотра кропа. Поля image source/license не дублировать в Project: единый assets-manifest.md с соответствием ID и локального пути.
-- Галерея первой версии: два дополнительных разных изображения плюс cover на каждый кейс. Это заменяет первоначальные четыре дополнительных фото из README/VISUAL. Палитра — четыре CSS-образца с названиями, без отдельных растровых текстур. Hero может повторять cover первого кейса, манифест — честно обозначенный фрагмент уже используемого изображения.
-- На этапе 1 только Свет и дуб получает заполненную gallery и детальную страницу; остальные записи имеют gallery:[] и полный базовый демоконтент, но не публикуются как кейсы. getStaticPaths на этапе 1 явно выбирает svet-i-dub; на этапе 2 использует все четыре записи, предварительно заполненные изображениями.
-- Локальные JPEG/PNG-исходники в src/assets/images, Picture/Image из astro:assets, responsive sizes/widths и AVIF/WebP с запасным форматом. Один hero eager + fetchpriority=high; остальные lazy, кроме первого изображения внутренней страницы. Width/height обязательны. Никаких случайных remote image URL во время работы сайта.
+## Accessibility и motion
 
-## Точное поведение
+Один `main`, skip link, корректные breadcrumbs, видимый focus и controls не меньше 44 px. Интерактивы имеют keyboard/status/instruction contracts; forced colors, text spacing, 200% zoom, no-JS и reduced motion проверены. Motion использует три токена: 180 ms micro, 520 ms section reveal и 700 ms spatial transition; reduced motion отключает displacement, morph и panorama inertia.
 
-Меню — немодальное раскрытие под шапкой: button с aria-controls/aria-expanded, без focus trap и блокировки body. Escape закрывает и возвращает фокус на кнопку; выбор ссылки закрывает; переход на desktop сбрасывает закрытое мобильное состояние. Без JS навигация видна, кнопка раскрытия скрыта. Skip-link ведёт в main.
+## Сборка и проверка
 
-Фильтр распознаёт только apartment/house, отсутствие и неизвестный type означают Все. Нажатие обновляет URL через history.pushState, сохраняет остальные query-параметры и hash, не перезагружает страницу; popstate восстанавливает выбор. Для Все удалить type. hidden не должен переопределяться display:grid. Счётчик — aria-live=polite. Контрольные количества: Все 4, Квартиры 2, Дома 2.
+```powershell
+npm ci --no-audit --no-fund
+npm run check
+npm run build
+npm run preview -- --host 127.0.0.1 --port 4321
+$env:BASE_PATH='/prostor/'; npm run build; Remove-Item Env:BASE_PATH
+```
 
-Демоформа без JS имеет отключённую кнопку и пояснение noscript. Скрипт сначала устанавливает обработчик preventDefault, затем включает кнопку и управляемую валидацию. Имя и контакт проверяются после trim; контакт — свободное поле «Телефон или email», без навязчивой маски. Площадь, если заполнена, — конечное положительное число. Ошибки связаны через aria-describedby и aria-invalid, status имеет role=status. Ни action на внешний сервис, ни fetch, ни storage; поля не должны попадать в URL при Enter. Проверить этот сценарий также без JS.
-
-Все проверки фиксируются в IMPLEMENTATION_STATUS.md: этап, реальные команды/результаты, просмотренные размеры, временные ссылки, источники, ограничения. Не объявлять невыполненные проверки успешными.
+Публичная сборка не должна содержать Markdown, source maps, `references/`, `output/`, localhost, secrets или рабочие документы. Деплой выполняется только из отдельного checkout `output/github-pages-prostor` после явного решения пользователя.

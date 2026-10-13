@@ -382,3 +382,60 @@
 - `npm run check` PASS: 666 файлов, 0 errors / 0 warnings / 0 hints. `npm run build` PASS: 16 статических страниц. Все ссылки Markdown разрешаются.
 - Chrome smoke: главная 1440×900, panorama и plan-to-space 390×844; H1=1, overflow=false, broken images=0, оба интерактива ready, console errors=0, network 200/304. Четыре warnings относятся к намеренным preload локальных font subsets.
 - Доказательства: `output/playwright/master-stage-22/`; selected tracked screenshots: `references/qa/stage-22/`. Public build не включает `docs/`, `references/qa/` или `output/playwright/`. Push, deploy и публикация не выполнялись. Мастер-этап 23 не начат.
+
+## Master redesign мастер-этап 23 — Final release pass, 13.10.2026
+
+Feature scope заморожен; новый redesign loop не открывался. Код и tracked project сверены с мастер-DOCX.
+
+### Сверка мастер-этапов
+
+| Этап | Статус | Причина |
+| ---: | --- | --- |
+| 0 Baseline | accepted | Backup, branch, clean run/build и baseline evidence выполнены. |
+| 1 Foundation | accepted | Tokens, layout foundation и контраст подтверждены. |
+| 2 Navigation | accepted | Desktop/mobile/no-JS navigation contract проверен. |
+| 3 Hero/panorama | fixed | Плоская ранняя версия заменена принятой цилиндрической WebGL2-панорамой и natural-garden source. |
+| 4 Homepage evidence | accepted | Финальная editorial evidence sequence действует. |
+| 5 Project index | accepted | Data-driven curated grid и URL/history filter действуют. |
+| 6 Flagship «Дом у сада» | accepted | Panorama case и evidence sequence действуют. |
+| 7 Plan-to-space | fixed | Отклонённая условная схема заменена matched plan/top-down pair. |
+| 8 Flagship «Тишина города» | accepted | Самостоятельная evidence sequence действует. |
+| 9 Shared case schema | accepted | Четыре кейса используют один schema-driven template. |
+| 10 Services overview | accepted | Выбор услуги, calculator и case evidence действуют. |
+| 11 Service detail | accepted | Пять routes используют один data-driven template. |
+| 12 Approach/About | accepted | Studio route не содержит неподтверждённой биографии или наград. |
+| 13 Contact flow | fixed | Поздняя truthfulness-ревизия убрала неподтверждённые контакты и оставила только локальную сводку. |
+| 14 Mobile pass | accepted | 320–430 px composition и touch contracts проверены. |
+| 15 Tablet pass | accepted | 768–1099 px composition и responsive sizes проверены. |
+| 16 Ultrawide pass | accepted | 1440–2560 px composition и asset selection проверены. |
+| 17 Motion | accepted | Restrained motion, shared transition и fallbacks действуют. |
+| 18 Accessibility | accepted | Axe, keyboard, zoom, forced colors, text spacing, no-JS и reduced motion gates пройдены. |
+| 19 Performance | accepted | Media pipeline и reproducible performance audit действуют. |
+| 20 SEO/metadata | accepted | `SITE_URL`/`BASE_PATH`/`SITE_INDEXABLE`, metadata, robots и sitemap завершены. |
+| 21 Production QA | fixed | Найденный P1 high-res panorama fallback исправлен; открытых P0/P1 нет. |
+| 22 Developer case study | accepted | Непубличный кейс и выбранные evidence screenshots готовы. |
+| 23 Final release pass | accepted | Документация синхронизирована, stale runtime assets вынесены, clean build/preview/base/visual gates пройдены. |
+| 24 Release handoff | deferred | Выполняется только в отдельном чате после Stage 23. |
+
+Annotated release-candidate tag — **deferred**: отдельного явного подтверждения пользователя нет.
+
+### Очистка и документация
+
+- `README.md`, `ARCHITECTURE.md`, `VISUAL.md`, `DEPLOYMENT.md`, `.env.example` contract и `assets-manifest.md` сверены с текущими routes, components, commands и env vars.
+- Восемь неимпортируемых predecessor JPEG перемещены из `src/assets` в `references/archive/runtime-predecessors/`. Они сохраняют историю и provenance, но больше не находятся в runtime tree.
+- Stale imports, debug toggles и runtime console logging не обнаружены. Два `console.log` остаются намеренным CLI-output в build scripts `audit-performance.mjs` и `process-panorama.mjs`.
+- Formatter не запускался: отдельная formatter-команда и согласованный auto-format scope в проекте отсутствуют; изменённые Markdown/JSON проверены через diff/check/build.
+
+### Финальная проверка
+
+- `npm ci --no-audit --no-fund`: PASS, 369 packages.
+- Финальный `npm run check`: PASS, 685 файлов, 0 errors / 0 warnings / 0 hints.
+- Clean root build и production `/prostor/` build: PASS, по 16 HTML и 198 файлов.
+- Root/base static audit: missing refs=0, unreferenced CSS=0, без рабочих документов, source maps, localhost и secrets.
+- Root preview Chrome: 21/21 key-route checks на 1440×900, 768×1024 и 390×844; H1=1, overflow=false, broken images=0, missing alt=0, console/page/network failures=0. Panorama и plan-to-space ready.
+- Reduced motion 3/3 PASS; `/prostor/` browser smoke 5/5 PASS.
+- Final contact sheets: desktop, tablet, mobile и reduced motion в `output/playwright/master-stage-23/`. Полный отчёт: `output/playwright/master-stage-23/QA_REPORT.md`.
+- Performance snapshot: HTML 123 381 gzip, CSS 21 788 gzip, JS 14 109 gzip; panorama variants без изменений, крупнейшие обычные raster candidates 230 118/229 122 bytes.
+- Проверенные release copies: `output/release-master-stage-23-root/` и `output/release-master-stage-23-base/`.
+
+Push, deploy, публикация и release tag не выполнялись. Публичный Pages остаётся на deploy commit `2803a3a`. Мастер-этап 24 в этом чате не начинался.

@@ -1,22 +1,29 @@
-# GitHub Pages
+# GitHub Pages: граница публикации
 
-Публичный сайт: https://forma-web-studio.github.io/prostor/
+Публичный URL: https://forma-web-studio.github.io/prostor/
 
-Репозиторий: https://github.com/forma-web-studio/prostor
+Deploy repository: https://github.com/forma-web-studio/prostor, ветка `main`, публикация из корня. Локальный checkout `output/github-pages-prostor` является отдельным Git-репозиторием и не входит в source commit.
 
-Аккаунт: sosiskagodgg. Бесплатная публикация из ветки main, корневая папка. В репозиторий загружена только статическая сборка, сведения об изображениях и лицензии шрифтов. Исходное приложение и рабочие документы остаются в 01-prostor локально.
+На момент мастер-этапа 23 публичная версия остаётся на deploy commit `2803a3a`. Source Stage 20–23 не публиковался. Этот документ описывает процедуру, но не является разрешением на push/deploy.
 
-Локальная папка публикации: output/github-pages-prostor. Это отдельный Git-репозиторий. Не добавлять туда node_modules, рабочие переписки или секреты.
+## Production environment
 
-## Обновление
+```powershell
+$env:BASE_PATH='/prostor/'
+$env:SITE_URL='https://forma-web-studio.github.io'
+$env:SITE_INDEXABLE='true'
+npm run build
+```
 
-1. Собрать приложение с переменной окружения BASE_PATH=/prostor/.
-2. Обновить статические файлы в папке публикации, сохранив .git, .nojekyll, ASSETS.md и licenses. Старые хешированные ресурсы удалять только после проверки целевой папки и сохранения корректной новой сборки.
-3. Проверить изменения, создать commit и push в main. GitHub Pages обновится автоматически.
-4. Вернуть обычную локальную сборку без BASE_PATH, чтобы preview на localhost работал из корня.
+`SITE_URL` содержит только origin; `/prostor/` задаётся отдельно через `BASE_PATH`. Без `SITE_INDEXABLE=true` build остаётся noindex. Indexable build без `SITE_URL` завершается ошибкой.
 
-Сайт является учебным концептом; демоформа не отправляет заявки. Существующие noindex и robots сохранены по настройкам проекта.
+## Перед будущей публикацией
 
-Обновление 11.09.2026: commit 93df443. Публичные 8 маршрутов, все изображения и OG проверены через Chromium после публикации; HTTP 200. Исходники и локальная сборка сохранены.
+1. Выполнить clean install, check и production build.
+2. Проверить 16 HTML, `robots.txt`, `sitemap.xml`, canonical/OG/base path, assets и отсутствие рабочих файлов.
+3. Сравнить проверенный `dist` с `output/github-pages-prostor` read-only.
+4. Только после явного решения пользователя синхронизировать статические файлы, сохранив `.git`, `.nojekyll` и лицензии.
+5. Проверить diff deploy checkout, создать отдельный deploy commit и push `main`.
+6. Дождаться успешного Pages run и повторить public HTTP/browser checks.
 
-12.09.2026: каталог обновлён: цены, фильтры, сортировка, empty/reset/back; проверены 8 маршрутов на 360/768/1440. Служебные AI/demo-подписи удалены из интерфейса. Контактная форма скачивает бриф локально.
+Точные deploy и rollback commands формируются на мастер-этапе 24. Stage 23 не изменяет deploy checkout, не создаёт release tag и ничего не публикует.
