@@ -7,13 +7,41 @@ import manropeCyrillic from '@fontsource-variable/manrope/files/manrope-cyrillic
 import manropeLatin from '@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2?url';
 import prataCyrillic from '@fontsource/prata/files/prata-cyrillic-400-normal.woff2?url';
 import prataLatin from '@fontsource/prata/files/prata-latin-400-normal.woff2?url';
-interface Props { title: string; description: string; noindex?: boolean; }
-const { title, description, noindex = true } = Astro.props;
-const productionRoot = 'https://forma-web-studio.github.io';
-const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const route = base && Astro.url.pathname.startsWith(base + '/') ? Astro.url.pathname.slice(base.length) : Astro.url.pathname;
-const canonical = `${productionRoot}/prostor${route}`;
-const socialImage = `${productionRoot}/prostor/og/prostor.jpg`;
+import { absoluteUrl, isSiteIndexable, withDeploymentBase } from '../utils/seo';
+
+interface Props {
+  title: string;
+  description: string;
+  noindex?: boolean;
+  ogType?: 'website' | 'article';
+}
+
+const { title, description, noindex = false, ogType = 'website' } = Astro.props;
+const site = Astro.site;
+const siteIndexable = isSiteIndexable(site);
+const shouldNoIndex = noindex || !siteIndexable;
+const canonical = site && !noindex ? absoluteUrl(site, Astro.url.pathname) : undefined;
+const socialImage = site ? absoluteUrl(site, withDeploymentBase('/og/prostor.jpg'), false) : undefined;
+const siteRoot = site ? absoluteUrl(site, import.meta.env.BASE_URL) : undefined;
+const structuredData = canonical && socialImage && siteRoot && !shouldNoIndex ? {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: title,
+  description,
+  url: canonical,
+  inLanguage: 'ru-RU',
+  isPartOf: {
+    '@type': 'WebSite',
+    name: 'ПРОСТОР',
+    url: siteRoot,
+  },
+  primaryImageOfPage: {
+    '@type': 'ImageObject',
+    url: socialImage,
+    width: 1200,
+    height: 630,
+  },
+} : undefined;
 ---
 <!doctype html>
 <html lang="ru">
@@ -26,17 +54,18 @@ const socialImage = `${productionRoot}/prostor/og/prostor.jpg`;
     <link rel="preload" href={prataCyrillic} as="font" type="font/woff2" crossorigin="anonymous" />
     <link rel="preload" href={prataLatin} as="font" type="font/woff2" crossorigin="anonymous" />
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    {canonical && <link rel="canonical" href={canonical} />}
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={socialImage} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="ПРОСТОР — интерьеры квартир и домов" />
-    <meta name="twitter:card" content="summary_large_image" />
-    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta property="og:type" content={ogType} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    {socialImage && <meta property="og:image" content={socialImage} />}
+    {socialImage && <meta property="og:image:width" content="1200" />}
+    {socialImage && <meta property="og:image:height" content="630" />}
+    {socialImage && <meta property="og:image:alt" content="ПРОСТОР — интерьерные концепции квартир и домов" />}
+    {socialImage && <meta name="twitter:card" content="summary_large_image" />}
+    <meta name="robots" content={shouldNoIndex ? 'noindex, nofollow' : 'index, follow'} />
+    {structuredData && <script type="application/ld+json" set:html={JSON.stringify(structuredData)} is:inline />}
     <title>{title}</title>
   </head>
   <body class="site-shell">

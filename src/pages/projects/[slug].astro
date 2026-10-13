@@ -12,6 +12,6 @@ const next = projects.find((item) => item.slug === project.caseStudy.nextProject
 if (!next) throw new Error(`Unknown next project: ${project.caseStudy.nextProjectSlug}`);
 ---
 
-<BaseLayout title={`${project.title} — ПРОСТОР`} description={project.summary}>
+<BaseLayout title={`${project.title} — ПРОСТОР`} description={project.summary} ogType="article">
   <ProjectCase project={project} next={next} />
 </BaseLayout>
