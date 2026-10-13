@@ -373,3 +373,12 @@
 - Menu, filter/history, panorama keyboard/touch, plan splitter keyboard/touch, hotspots, FAQ, calculator prefill, form error/review/edit, shared transition, Back/Forward, direct deep links, slow network, блокировка high-res, no-JS и reduced motion прошли в Chromium 154.0.8037.99 и WebKit 26.5.
 - P2: сохраняется ранее измеренный ~3,9 s LCP trade-off цельной 8192 panorama; сценарные бизнес-данные требуют подтверждения будущим владельцем; физические Safari/iPhone не проверялись. Публичный Pages намеренно остаётся на deploy commit `2803a3a`.
 - Доказательства: `output/playwright/master-stage-21/`; отчёт `QA_REPORT.md`, JSON-матрицы, отдельные screenshots и три contact sheet. Проверенные сборки: `output/release-master-stage-21-root/` и `output/release-master-stage-21-base/`. Push, deploy и публикация не выполнялись. Мастер-этап 22 не начат.
+
+## Master redesign мастер-этап 22 — Developer case study, 13.10.2026
+
+- Добавлен непубличный `docs/CASE_STUDY.md` для recruiter/client-аудитории: context, baseline, цели и ограничения, системные решения, panorama/plan/shared transition, responsive strategy, accessibility, performance, QA, outcome и limitations.
+- Кейс использует только подтверждённые измерения Stage 18/19/21. Conversion/user claims не добавлялись; 3,9 s LCP панорамного кейса, отсутствие physical Safari/iPhone и необходимость подтвердить сценарные бизнес-данные видимы.
+- Добавлены выбранные before/after и interaction screenshots в `references/qa/stage-22/`; ранний baseline переиспользуется из `references/qa/stage-1/`. `README.md` получил ссылку на технический разбор. Публичных routes и developer copy в интерфейсе нет.
+- `npm run check` PASS: 666 файлов, 0 errors / 0 warnings / 0 hints. `npm run build` PASS: 16 статических страниц. Все ссылки Markdown разрешаются.
+- Chrome smoke: главная 1440×900, panorama и plan-to-space 390×844; H1=1, overflow=false, broken images=0, оба интерактива ready, console errors=0, network 200/304. Четыре warnings относятся к намеренным preload локальных font subsets.
+- Доказательства: `output/playwright/master-stage-22/`; selected tracked screenshots: `references/qa/stage-22/`. Public build не включает `docs/`, `references/qa/` или `output/playwright/`. Push, deploy и публикация не выполнялись. Мастер-этап 23 не начат.
