@@ -62,6 +62,16 @@ document.querySelectorAll<HTMLElement>('[data-panorama]').forEach((panorama) => 
   const reset = panorama.querySelector<HTMLButtonElement>('[data-panorama-reset]');
   if (!viewport || !canvas || !fallback || !progress) return;
 
+  const recoverFallback = () => {
+    const safeFallback = fallback.dataset.textureSrcSafeWebp;
+    if (!safeFallback || fallback.currentSrc === safeFallback) return;
+    fallback.closest('picture')?.querySelectorAll('source').forEach((source) => source.remove());
+    fallback.removeAttribute('srcset');
+    fallback.removeAttribute('sizes');
+    fallback.src = safeFallback;
+  };
+  fallback.addEventListener('error', recoverFallback, { once:true });
+
   const gl = canvas.getContext('webgl2', { alpha:false, antialias:true, powerPreference:'high-performance' });
   if (!gl) return;
   const selectedTextureSource = fallback.currentSrc || fallback.src;
@@ -238,22 +248,29 @@ document.querySelectorAll<HTMLElement>('[data-panorama]').forEach((panorama) => 
   reset?.addEventListener('click', () => resetView());
 
   const texture = gl.createTexture();
-  const image = new Image();
-  image.decoding = 'async';
-  image.addEventListener('load', () => {
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-    resize();
-    panorama.dataset.panoramaReady = '';
-    viewport.dataset.panoramaReady = '';
-    viewport.tabIndex = 0;
-  }, { once:true });
-  image.src = textureSource;
+  const loadTexture = (source: string, allowRecovery = true) => {
+    const image = new Image();
+    image.decoding = 'async';
+    image.addEventListener('load', () => {
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+      resize();
+      panorama.dataset.panoramaReady = '';
+      viewport.dataset.panoramaReady = '';
+      viewport.tabIndex = 0;
+    }, { once:true });
+    image.addEventListener('error', () => {
+      const safeFallback = fallback.dataset.textureSrcSafeWebp;
+      if (allowRecovery && safeFallback && source !== safeFallback) loadTexture(safeFallback, false);
+    }, { once:true });
+    image.src = source;
+  };
+  loadTexture(textureSource);
 
   const observer = new ResizeObserver(resize);
   observer.observe(viewport);
