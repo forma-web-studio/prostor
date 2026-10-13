@@ -12,12 +12,9 @@ if (form) {
   const actions = form.querySelector<HTMLElement>('.inquiry__actions')!;
   const privacyNote = form.querySelector<HTMLElement>('.privacy-note')!;
   const status = form.querySelector<HTMLElement>('.status')!;
-  const contactError = form.querySelector<HTMLElement>('#contact-error')!;
   const files = form.elements.namedItem('files') as HTMLInputElement;
   const filesLabel = form.querySelector<HTMLElement>('[data-files]')!;
-  const date = form.elements.namedItem('date') as HTMLInputElement;
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const inquiryEmail = form.dataset.inquiryEmail ?? '';
   let currentStep = 0;
   let transitioning = false;
   let showingReview = false;
@@ -27,14 +24,6 @@ if (form) {
   actions.hidden = false;
 
   const field = <T extends HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(name: string) => form.elements.namedItem(name) as T;
-  const toDateValue = (value: Date) => `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, '0')}-${String(value.getDate()).padStart(2, '0')}`;
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const lastDate = new Date();
-  lastDate.setDate(lastDate.getDate() + 90);
-  date.min = toDateValue(tomorrow);
-  date.max = toDateValue(lastDate);
-
   const errorElement = (control: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement) => form.querySelector<HTMLElement>(`#${CSS.escape(control.name)}-error`);
   const wrapper = (control: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement) => control.closest<HTMLElement>('.field, .upload');
   const hasValue = (control: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement) => control.value.trim().length > 0;
@@ -67,9 +56,6 @@ if (form) {
       if (!/^\+?[0-9\s()\-]+$/.test(value) || digits < 10 || digits > 15) message = 'Введите телефон: от 10 до 15 цифр.';
     } else if (control.name === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
       message = 'Проверьте формат email.';
-    } else if (control.name === 'date' && value) {
-      const day = new Date(`${value}T12:00:00`).getDay();
-      if (value < date.min || value > date.max || day === 0 || day === 1) message = 'Выберите вторник–субботу в ближайшие 90 дней.';
     }
     if (showError) setFieldState(control, message);
     return message;
@@ -82,19 +68,6 @@ if (form) {
       const message = validateControl(control);
       if (message && !firstInvalid) firstInvalid = control;
     });
-
-    if (step === steps[0]) {
-      const phone = field<HTMLInputElement>('phone');
-      const email = field<HTMLInputElement>('email');
-      if (!phone.value.trim() && !email.value.trim()) {
-        contactError.textContent = 'Оставьте телефон или email.';
-        phone.setAttribute('aria-invalid', 'true');
-        email.setAttribute('aria-invalid', 'true');
-        firstInvalid ??= phone;
-      } else {
-        contactError.textContent = '';
-      }
-    }
 
     if (firstInvalid) {
       status.textContent = 'Проверьте отмеченные поля.';
@@ -160,7 +133,6 @@ if (form) {
     }
   };
 
-  const formatDate = (value: string) => value ? new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(`${value}T12:00:00`)) : '';
   const summaryFields: Array<[string, string, (value: string) => string]> = [
     ['name', 'Имя', (value) => value],
     ['phone', 'Телефон', (value) => value],
@@ -172,10 +144,7 @@ if (form) {
     ['location', 'Локация', (value) => value],
     ['condition', 'Состояние', (value) => value],
     ['start', 'Старт', (value) => value],
-    ['comment', 'Комментарий', (value) => value],
-    ['date', 'Предпочтительная дата', formatDate],
-    ['time', 'Предпочтительное время', (value) => value],
-    ['format', 'Предпочтительный формат', (value) => value]
+    ['comment', 'Комментарий', (value) => value]
   ];
 
   const addSummaryRow = (list: HTMLDListElement, label: string, value: string) => {
@@ -199,10 +168,10 @@ if (form) {
   };
 
   const getSummaryText = (rows: ReadonlyArray<readonly [string, string]>) => {
-    const lines = ['Здравствуйте!', '', 'Хочу обсудить интерьерный проект. Ниже подготовленная сводка:', ''];
+    const lines = ['Сводка интерьерного проекта', ''];
     rows.forEach(([label, value]) => lines.push(`${label}: ${value}`));
-    if (files.files?.length) lines.push('', 'Файлы из формы нужно приложить к письму вручную.');
-    lines.push('', 'Письмо подготовлено на сайте ПРОСТОР и отправляется только после подтверждения в почтовой программе.');
+    if (files.files?.length) lines.push('', 'Файлы не включены в текст. Их нужно передать отдельно по выбранному вами каналу.');
+    lines.push('', 'Подготовлено локально на сайте ПРОСТОР. Данные никуда не отправлены.');
     return lines.join('\n');
   };
 
@@ -214,7 +183,7 @@ if (form) {
   const renderReview = (moveFocus = true) => {
     const title = document.createElement('h2');
     title.id = 'inquiry-review-title';
-    title.textContent = 'Заявка не отправлена';
+    title.textContent = 'Сводка готова';
     title.tabIndex = -1;
     const intro = document.createElement('p');
     intro.className = 'review__intro';
@@ -226,31 +195,26 @@ if (form) {
     const notice = document.createElement('div');
     notice.className = 'review__notice';
     const noticeTitle = document.createElement('strong');
-    noticeTitle.textContent = 'Время не забронировано';
+    noticeTitle.textContent = 'Данные остались у вас';
     const noticeText = document.createElement('p');
-    noticeText.textContent = 'Данные и файлы никуда не ушли. Скопируйте сводку или откройте подготовленное письмо — отправка произойдёт только после вашего подтверждения в почтовой программе.';
+    noticeText.textContent = 'Сайт ничего не отправил и не сохранил. Скопируйте текст, чтобы передать его по самостоятельно выбранному каналу.';
     const transfer = document.createElement('div');
     transfer.className = 'review__transfer';
     const transferTitle = document.createElement('p');
     transferTitle.className = 'review__transfer-title';
-    transferTitle.textContent = 'Передать сводку';
+    transferTitle.textContent = 'Скопировать сводку';
     const transferNote = document.createElement('p');
     transferNote.className = 'review__transfer-note';
     transferNote.textContent = files.files?.length
-      ? 'Выбранные файлы не прикрепляются автоматически: добавьте их вручную после открытия письма.'
-      : 'Письмо откроется в вашей почтовой программе и останется черновиком до отправки.';
+      ? 'В текст войдут названия выбранных файлов. Сами файлы нужно передать отдельно.'
+      : 'Текст будет скопирован в буфер обмена вашего устройства.';
     const transferActions = document.createElement('div');
     transferActions.className = 'review__transfer-actions';
     const copyButton = document.createElement('button');
     copyButton.type = 'button';
-    copyButton.className = 'review__action review__action--secondary';
+    copyButton.className = 'review__action review__action--primary';
     copyButton.textContent = 'Скопировать сводку';
-    const mailLink = document.createElement('a');
-    mailLink.className = 'review__action review__action--primary';
-    mailLink.textContent = 'Открыть письмо';
     const summaryText = getSummaryText(summaryRows);
-    const subjectName = field<HTMLInputElement>('name').value.trim();
-    mailLink.href = `mailto:${inquiryEmail}?subject=${encodeURIComponent(`Обсуждение проекта — ${subjectName}`)}&body=${encodeURIComponent(summaryText)}`;
     const copyStatus = document.createElement('p');
     copyStatus.className = 'review__copy-status';
     copyStatus.setAttribute('role', 'status');
@@ -261,12 +225,20 @@ if (form) {
         await copyText(summaryText);
         copyStatus.textContent = 'Сводка скопирована.';
       } catch {
-        copyStatus.textContent = 'Не удалось скопировать. Выделите данные в сводке вручную.';
+        const fallback = document.createElement('textarea');
+        fallback.className = 'review__copy-fallback';
+        fallback.setAttribute('aria-label', 'Текст сводки для ручного копирования');
+        fallback.readOnly = true;
+        fallback.value = summaryText;
+        transfer.append(fallback);
+        fallback.focus();
+        fallback.select();
+        copyStatus.textContent = 'Автоматическое копирование недоступно. Текст ниже выделен для ручного копирования.';
       } finally {
         copyButton.disabled = false;
       }
     });
-    transferActions.append(copyButton, mailLink);
+    transferActions.append(copyButton);
     transfer.append(transferTitle, transferNote, transferActions, copyStatus);
     const edit = document.createElement('button');
     edit.type = 'button';
@@ -337,11 +309,6 @@ if (form) {
     const control = event.target;
     if (!(control instanceof HTMLInputElement || control instanceof HTMLSelectElement || control instanceof HTMLTextAreaElement)) return;
     status.textContent = '';
-    if (control.name === 'phone' || control.name === 'email') {
-      contactError.textContent = '';
-      field<HTMLInputElement>('phone').removeAttribute('aria-invalid');
-      field<HTMLInputElement>('email').removeAttribute('aria-invalid');
-    }
     if (control.getAttribute('aria-invalid') === 'true') validateControl(control);
     else setFieldState(control);
     if (showingReview) history.back();

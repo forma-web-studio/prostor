@@ -1,12 +1,12 @@
 ---
-import { navigation, site, contacts } from '../data/site';
+import { navigation, site } from '../data/site';
 import { withBase } from '../utils/urls';
 ---
 <footer class="footer">
   <div class="container footer__grid">
     <a class="logo" href={withBase('/')}>ПРОСТОР</a>
     <nav aria-label="Навигация в подвале">{navigation.map((item) => <a href={withBase(item.href)}>{item.label}</a>)}</nav>
-    <div class="details"><p>{site.tagline}</p><p>{contacts.address}<br />{contacts.hours}</p><a href={withBase('/privacy/')}>Конфиденциальность</a></div>
+    <div class="details"><p>{site.tagline}</p><p>Параметры проекта можно собрать в локальную сводку.</p><a href={withBase('/privacy/')}>Конфиденциальность</a></div>
   </div>
 </footer>
 <style>

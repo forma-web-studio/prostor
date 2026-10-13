@@ -5,7 +5,7 @@ import ProcessSteps from '../components/ProcessSteps.astro';
 import Button from '../components/Button.astro';
 import ArrowIcon from '../components/ArrowIcon.astro';
 import { projects } from '../data/projects';
-import { contacts, studioDeliverables, studioFaq, studioPrinciples } from '../data/site';
+import { studioDeliverables, studioFaq, studioPrinciples } from '../data/site';
 import { withBase } from '../utils/urls';
 
 const cityProject = projects.find(({ slug }) => slug === 'tishina-goroda')!;
@@ -23,7 +23,7 @@ const proof = cityProject.homeEvidence;
         <p>Мы начинаем не со стиля, а с повседневных сценариев: как вы входите, работаете, отдыхаете, храните вещи и встречаетесь за одним столом.</p>
         <p>Так планировка, свет и материалы становятся одной системой, а каждое решение можно проверить по задаче, а не только по кадру.</p>
         <dl>
-          <div><dt>Территория работы</dt><dd>{contacts.territory}</dd></div>
+          <div><dt>Тип пространства</dt><dd>Жилые интерьеры</dd></div>
           <div><dt>Формат</dt><dd>Квартиры и загородные дома</dd></div>
         </dl>
       </div>
@@ -88,7 +88,7 @@ const proof = cityProject.homeEvidence;
 
     <section class="studio-cta" aria-labelledby="cta-title">
       <div><p class="eyebrow">Первый разговор</p><h2 id="cta-title">Определим достаточный состав проекта</h2></div>
-      <div><p>Пришлите план, фотографии и несколько слов о задаче. Сверим исходные данные и предложим ближайший шаг без расширения работы на ходу.</p><Button href={withBase('/contact/')}>Обсудить пространство</Button></div>
+      <div><p>Добавьте план, фотографии и несколько слов о задаче. Сайт соберёт вводные в текст, который можно скопировать.</p><Button href={withBase('/contact/')}>Подготовить сводку</Button></div>
     </section>
   </article>
 </BaseLayout>
