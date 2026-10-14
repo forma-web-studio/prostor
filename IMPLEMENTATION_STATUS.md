@@ -438,7 +438,7 @@ Annotated release-candidate tag — **deferred**: отдельного явно�
 - Performance snapshot: HTML 123 381 gzip, CSS 21 788 gzip, JS 14 109 gzip; panorama variants без изменений, крупнейшие обычные raster candidates 230 118/229 122 bytes.
 - Проверенные release copies: `output/release-master-stage-23-root/` и `output/release-master-stage-23-base/`.
 
-Push, deploy, публикация и release tag не выполнялись. Публичный Pages остаётся на deploy commit `2803a3a`.
+Release candidate принят и опубликован 14.10.2026. Source commit `63ec40b5eccb9b215c982ed8563975ed392fc001` отправлен в feature branch; deploy commit `dc12e3b301e9ffa8f47997c7d46da93dce10822b` опубликован через успешный Pages run `38490692482`. Public Chromium/WebKit smoke прошёл на всех 16 маршрутах. Release tag не создавался.
 
 ## Master redesign мастер-этап 24 — Release handoff, 14.10.2026
 
@@ -449,4 +449,4 @@ Push, deploy, публикация и release tag не выполнялись. �
 - Финальные desktop/tablet/mobile/reduced-motion contact sheets Stage 23 просмотрены повторно; новых UI-маршрутов и redesign не было.
 - После документационных изменений `npm run check` прошёл для 689 файлов с 0 errors / 0 warnings / 0 hints. Чистые root и production `/prostor/` builds повторно дали по 16 HTML и 198 файлов.
 
-Внешние системы не изменены. Следующий шаг — только решение пользователя: принять release candidate или вернуть конкретный мастер-этап на исправление. Принятие само по себе не разрешает deploy, push или tag без отдельной явной команды. STOP.
+После отдельной команды пользователя release candidate опубликован. Source commit `63ec40b5eccb9b215c982ed8563975ed392fc001` отправлен в `origin/codex/prostor-master-redesign`; deploy commit `dc12e3b301e9ffa8f47997c7d46da93dce10822b` отправлен в `main`. Pages run `38490692482` завершён со статусом success. Все 16 публичных маршрутов прошли HTTP и Chromium/WebKit smoke без overflow, broken images и page errors. Release tag не создавался. STOP.

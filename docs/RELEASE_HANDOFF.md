@@ -1,14 +1,14 @@
 # PROSTOR release handoff
 
-Release candidate готов к решению пользователя, но не опубликован. Stage 24 не выполняет push, deploy, изменение deploy checkout или создание tag.
+Release candidate принят пользователем и опубликован 14.10.2026. Release tag не создавался.
 
 ## Текущее состояние
 
 - Source branch: `codex/prostor-master-redesign`.
 - Принятый Stage 23: `f8bd6051c66c87ba401d2b7f1052c213928df235`.
-- Публичный deploy: `2803a3a1a56984235342fd8e7b133f4e31e8c97c` на `output/github-pages-prostor/main`.
+- Публичный deploy: `dc12e3b301e9ffa8f47997c7d46da93dce10822b` на `output/github-pages-prostor/main`.
 - Публичный URL: https://forma-web-studio.github.io/prostor/.
-- Source Stage 20-24 не опубликован.
+- Source Stage 20-24 опубликован; source branch отправлена на `origin/codex/prostor-master-redesign`.
 - Release tag не создан.
 
 Stage history и итоговые ограничения зафиксированы в `IMPLEMENTATION_STATUS.md`. Пользовательские и технические изменения перечислены в `docs/RELEASE_NOTES.md`.
@@ -132,11 +132,13 @@ $rollbackCommit
 
 После rollback также требуется дождаться successful Pages run и повторить public HTTP/browser checks.
 
-## Решение пользователя
+## Результат публикации
 
-Допустимы два следующих шага:
-
-1. Принять release candidate. Это фиксирует приёмку, но само по себе не разрешает deploy, push или tag; для каждого внешнего действия нужна отдельная явная команда.
-2. Вернуть конкретный мастер-этап на исправление с точным замечанием.
-
-До решения пользователя работа остановлена.
+- Пользователь отдельно разрешил публикацию после приёмки release candidate.
+- Source commit `63ec40b5eccb9b215c982ed8563975ed392fc001` отправлен в `origin/codex/prostor-master-redesign`.
+- Deploy commit `dc12e3b301e9ffa8f47997c7d46da93dce10822b` отправлен в `main`.
+- GitHub Pages run `38490692482` завершён со статусом `success`.
+- Все 15 обычных маршрутов и `404.html` ответили `200`; Chromium и WebKit подтвердили по одному H1, отсутствие overflow, broken images и page errors на всех 16 маршрутах.
+- Canonical и OG URL указывают на production origin; `robots.txt` разрешает `/prostor/` и ссылается на sitemap с 15 URL.
+- Публичный URL: https://forma-web-studio.github.io/prostor/.
+- Release tag не создавался.
