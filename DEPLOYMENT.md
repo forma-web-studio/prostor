@@ -26,4 +26,4 @@ npm run build
 5. Проверить diff deploy checkout, создать отдельный deploy commit и push `main`.
 6. Дождаться успешного Pages run и повторить public HTTP/browser checks.
 
-Точные deploy и rollback commands формируются на мастер-этапе 24. Stage 23 не изменяет deploy checkout, не создаёт release tag и ничего не публикует.
+Точные проверяемые команды deploy и rollback, rollback point и read-only comparison находятся в [docs/RELEASE_HANDOFF.md](docs/RELEASE_HANDOFF.md). На мастер-этапе 24 deploy checkout не изменялся, release tag не создавался и публикация не выполнялась.

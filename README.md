@@ -2,7 +2,7 @@
 
 Статический многостраничный сайт интерьерной студии на Astro 5.18 и TypeScript. В проекте 16 HTML-маршрутов, редакционная система кейсов и услуг, WebGL2-панорама, сопоставление плана и пространства, URL-фильтр проектов и локальная подготовка сводки обращения.
 
-Технический разбор архитектуры и измерений: [docs/CASE_STUDY.md](docs/CASE_STUDY.md). История поэтапной реализации: [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
+Технический разбор архитектуры и измерений: [docs/CASE_STUDY.md](docs/CASE_STUDY.md). История поэтапной реализации: [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md). Release candidate: [release notes](docs/RELEASE_NOTES.md) и [безопасный handoff](docs/RELEASE_HANDOFF.md).
 
 ## Запуск
 
@@ -76,6 +76,6 @@ Remove-Item Env:BASE_PATH,Env:SITE_URL,Env:SITE_INDEXABLE
 
 ## QA и публикация
 
-Последний полный production QA мастер-этапа 21: 264/264 route checks, 0 открытых P0/P1, root и `/prostor/` сборки по 16 HTML. Финальный release pass мастер-этапа 23 фиксируется в `output/playwright/master-stage-23/` и в конце `IMPLEMENTATION_STATUS.md`.
+Последний полный production QA мастер-этапа 21: 264/264 route checks, 0 открытых P0/P1, root и `/prostor/` сборки по 16 HTML. Финальный release pass мастер-этапа 23 фиксируется в `output/playwright/master-stage-23/`, а Stage 24 handoff — в `docs/RELEASE_HANDOFF.md`.
 
-Рабочая документация, `references/` и `output/` не входят в статическую сборку. Публичный GitHub Pages на момент начала Stage 23 остаётся на deploy commit `2803a3a`; Stage 23 не выполняет push, deploy или публикацию.
+Рабочая документация, `references/` и `output/` не входят в статическую сборку. Публичный GitHub Pages на момент Stage 24 остаётся на deploy commit `2803a3a`; push, deploy, публикация и release tag не выполнялись.

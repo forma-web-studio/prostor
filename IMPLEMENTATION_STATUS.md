@@ -415,7 +415,7 @@ Feature scope заморожен; новый redesign loop не открывал
 | 21 Production QA | fixed | Найденный P1 high-res panorama fallback исправлен; открытых P0/P1 нет. |
 | 22 Developer case study | accepted | Непубличный кейс и выбранные evidence screenshots готовы. |
 | 23 Final release pass | accepted | Документация синхронизирована, stale runtime assets вынесены, clean build/preview/base/visual gates пройдены. |
-| 24 Release handoff | deferred | Выполняется только в отдельном чате после Stage 23. |
+| 24 Release handoff | accepted | Release notes, read-only deploy comparison, точные deploy/rollback commands и decision gate подготовлены без внешних изменений. |
 
 Annotated release-candidate tag — **deferred**: отдельного явного подтверждения пользователя нет.
 
@@ -438,4 +438,15 @@ Annotated release-candidate tag — **deferred**: отдельного явно�
 - Performance snapshot: HTML 123 381 gzip, CSS 21 788 gzip, JS 14 109 gzip; panorama variants без изменений, крупнейшие обычные raster candidates 230 118/229 122 bytes.
 - Проверенные release copies: `output/release-master-stage-23-root/` и `output/release-master-stage-23-base/`.
 
-Push, deploy, публикация и release tag не выполнялись. Публичный Pages остаётся на deploy commit `2803a3a`. Мастер-этап 24 в этом чате не начинался.
+Push, deploy, публикация и release tag не выполнялись. Публичный Pages остаётся на deploy commit `2803a3a`.
+
+## Master redesign мастер-этап 24 — Release handoff, 14.10.2026
+
+- Подготовлены отдельные `docs/RELEASE_NOTES.md` и `docs/RELEASE_HANDOFF.md`: пользовательские и технические изменения, проверенный inventory, QA/accessibility/performance evidence, P2/known limitations и rollback point.
+- Source branch перед этапом была чистой на `f8bd6051c66c87ba401d2b7f1052c213928df235`; Stage 23 release copies содержат по 16 HTML и 198 файлов. Annotated tag не создавался.
+- Выполнено только read-only SHA-256 comparison `output/release-master-stage-23-base/` с чистым deploy checkout `output/github-pages-prostor` на `2803a3a`: 175 файлов совпадают, 6 добавляются, 17 изменяются, 5 устаревших hashed assets удаляются. `.nojekyll` и две deploy-only лицензии выделены как сохраняемые файлы.
+- В handoff записаны точные PowerShell-команды будущего clean build, safety guards, source push, deploy sync/commit/push и recoverable rollback через `git revert`. Команды не выполнялись.
+- Финальные desktop/tablet/mobile/reduced-motion contact sheets Stage 23 просмотрены повторно; новых UI-маршрутов и redesign не было.
+- После документационных изменений `npm run check` прошёл для 689 файлов с 0 errors / 0 warnings / 0 hints. Чистые root и production `/prostor/` builds повторно дали по 16 HTML и 198 файлов.
+
+Внешние системы не изменены. Следующий шаг — только решение пользователя: принять release candidate или вернуть конкретный мастер-этап на исправление. Принятие само по себе не разрешает deploy, push или tag без отдельной явной команды. STOP.
