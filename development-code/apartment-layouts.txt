@@ -1,0 +1,129 @@
+// ПРОСТОР · выбранный исходник V2 · 20.10.2026
+// src/scripts/apartment-layouts.ts
+// Полный текст модуля для чтения. Импорты относятся к исходному проекту.
+
+type LayoutId = 'study' | 'living';
+const isLayout = (value: string | null): value is LayoutId => value === 'study' || value === 'living';
+
+/** Enhance the complete static comparison; each init owns one article. */
+export function initApartmentLayouts(): void {
+  document.querySelectorAll<HTMLElement>('[data-apartment-case]').forEach(root => {
+    if (root.hasAttribute('data-enhanced')) return;
+    const controls = root.querySelector<HTMLFieldSetElement>('[data-layout-controls]');
+    const status = root.querySelector<HTMLElement>('[data-layout-status]');
+    if (!controls || !status) return;
+    const variants = new Map<LayoutId, { panel: HTMLElement; image: HTMLImageElement; frame: HTMLElement; message: HTMLElement; text: HTMLElement; retry: HTMLButtonElement }>();
+    for (const id of ['study', 'living'] as const) {
+      const panel = root.querySelector<HTMLElement>(`[data-layout-visual="${id}"]`);
+      const image = panel?.querySelector('img');
+      const frame = panel?.querySelector<HTMLElement>('[data-image-state]');
+      const message = panel?.querySelector<HTMLElement>('[data-image-message]');
+      const text = panel?.querySelector<HTMLElement>('[data-image-text]');
+      const retry = panel?.querySelector<HTMLButtonElement>('[data-image-retry]');
+      if (!panel || !image || !frame || !message || !text || !retry) return;
+      variants.set(id, { panel, image, frame, message, text, retry });
+    }
+    let selected: LayoutId = 'study';
+    let generation = 0;
+    let cancelLoad = () => {};
+
+    const readUrl = (): LayoutId => {
+      const url = new URL(location.href);
+      const value = url.searchParams.get('layout');
+      const id = isLayout(value) ? value : 'study';
+      if (url.searchParams.has('layout') && (!isLayout(value) || url.searchParams.getAll('layout').length > 1)) {
+        url.searchParams.set('layout', id);
+        history.replaceState(history.state, '', url);
+      }
+      return id;
+    };
+
+    const show = (id: LayoutId, announce = true) => {
+      cancelLoad();
+      const ticket = ++generation;
+      selected = id;
+      root.dataset.layout = id;
+      root.querySelectorAll<HTMLInputElement>('input[name="apartment-layout"]').forEach(input => { input.checked = input.value === id; });
+      root.querySelectorAll<HTMLElement>('[data-layout-plan]').forEach(plan => { plan.dataset.selected = String(plan.dataset.layoutPlan === id); });
+      for (const [key, value] of variants) value.panel.hidden = key !== id;
+      const { panel, image, frame, message, text, retry } = variants.get(id)!;
+      const title = panel.querySelector('h2')?.textContent || '';
+      frame.dataset.state = 'loading';
+      frame.setAttribute('aria-busy', 'true');
+      message.hidden = false;
+      retry.hidden = true;
+      text.textContent = 'Загружаем визуализацию…';
+      if (announce) status.textContent = title + '. Загружаем визуализацию.';
+      let finished = false;
+      let timer = 0;
+      const cleanup = () => {
+        window.clearTimeout(timer);
+        image.removeEventListener('load', loaded);
+        image.removeEventListener('error', failed);
+      };
+      const finish = (ok: boolean) => {
+        if (finished || ticket !== generation) return;
+        finished = true;
+        cleanup();
+        frame.dataset.state = ok ? 'ready' : 'error';
+        frame.setAttribute('aria-busy', 'false');
+        if (ok && document.activeElement === retry) controls.querySelector<HTMLInputElement>(`input[value="${id}"]`)?.focus({ preventScroll: true });
+        message.hidden = ok;
+        retry.hidden = ok;
+        if (!ok) text.textContent = 'Визуализация не загрузилась. План и описание доступны выше.';
+        if (announce || !ok) status.textContent = title + (ok ? '. Визуализация готова.' : '. Визуализация не загрузилась.');
+      };
+      const loaded = () => { image.decode().then(() => finish(true), () => finish(false)); };
+      const failed = () => finish(false);
+      cancelLoad = () => { finished = true; cleanup(); };
+      image.addEventListener('load', loaded);
+      image.addEventListener('error', failed);
+      timer = window.setTimeout(failed, 15000);
+      image.loading = 'eager';
+      if (image.complete) {
+        if (image.naturalWidth) loaded();
+        else failed();
+      }
+    };
+
+    const choose = (id: LayoutId) => {
+      if (id === selected) return;
+      const url = new URL(location.href);
+      url.searchParams.set('layout', id);
+      // Keep a deep-linked fragment aligned without invoking native scrolling.
+      if (/^#visual-(study|living)$/.test(url.hash)) url.hash = `visual-${id}`;
+      history.pushState(null, '', url);
+      show(id);
+    };
+    controls.addEventListener('change', event => {
+      const input = event.target;
+      if (input instanceof HTMLInputElement && isLayout(input.value)) choose(input.value);
+    });
+    root.addEventListener('click', event => {
+      if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
+      const link = (event.target as Element | null)?.closest<HTMLAnchorElement>('a[data-layout-link]');
+      const id = link?.dataset.layoutLink;
+      if (!link || link.target || !id || !isLayout(id)) return;
+      event.preventDefault();
+      choose(id);
+    });
+    for (const [id, value] of variants) value.retry.addEventListener('click', () => {
+      // Recreate the picture so a previous network failure can be retried at the same URL.
+      const picture = value.image.closest('picture');
+      if (!picture) return;
+      // show() hides Retry while loading. Move keyboard focus before it disappears,
+      // rather than attempting to recover focus after the image has loaded.
+      if (document.activeElement === value.retry) controls.querySelector<HTMLInputElement>(`input[value="${id}"]`)?.focus();
+      const fresh = picture.cloneNode(true) as HTMLPictureElement;
+      const image = fresh.querySelector('img')!;
+      picture.replaceWith(fresh);
+      value.image = image;
+      show(id);
+    });
+    window.addEventListener('popstate', () => show(readUrl()));
+    window.addEventListener('pageshow', event => { if (event.persisted) show(readUrl(), false); });
+    root.dataset.enhanced = '';
+    controls.hidden = false;
+    show(readUrl(), false);
+  });
+}

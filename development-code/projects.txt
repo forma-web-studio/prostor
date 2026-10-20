@@ -1,0 +1,94 @@
+// ПРОСТОР · выбранный исходник V2 · 19.10.2026
+// src/data/v2/projects.ts
+// Полный текст модуля для чтения. Импорты относятся к исходному проекту.
+
+import type { Action, LayoutId, ProjectId, ServiceId } from './routes.ts';
+
+// Planned slots are deliberately not file paths. V2-03/04/05/19 bind accepted assets.
+export const assetSlots = [
+  'apartment-hero', 'apartment-study', 'apartment-living', 'apartment-detail',
+  'apartment-plan-study', 'apartment-plan-living',
+  'house-hero', 'house-common', 'house-detail', 'house-panorama',
+] as const;
+export type AssetId = typeof assetSlots[number];
+export type MediaRef =
+  | { status: 'planned'; id: AssetId; stage: 'V2-03' | 'V2-04' | 'V2-05' | 'V2-19' }
+  | { status: 'ready'; id: AssetId; path: string; sha256: string };
+export interface LayoutVariant {
+  id: LayoutId;
+  title: string;
+  advantage: string;
+  tradeoff: string;
+  plan: MediaRef;
+  visual: MediaRef;
+  alt: string;
+  caption: string;
+  spatialRef: string;
+  action: Action;
+}
+export interface Project {
+  id: ProjectId;
+  slug: string;
+  title: string;
+  status: 'Интерьерная концепция';
+  brief: string;
+  question: string;
+  decision: string;
+  tradeoff: string;
+  cover: MediaRef;
+  relatedServices: readonly ServiceId[];
+  action: Action;
+  next: Action;
+}
+
+export const layoutVariants = [
+  {
+    id: 'study', title: 'С кабинетом',
+    advantage: 'Отдельная комната для работы и разговоров.',
+    tradeoff: 'Общая зона компактнее.',
+    plan: { status: 'ready', id: 'apartment-plan-study', path: 'src/assets/images/v2/apartment-plan-study.svg', sha256: 'fe01980ca87ea574c2c35e9dfba65ea3366c8b34e383b62c083da3c278ddaaab' },
+    visual: { status: 'ready', id: 'apartment-study', path: 'src/assets/images/v2/apartment-study.png', sha256: 'f462a99edf88c8719c7eafded35e4143c46636452db42968a46d5a17aed9a0b4' },
+    alt: 'Отдельный кабинет: стол перед окном и книжный шкаф вдоль правой стены.',
+    caption: 'Кабинет отделён от общей зоны. Для отдыха остаётся меньше места.',
+    spatialRef: 'apartment-86#study',
+    action: { label: 'С кабинетом', to: { route: 'apartment', layout: 'study' } },
+  },
+  {
+    id: 'living', title: 'С большой гостиной',
+    advantage: 'Больше общего пространства для отдыха и встреч.',
+    tradeoff: 'Нет отдельного кабинета.',
+    plan: { status: 'ready', id: 'apartment-plan-living', path: 'src/assets/images/v2/apartment-plan-living.svg', sha256: 'cd43edcf57480064ed77021b7659f9cbf9937076bd9ee25a0bcdd46c987386c4' },
+    visual: { status: 'ready', id: 'apartment-living', path: 'src/assets/images/v2/apartment-living.png', sha256: '706ab09aaf0a56b43066e80920885534732ef52b7d1ddd91c8d8d93b8c452f58' },
+    alt: 'Общая зона в варианте с большой гостиной без отдельного кабинета.',
+    caption: 'Гостиная занимает изменяемую зону. Отдельной рабочей комнаты нет.',
+    spatialRef: 'apartment-86#living',
+    action: { label: 'С большой гостиной', to: { route: 'apartment', layout: 'living' } },
+  },
+] as const satisfies readonly LayoutVariant[];
+
+export const projects = [
+  {
+    id: 'apartment', slug: 'svet-i-dub', title: 'Квартира 86 м²', status: 'Интерьерная концепция',
+    brief: 'Квартира для пары, которая работает из дома. Нужны спальня, хранение, место для ежедневной работы и общая зона для отдыха.',
+    question: 'Отдельный кабинет или большая гостиная?',
+    decision: 'Два варианта одной квартиры: общие вход, окна, спальня, кухня и санузел; меняется внутренняя зона между работой и отдыхом.',
+    tradeoff: 'Отдельная рабочая комната уменьшает общую зону. Большая гостиная оставляет работу без отдельного кабинета.',
+    cover: { status: 'ready', id: 'apartment-hero', path: 'src/assets/images/v2/apartment-hero.png', sha256: 'f377667eb74fdc1a53da96e04eff4c4f57ffcfc9e402c1f4d038752c1836e3d0' },
+    relatedServices: ['planning', 'design'],
+    action: { label: 'Сравнить два варианта планировки', to: { route: 'apartment' } },
+    next: { label: 'Что входит в дизайн-проект', to: { route: 'design' } },
+  },
+  {
+    id: 'house', slug: 'dom-u-sada', title: 'Дом у сада', status: 'Интерьерная концепция',
+    brief: 'Загородный дом с общей зоной у сада. Задача — связать кухню, столовую и террасу, сохранив спокойное место для отдыха.',
+    question: 'Общая зона с выходом в сад',
+    decision: 'Маршрут от кухни и столовой к террасе проходит рядом с зоной отдыха. Свет и выход наружу определяют расположение общей зоны.',
+    tradeoff: 'Открытый выход к террасе требует места для прохода: его нельзя занимать мебелью для отдыха.',
+    cover: { status: 'ready', id: 'house-hero', path: 'src/assets/images/v2/house-hero.png', sha256: '0af78aa7b368e9db6456e62a655814b70fd969db1b7f0c417d74989361ba66de' },
+    relatedServices: ['design', 'support'],
+    action: { label: 'Смотреть концепцию', to: { route: 'house' } },
+    next: { label: 'Что входит в дизайн-проект', to: { route: 'design' } },
+  },
+] as const satisfies readonly Project[];
+
+export const apartment = { nominalArea: 86, areaKind: 'scenario', spatialId: 'apartment-86', variants: layoutVariants } as const;

@@ -1,0 +1,110 @@
+// ПРОСТОР · выбранный исходник V2 · 19.10.2026
+// src/scripts/project-brief.ts
+// Полный текст модуля для чтения. Импорты относятся к исходному проекту.
+
+import { services } from '../data/v2/services';
+
+const form = document.querySelector<HTMLFormElement>('#project-brief');
+if (form) {
+  const result = document.querySelector<HTMLElement>('#result')!;
+  const doc = document.querySelector<HTMLElement>('#brief-document')!;
+  const status = document.querySelector<HTMLElement>('#export-status')!;
+  const manual = document.querySelector<HTMLElement>('.manual-copy')!;
+  const copyText = document.querySelector<HTMLTextAreaElement>('#copy-text')!;
+  const service = form.elements.namedItem('service') as HTMLSelectElement;
+  const value = (name: string) => (form.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement).value.trim();
+  const knownService = () => services.find(s => s.id === service.value);
+  const updateMaterials = () => {
+    form.querySelector<HTMLElement>('.materials')!.hidden = !knownService();
+    form.querySelectorAll<HTMLElement>('[data-materials]').forEach(group => {
+      group.hidden = group.dataset.materials !== service.value;
+      group.querySelectorAll('input').forEach(input => { input.disabled = group.hidden; });
+    });
+  };
+  const query = new URLSearchParams(location.search);
+  const initial = services.find(s => s.id === query.get('service'));
+  if (initial) service.value = initial.id;
+  const project = query.get('project');
+  if (project === 'apartment' || project === 'house') {
+    (form.elements.namedItem('object') as HTMLSelectElement).value = project === 'apartment' ? 'Квартира' : 'Загородный дом';
+    (form.elements.namedItem('references') as HTMLTextAreaElement).value = project === 'apartment' ? 'Ориентир: интерьерная концепция «Квартира 86 м²» на сайте ПРОСТОР.' : 'Ориентир: интерьерная концепция «Дом у сада» на сайте ПРОСТОР.';
+  }
+  updateMaterials(); service.addEventListener('change', updateMaterials);
+  const show = (mode: 'form' | 'result', focus = true) => {
+    form.hidden = mode !== 'form'; result.hidden = mode !== 'result';
+    if (focus) (mode === 'form' ? service : document.querySelector<HTMLElement>('#result-title')!).focus();
+  };
+  const build = () => {
+    const selected = knownService()!;
+    const ready: string[] = selected.inputs.filter((_,i) => (form.elements.namedItem(`material-${selected.id}-${i}`) as HTMLInputElement).checked);
+    const missing: string[] = selected.inputs.filter(input => !ready.includes(input));
+    for (const [field,label] of [['object','Тип объекта'],['area','Площадь'],['constraints','Ограничения объекта'],['start','Желаемый старт'],['references','Референсы и предпочтения']]) if (!value(field)) missing.push(label);
+    const list = (items: readonly string[]) => items.map(s=>`• ${s}`).join('\n');
+    doc.textContent = `ЗАДАЧА ПРОЕКТА\n\nУслуга: ${selected.title}\nОбъект: ${value('object') || 'Уточнить'}\nПлощадь: ${value('area') ? value('area') + ' м²' : 'Уточнить'}\n\nГЛАВНАЯ ЗАДАЧА И ПРИОРИТЕТЫ\n${value('task')}\n\nИЗВЕСТНЫЕ ОГРАНИЧЕНИЯ\n${value('constraints') || 'Уточнить'}\n\nЖЕЛАЕМЫЙ СТАРТ\n${value('start') || 'Уточнить'}\n\nРЕФЕРЕНСЫ И ПРЕДПОЧТЕНИЯ\n${value('references') || 'Уточнить'}\n\nГОТОВЫЕ ВВОДНЫЕ (СО СЛОВ АВТОРА ЗАДАЧИ)\n${ready.length ? list(ready) : 'Пока не отмечены'}\n\nЧТО ЕЩЁ ПОДГОТОВИТЬ ИЛИ УТОЧНИТЬ\n${missing.length ? list([...new Set(missing)]) : 'Проверить актуальность и полноту перечисленных материалов с исполнителем.'}\n\nОЖИДАЕМЫЙ СОСТАВ РАБОТЫ — ДЛЯ СОГЛАСОВАНИЯ\n${list(selected.deliverables)}\n\nГРАНИЦЫ УЧАСТИЯ\n${selected.boundary}\n\nВОПРОСЫ К ИСПОЛНИТЕЛЮ\n${list([...selected.questions, 'Достаточно ли исходных данных и что нужно проверить до начала?', 'Как согласовать состав результата, этапы, стоимость и сроки?'])}\n\nПодготовлено на сайте ПРОСТОР. Это задание для обсуждения, не договор и не подтверждение заказа.`;
+    copyText.value = doc.textContent;
+  };
+  const validationMessages = () => {
+    const messages: Record<string,string> = {};
+    if (!knownService()) messages.service = 'Выберите одну из трёх услуг.';
+    if (!value('task')) messages.task = 'Опишите главную задачу проекта.';
+    if (value('area') && (!/^\d+(?:[.,]\d{1,2})?$/.test(value('area')) || Number(value('area').replace(',','.')) <= 0)) messages.area = 'Укажите положительную площадь числом, например 86 или 86,5.';
+    for (const [name,max] of [['task',3000],['constraints',2000],['references',2000],['start',160]] as const) if (value(name).length > max) messages[name] = `Сократите текст до ${max} знаков.`;
+    return messages;
+  };
+  // Recheck an already reported error on leaving the field, never steal focus
+  // or introduce new error messages while the visitor is typing.
+  const clearCorrectedError = (event: Event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement || input instanceof HTMLSelectElement) || input.getAttribute('aria-invalid') !== 'true') return;
+    if (validationMessages()[input.name]) return;
+    input.setAttribute('aria-invalid', 'false');
+    const error = document.getElementById(`${input.name}-error`);
+    if (error) error.classList.add('is-corrected');
+    const count = form.querySelectorAll('[aria-invalid="true"]').length;
+    const summary = document.querySelector<HTMLElement>('#form-errors')!;
+    summary.classList.toggle('is-corrected', count === 0);
+    if (count) summary.textContent = `Проверьте поля: ${count}. Задание пока не составлено.`;
+  };
+  form.addEventListener('focusout', clearCorrectedError);
+  form.addEventListener('change', clearCorrectedError);
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    const messages = validationMessages();
+    for (const name of ['service','area','task','constraints','references','start']) {
+      const input = form.elements.namedItem(name) as HTMLElement;
+      const error = document.getElementById(`${name}-error`)!;
+      error.classList.remove('is-corrected');
+      input.setAttribute('aria-invalid', messages[name] ? 'true' : 'false'); error.textContent = messages[name] || ''; error.hidden = !messages[name];
+    }
+    const summary = document.querySelector<HTMLElement>('#form-errors')!;
+    summary.classList.remove('is-corrected');
+    summary.hidden = !Object.keys(messages).length;
+    summary.textContent = `Проверьте поля: ${Object.keys(messages).length}. Задание пока не составлено.`;
+    if (!summary.hidden) {
+      const first = form.elements.namedItem(Object.keys(messages)[0]) as HTMLElement;
+      const details = first.closest('details'); if (details) details.open = true;
+      first.focus(); return;
+    }
+    build(); manual.hidden = true; status.textContent = '';
+    if (location.hash !== '#result') history.pushState({briefView:'result'}, '', '#result');
+    show('result');
+  });
+  document.querySelector('.brief-edit')!.addEventListener('click', () => {
+    if (history.state?.briefView === 'result') history.back();
+    else { history.replaceState(null,'',location.pathname + location.search); show('form'); }
+  });
+  addEventListener('popstate', () => show(location.hash === '#result' && !!doc.textContent ? 'result' : 'form'));
+  document.querySelector('.brief-copy')!.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(doc.textContent!); manual.hidden = true; status.textContent = 'Задание скопировано.'; }
+    catch { manual.hidden = false; copyText.focus(); copyText.select(); status.textContent = 'Автоматическое копирование недоступно. Текст выделен: нажмите Ctrl+C или выберите «Копировать».'; }
+  });
+  document.querySelector('.brief-download')!.addEventListener('click', () => {
+    const url = URL.createObjectURL(new Blob(['\uFEFF' + doc.textContent!],{type:'text/plain;charset=utf-8'}));
+    const a = document.createElement('a'); a.href = url; a.download = 'prostor-project-brief.txt'; document.body.append(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000); status.textContent = 'TXT подготовлен. Проверьте загрузки браузера.';
+  });
+  document.querySelector('.brief-print')!.addEventListener('click', () => window.print());
+  // Native form restoration stays in this document. No storage or user text in history/URL.
+  addEventListener('pageshow', updateMaterials);
+  show('form',false);
+}
